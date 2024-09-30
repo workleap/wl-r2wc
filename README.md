@@ -1,1 +1,1 @@
-# wl-framework-agnostic-widgets-poc
+# How to create a framework-agnostic widget?
