@@ -3,9 +3,8 @@ let theme = "dark";
 (function init() {
     window.MoviePlugin.initialize();
 
-    updateMovieDetailsData("widget1");
-    updateMovieDPopUpData("trigger1");
     updateContextData("context1", theme);
+    updateMovieDetailsData("widget1");
     handleChangeTheme();
 })();
 
@@ -27,14 +26,6 @@ function updateMovieDetailsData(id) {
         onClose: () => {
             console.log("Widget closed!");
         }
-    };
-}
-
-function updateMovieDPopUpData(id) {
-    const widget = document.getElementById(id);
-
-    widget.data = {
-        text: "Click Me!"
     };
 }
 

@@ -4,6 +4,6 @@ export default defineBuildConfig({
     entry: ["src/index.ts"],
     outDir: "dist",
     noExternal: [/.*/],
-    // minify: true,
+    minify: true,
     treeshake: true
 });
