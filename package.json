@@ -1,0 +1,19 @@
+{
+  "name": "workleap-movie-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@workleap/browserslist-config": "2.0.0",
+    "@workleap/eslint-plugin": "3.0.0",
+    "@workleap/stylelint-configs": "2.0.0",
+    "@workleap/tsup-configs": "3.0.1",
+    "@workleap/typescript-configs": "3.0.2"
+  }
+}
