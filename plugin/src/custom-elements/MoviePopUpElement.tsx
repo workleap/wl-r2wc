@@ -1,5 +1,5 @@
-import { MoviePopup, type MoviePopupProps } from "../../react/index.ts";
-import { PropsProvider, WebComponentHTMLElement } from "../utils/index.ts";
+import { PropsProvider, WebComponentHTMLElement } from "../web-components-utils/index.ts";
+import { MoviePopup, type MoviePopupProps } from "../widgets/movie-pop-up/MoviePopup.tsx";
 
 export class MoviePopUpElement extends WebComponentHTMLElement<MoviePopupProps> {
     get reactComponent() {
