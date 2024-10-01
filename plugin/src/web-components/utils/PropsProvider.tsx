@@ -1,16 +1,16 @@
-import { ComponentType } from "react";
-import { Observable, useObservable } from "./Observable.ts";
+import type { ComponentType } from "react";
+import { type Observable, useObservable } from "./Observable.ts";
 
 export interface PropsProvider<Props> {
-  Component: ComponentType<Props>;
-  observable: Observable<Props>;
+    Component: ComponentType<Props>;
+    observable: Observable<Props>;
 }
 
 export function PropsProvider<Props>({
-  Component,
-  observable,
+    Component,
+    observable
 }: PropsProvider<Props>) {
-  const props = useObservable(observable)!;
+    const props = useObservable(observable)!;
 
-  return <Component {...props} />;
+    return <Component {...props} />;
 }

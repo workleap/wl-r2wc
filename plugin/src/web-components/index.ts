@@ -19,14 +19,14 @@ export interface MovieWidgetsConfig {
 }
 
 declare global {
-  interface Window {
-    MoviePlugin?: MovieWidgetsConfig;
-  }
+    interface Window {
+        MoviePlugin?: MovieWidgetsConfig;
+    }
 }
 
 
 window.MoviePlugin = {
-  initialize
-}
+    initialize
+};
 
 
