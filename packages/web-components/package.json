@@ -15,16 +15,17 @@
         "lint:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@workleap-movie-sample/react": "workspace:*"
+        "@workleap-movie-sample/react": "workspace:*",
+        "@workleap/orbiter-ui": "^5.2.0",
+        "@hopper-ui/tokens": "4.3.2",
+        "react": "18.2.0",
+        "react-dom": "18.2.0"       
     },
     "devDependencies": {
         "tsup": "7.2.0",
         "typescript": "5.2.2",
         "@types/react": "18.2.42",
-        "@types/react-dom": "18.2.17",
-        "@workleap/orbiter-ui": "^5.2.0",
-        "@hopper-ui/tokens": "4.3.2",
-        "react": "18.2.0",
-        "react-dom": "18.2.0"           
+        "@types/react-dom": "18.2.17"
+    
     }
 }

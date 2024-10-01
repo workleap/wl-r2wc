@@ -11,12 +11,12 @@ import {
 } from "@workleap/orbiter-ui";
 import { useAppContext } from "../../context-provider/ContextProvider.tsx";
 
-export interface MovideDetailsProps {
+export interface MovieDetailsProps {
   onClose: () => void;
   showRanking: boolean;
 }
 
-export function MovideDetails({ onClose, showRanking }: MovideDetailsProps) {
+export function MovieDetails({ onClose, showRanking }: MovieDetailsProps) {
   const { isMovieDetailsOpen, setIsMovieDetailsOpen } = useAppContext();
 
   const handleOpenChange = (event: any, newValue: boolean) => {

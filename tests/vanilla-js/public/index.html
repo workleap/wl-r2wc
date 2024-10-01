@@ -5,25 +5,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Express App</title> 
+    <title>My Express App</title>
 
     <script type="module" src="index.js"></script>
-    <link rel="stylesheet" href="/cdn/styles.css"/>
+    <link rel="stylesheet" href="/cdn/styles.css" />
 
 </head>
 
-<body style="display: flex;">   
-    <div style="flex:1; margin: 50px; border: 3px solid gray">
-    <h3> Widget Area</h3> 
-       <wl-movie-details id="widget1">            
-        </wl-movie-details>
+<body style="display: flex;">
+    <div style="flex:1; margin: 50px; border: 5px solid gray">
+        <h3 style="text-align: center;"> Widget Area</h3>
+        <wl-movie-details id="widget1" />
     </div>
-    <div style="flex:1; margin: 50px; border: 3px solid ">
-    <h1>Host app area</h1>
+    <div style="flex:1; margin: 50px; border: 5px solid ">
+        <h3 style="text-align: center;">Host app area</h3>
     </div>
-    <div style="flex:1; margin: 50px; border: 3px solid gray">
-    <h3> Widget Area</h3>
-        <wl-trigger id="trigger1"></wl-trigger>
+    <div style="flex:1; margin: 50px; border: 5px solid gray">
+        <h3 style="text-align: center;"> Widget Area</h3>
+        <wl-movie-pop-up id="trigger1"></wl-movie-pop-up>
     </div>
 </body>
 
