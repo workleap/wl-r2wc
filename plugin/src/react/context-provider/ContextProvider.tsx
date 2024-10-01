@@ -16,7 +16,7 @@ const AppContext = createContext<AppContextProps>({
 });
 
 interface AppContextProviderProps {
-    children: ReactNode;
+    children?: ReactNode;
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
@@ -27,7 +27,9 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
         <AppContext.Provider
             value={{ theme, setTheme, isMovieDetailsOpen, setIsMovieDetailsOpen }}
         >
-            <ThemeProvider colorScheme={theme}>{children}</ThemeProvider>
+            <ThemeProvider colorScheme={theme}>
+                {children}
+            </ThemeProvider>
         </AppContext.Provider>
     );
 }

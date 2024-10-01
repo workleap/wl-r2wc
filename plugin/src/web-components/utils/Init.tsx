@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import type { ComponentType, PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
 import { createRoot } from "react-dom/client";
 import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
@@ -26,18 +26,11 @@ export function register(
 }
 
 function buildQuery() {
-    let query = "";
-    for (const widget of registeredWidgets) {
-        query += `${widget.tagName},`;
-    }
-
-    return query.slice(0, -1);
+    return registeredWidgets.map(x => x.tagName).join(",");
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function render(ContextProvider: ComponentType<any>) {
-    const elements =
-    document.querySelectorAll<WebComponentHTMLElementBase>(buildQuery());
+export function render(ContextProvider: ComponentType<PropsWithChildren>) {
+    const elements = document.querySelectorAll<WebComponentHTMLElementBase>(buildQuery());
     const portals = [];
 
     for (const element of elements) {
