@@ -1,5 +1,5 @@
 import { Button, Div, ThemeProvider } from "@workleap/orbiter-ui";
-import { useAppContext } from "../../context-provider/ContextProvider.tsx";
+import { useAppContext } from "../../context-provider/ContextProvider.js";
 
 export interface MoviePopupProps {
   text: string;

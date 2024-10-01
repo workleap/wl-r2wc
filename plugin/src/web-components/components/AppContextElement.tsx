@@ -1,8 +1,8 @@
 import {
-  AppContextWidget,
-  AppContextWidgetProps,
-} from "@workleap-movie-sample/react";
-import { PropsProvider, WebComponentHTMLElement } from "../base/index.ts";
+    AppContextWidget,
+    AppContextWidgetProps,
+} from "../../react/index.ts";
+import { PropsProvider, WebComponentHTMLElement } from "../utils/index.ts";
 
 export class AppContextElement extends WebComponentHTMLElement<AppContextWidgetProps> {
   getReactComponent() {

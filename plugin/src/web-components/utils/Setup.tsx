@@ -1,19 +1,23 @@
+import { ComponentType } from "react";
 import { createPortal } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
-import { ComponentType } from "react";
 
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
 
-export function register(element: WebComponentHTMLElementType) {
-  if (customElements.get(element.getTagName())) {
-    // Already defined, do nothing.
-    return;
-  }
+export function register(elements: WebComponentHTMLElementType | WebComponentHTMLElementType[]) {
+  const array = Array.isArray(elements) ? elements : [elements];
 
-  customElements.define(element.getTagName(), element);
-  registeredWidgets.push(element);
+  for(const element of array) {
+    if (customElements.get(element.getTagName())) {
+        // Already defined, do nothing.
+        return;
+    }
+
+    customElements.define(element.getTagName(), element);
+    registeredWidgets.push(element);
+  }
 }
 
 function buildQuery() {

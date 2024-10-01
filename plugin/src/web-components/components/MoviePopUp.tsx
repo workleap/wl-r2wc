@@ -1,5 +1,5 @@
-import { MoviePopup, MoviePopupProps } from "@workleap-movie-sample/react";
-import { PropsProvider, WebComponentHTMLElement } from "../base/index.ts";
+import { MoviePopup, MoviePopupProps } from "../../react/index.ts";
+import { PropsProvider, WebComponentHTMLElement } from "../utils/index.ts";
 
 export class MoviePopUpElement extends WebComponentHTMLElement<MoviePopupProps> {
   getReactComponent() {

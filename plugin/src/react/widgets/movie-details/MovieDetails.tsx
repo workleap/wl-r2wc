@@ -1,17 +1,17 @@
 import {
-  Button,
-  Content,
-  Header,
-  Heading,
-  Item,
-  Listbox,
-  Modal,
-  ModalTrigger,
-  Paragraph,
-  Tabs,
-  ThemeProvider,
+    Button,
+    Content,
+    Header,
+    Heading,
+    Item,
+    Listbox,
+    Modal,
+    ModalTrigger,
+    Paragraph,
+    Tabs,
+    ThemeProvider,
 } from "@workleap/orbiter-ui";
-import { useAppContext } from "../../context-provider/ContextProvider.tsx";
+import { useAppContext } from "../../context-provider/ContextProvider.js";
 
 export interface MovieDetailsProps {
   onClose: () => void;
