@@ -9,14 +9,12 @@ const registeredWidgets: WebComponentHTMLElementType[] = [];
 /**
  * Registers the web components to the custom elements.
  */
-export function register(
-    elements: WebComponentHTMLElementType | WebComponentHTMLElementType[]
-) {
+export function register(elements: WebComponentHTMLElementType | WebComponentHTMLElementType[]) {
     const array = Array.isArray(elements) ? elements : [elements];
 
     for (const element of array) {
         if (customElements.get(element.tagName)) {
-            // Already defined, do nothing.
+        // Already defined, do nothing.
             return;
         }
 
@@ -30,10 +28,15 @@ function buildQuery() {
     for (const widget of registeredWidgets) {
         query += `${widget.tagName},`;
     }
+    console.log("AA", registeredWidgets, query, query.slice(0, -1));
 
     return query.slice(0, -1);
 }
+//    registeredWidgets.join(",");
 
+/**
+ * Renders the root react component.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function render(ContextProvider: ComponentType<any>) {
     const elements =

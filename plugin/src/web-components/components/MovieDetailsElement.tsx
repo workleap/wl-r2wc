@@ -2,11 +2,11 @@ import { MovieDetails, type MovieDetailsProps } from "../../react/index.ts";
 import { PropsProvider, WebComponentHTMLElement } from "../utils/index.ts";
 
 export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsProps> {
-    getReactComponent() {
+    get reactComponent() {
         return <PropsProvider Component={MovieDetails} observable={this.props} />;
     }
 
-    static getTagName() {
+    static get tagName() {
         return "wl-movie-details";
     }
 }

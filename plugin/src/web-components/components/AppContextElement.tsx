@@ -5,13 +5,13 @@ import {
 import { PropsProvider, WebComponentHTMLElement } from "../utils/index.ts";
 
 export class AppContextElement extends WebComponentHTMLElement<AppContextWidgetProps> {
-    getReactComponent() {
+    get reactComponent() {
         return (
             <PropsProvider Component={AppContextWidget} observable={this.props} />
         );
     }
 
-    static getTagName() {
+    static get tagName() {
         return "wl-movie-context";
     }
 }
