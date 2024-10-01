@@ -1,10 +1,10 @@
-import { renderWidgets } from "/cdn/index.js";
+// import { renderWidgets } from "/cdn/index.js";
 
 let theme = "dark";
 
 (function init() {
 
-  renderWidgets();
+  window.MovieWidgets.initialize();
 
   updateMovieDetailsData("widget1");
   updateMovieDPopUpData("trigger1");
