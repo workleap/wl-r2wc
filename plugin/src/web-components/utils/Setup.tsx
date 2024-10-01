@@ -6,6 +6,9 @@ import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx"
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
 
+/**
+ * Registers the web components to the custom elements.
+ */
 export function register(elements: WebComponentHTMLElementType | WebComponentHTMLElementType[]) {
     const array = Array.isArray(elements) ? elements : [elements];
 
@@ -25,10 +28,15 @@ function buildQuery() {
     for (const widget of registeredWidgets) {
         query += `${widget.getTagName()},`;
     }
+    console.log("AA", registeredWidgets, query, query.slice(0, -1));
 
     return query.slice(0, -1);
 }
+//    registeredWidgets.join(",");
 
+/**
+ * Renders the root react component.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function render(ContextProvider: ComponentType<any>) {
     const elements =

@@ -6,6 +6,9 @@ export interface PropsProvider<Props> {
     observable: Observable<Props>;
 }
 
+/**
+ * The PropsProvider is used to keep the web component's property in sync with the react component's props.
+ */
 export function PropsProvider<Props>({
     Component,
     observable
