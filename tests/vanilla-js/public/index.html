@@ -13,14 +13,16 @@
 </head>
 
 <body style="display: flex;">
-    <div style="flex:1; margin: 50px; border: 5px solid gray">
+    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
         <h3 style="text-align: center;"> Widget Area</h3>
         <wl-movie-details id="widget1" />
+        <wl-movie-context id="context1" />
     </div>
-    <div style="flex:1; margin: 50px; border: 5px solid ">
+    <div style="flex:1; margin: 50px; border: 5px solid; padding: 5px ">
         <h3 style="text-align: center;">Host app area</h3>
+        <button id="changeTheme">ChangeTheme!</button>
     </div>
-    <div style="flex:1; margin: 50px; border: 5px solid gray">
+    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
         <h3 style="text-align: center;"> Widget Area</h3>
         <wl-movie-pop-up id="trigger1"></wl-movie-pop-up>
     </div>
