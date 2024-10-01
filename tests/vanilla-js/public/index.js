@@ -38,10 +38,10 @@ function updateMovieDPopUpData(id) {
     };
 }
 
-function updateContextData(id, theme) {
+function updateContextData(id, currentTheme) {
     const widget = document.getElementById(id);
 
     widget.data = {
-        theme: theme
+        theme: currentTheme
     };
 }
