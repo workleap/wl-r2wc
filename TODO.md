@@ -1,2 +1,1 @@
-- host-tests in react
 - replace data property with actual web component properties
