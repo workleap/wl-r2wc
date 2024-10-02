@@ -29,6 +29,20 @@ function SearchResult({ pageSize, theme }: SearchResultProps) {
 The main functionality is inside the `widgets` folder.
 The `apps` folder contins a few examples to test the functionality in different frameworks.
 
+## How to use this repo?
+
+This repo is a template repo which also have some examples to see how this strategy work in action. After cloning the repo:
+
+- Run `pnpm install` inside `/widgets`, `/app/vanilla-js`, and `app/react`,
+- Run `pnpm build` inside `/widgets` to build the output files.
+- To run the apps, inside their folders:
+  - Run `pnpm start` for Vanilla-Js app.
+  - run `pnpm dev` for React app.
+
+Note: whenever you made a change inside the `widgets` you need only to run `pnpm build` and then refresh your running app.
+
+you can follow the next steps to see how you can change and see the result.
+
 ## How to create a framework-agnostic widget?
 
 ### Main logic in React
@@ -114,8 +128,8 @@ If you have only one widget, it is ok to pass them through it as widget props, b
 The trick is to just create an empty Widget that gets all these configs and store them inside the previously mentioned `AppContextProvider`.
 
 ```tsx
-// src/react/AppContextWidget.tsx
-export function AppContextWidget({
+// src/react/AppContext.tsx
+export function AppContext({
   theme,
   appName,
   appLogo,
@@ -131,6 +145,12 @@ export function AppContextWidget({
 
   return <></>;
 }
+```
+
+so consumer apps can use it in this way:
+
+```html
+<wl-app-context theme="dark" language="en" app-name="Office Vibe" />
 ```
 
 ### Create Web Components
