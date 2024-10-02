@@ -1,4 +1,4 @@
 import "./main.css";
 
-export * from "./web-components/widget.ts";
+export * from "./web-components/widgets.ts";
 
