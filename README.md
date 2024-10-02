@@ -222,7 +222,7 @@ After running the `pnpm build` inside the `widgets` folder, you will get `index.
 
 This widgets project generates two files that need to be made available to our widgets consumers: `index.js` and `index.css`.
 
-These files are hosted in an Azure storage container, served via Azure Front Door. The storage system automatically handles compression in Brotli (.br) or Gzip (.gz) formats. That storage will need to be setup by the team that owns the widgets project.
+These files are hosted in an Azure storage container, served via Azure Front Door. The storage system automatically handles compression in Brotli (`.br`) or Gzip (`.gz`) formats. That storage will need to be setup by the team that owns the widgets project.
 
 For the Workleap AI project, Max Beaudoin is currently setting up the storage system and will provide the necessary details to the team.
 
@@ -245,8 +245,8 @@ This proof of concept does not currently have an automated deployment process. H
 After deployment, the files will be available on a public URL:
 
 For instance, for this POC, the URLs are:
-JavaScript: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js
-CSS: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css
+- JavaScript: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js
+- CSS: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css
 
 #### Versioning
 
