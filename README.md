@@ -195,26 +195,33 @@ export class SearchResultElement extends WebComponentHTMLElement<SearchResultPro
 
 #### Create initialize function
 
-After defining all custom elements, we need to register them and define an `initialize` function. This function will be called by host apps to define and render custom elements. To do that, create the `widgets.ts` file.
+After defining all custom elements, we need to register them and define an `initialize` function. This function will be called by host apps to define and render custom elements. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file.
 
-Inside the file:
+Inside the file we build the `initialize` method by calling `buildInitializeMethod` and pass: 
 
-- We register each custom element separately. Without having them registered, you cannot use them inside the host app.
-- We render the widgets. We have to pass `AppContextProvider` to have all widgets access to the same context.
+- Custom elements to register. Without having them registered, you cannot use them inside the host app.
+- `AppContextProvider` to have all widgets access to the same context.
+
+We encapsulate the `initialize` inside the `window.SearchWidgets` object.
 
 ```tsx
 // src/web-components/widgets.ts
-function initialize() {
-  register([SearchResultElement, SearchInputElement, AppContextElement]);
-  render(AppContextProvider);
+export interface MovieWidgetsConfig {
+    initialize: () => void;
 }
 
-export interface SearchWidgetsConfig {
-  initialize: () => void;
+declare global {
+    interface Window {
+        MovieWidgets?: MovieWidgetsConfig;
+    }
 }
 
-window.SearchWidgets = {
-  initialize,
+
+window.MovieWidgets = {
+    initialize: buildInitializeMethod({
+        elements: [MovieDetailsElement, MoviePopUpElement, AppContextElement],
+        contextProvider: AppContextProvider
+    })
 };
 ```
 

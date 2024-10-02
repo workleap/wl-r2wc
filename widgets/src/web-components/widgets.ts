@@ -1,18 +1,9 @@
-import { register, render } from "../r2wc/Init.tsx";
+import { buildInitializeMethod } from "../r2wc/Init.tsx";
 import { AppContextProvider } from "../react/AppContextProvider.tsx";
 import { AppContextElement } from "./AppContextElement.tsx";
 import { MovieDetailsElement } from "./MovieDetailsElement.tsx";
 import { MoviePopUpElement } from "./MoviePopUpElement.tsx";
 
-let initialized = false;
-
-function initialize() {
-    if (!initialized) {
-        initialized = true;
-        register([MovieDetailsElement, MoviePopUpElement, AppContextElement]);
-        render(AppContextProvider);
-    }
-}
 
 /**
  * This is the widget's API. It will be exposed to the host application once the widget is loaded.
@@ -31,7 +22,10 @@ declare global {
 
 
 window.MovieWidgets = {
-    initialize
+    initialize: buildInitializeMethod({
+        elements: [MovieDetailsElement, MoviePopUpElement, AppContextElement],
+        contextProvider: AppContextProvider
+    })
 };
 
 

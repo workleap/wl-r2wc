@@ -9,7 +9,7 @@ const registeredWidgets: WebComponentHTMLElementType[] = [];
 /**
  * Registers the web components to the custom elements.
  */
-export function register(
+function register(
     elements: WebComponentHTMLElementType | WebComponentHTMLElementType[]
 ) {
     const array = Array.isArray(elements) ? elements : [elements];
@@ -29,7 +29,7 @@ function buildQuery() {
     return registeredWidgets.map(x => x.tagName).join(",");
 }
 
-export function render(ContextProvider: ComponentType<PropsWithChildren>) {
+function render(ContextProvider: ComponentType<PropsWithChildren>) {
     const elements = document.querySelectorAll<WebComponentHTMLElementBase>(
         buildQuery()
     );
@@ -43,4 +43,20 @@ export function render(ContextProvider: ComponentType<PropsWithChildren>) {
     const container = createRoot(root);
 
     container.render(<ContextProvider>{portals}</ContextProvider>);
+}
+
+
+let initialized = false;
+
+export function buildInitializeMethod({ elements, contextProvider }: {
+    elements: WebComponentHTMLElementType[];
+    contextProvider: ComponentType<PropsWithChildren>;
+}) {
+    return () => {
+        if (!initialized) {
+            initialized = true;
+            register(elements);
+            render(contextProvider);
+        } 
+    };
 }
