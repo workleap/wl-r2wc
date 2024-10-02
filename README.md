@@ -16,7 +16,14 @@ function SearchResult({ pageSize, theme }: SearchResultProps) {
 ```
 
 ```html
+<head>
+    <script type="module" src="https://cdn.platform.workleap-dev.com/search-widgets/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/search-widgets/index.css" />
+</head>
 <body>
+  <script>
+      window.SearchWidgets.initialize();
+  </script>
   <div>
     <div>Search Results:</div>
     <search-result page-size="10" theme="light" />
