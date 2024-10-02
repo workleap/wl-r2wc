@@ -272,6 +272,7 @@ The framework-agnostic widget can be consumed directly in any HTML page by refer
 Once this is added to the HTML page, the script can now inject the new web-components into the page. This can be done as soon as the script load, or after a method `initialize` is called.
 
 #### React
+
 An example usage of the widget in an React page:
 
 ```jsx
@@ -279,6 +280,7 @@ An example usage of the widget in an React page:
 ```
 
 An example of usage of the widget API :
+
 ```jsx
 useEffect(() => {
     window.MovieWidgets?.initialize();
