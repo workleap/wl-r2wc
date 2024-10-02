@@ -218,20 +218,132 @@ After running the `pnpm build` inside the `widgets` folder, you will get `index.
 
 ⚠️Note! This output is not for packaging. It is for direct usage as external urls inside the consumer apps.
 
-## How to deploy the changes on a CDN?
+## Deployment
 
-## How to consume framework-agnostic widget?
+This widgets project generates two files that need to be made available to our widgets consumers: `index.js` and `index.css`.
 
-### Vanilla Js
+These files are hosted in an Azure storage container, served via Azure Front Door. The storage system automatically handles compression in Brotli (.br) or Gzip (.gz) formats. That storage will need to be setup by the team that owns the widgets project.
 
-Add both the output script and css files in the main page header:
+For the Workleap AI project, Max Beaudoin is currently setting up the storage system and will provide the necessary details to the team.
+
+### How to deploy the changes on a CDN?
+
+#### Manual Upload
+
+Currently, the deployment process involves manually uploading the index.js and index.css files to the Azure storage container.
+
+- Navigate to the Azure portal and locate the appropriate storage account and container.
+- Upload the files to the container. Make sure to replace any existing files.
+- The CDN will automatically serve the updated versions with appropriate compression.
+
+#### Automating the Deployment (Future):
+
+This proof of concept does not currently have an automated deployment process. However, the team that owns the widgets project could set up a CI/CD pipeline to automatically deploy the changes to the Azure storage container.
+
+#### URLs:
+
+After deployment, the files will be available on a public URL:
+
+For instance, for this POC, the URLs are:
+JavaScript: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js
+CSS: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css
+
+#### Versioning
+
+Versioning is not required in the default setup since we aim to avoid breaking changes. By avoiding breaking changes, all consumers can continue using the latest version of the files without needing to update their applications.
+
+However, in the event that breaking changes need to be introduced, versioned folders can be added to the CDN.
+
+For example, breaking changes might be deployed to:
+- JavaScript: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/2/index.js
+- CSS: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/2/index.css
+
+In such cases, consumers will need to manually update the URLs in their applications to point to the new version (/2/index.js and /2/index.css). Since breaking changes are involved, this manual update is necessary to ensure compatibility with the new version.
+
+### How to consume framework-agnostic widget?
+
+The framework-agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widget in your project, use the following snippet:
 
 ```html
-<head>
-  ...
-  <script type="module" src="/cdn/index.js"></script>
-  <link rel="stylesheet" href="/cdn/index.css" />
-</head>
+<script type="module" src="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js"></script>
+<link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css" />
 ```
 
-Then you can add your custom elements
+Once this is added to the HTML page, the script can now inject the new web-components into the page. This can be done as soon as the script load, or after a method `initialize` is called.
+
+#### React
+An example usage of the widget in an React page:
+
+```jsx
+<wl-movie-context theme={theme} ></wl-movie-context>
+```
+
+An example of usage of the widget API :
+```jsx
+useEffect(() => {
+    window.MovieWidgets?.initialize();
+}, []);
+```
+
+#### Typescript
+
+If the app consuming the widget is written in TypeScript, you will need to provide type definitions for the widget props.
+
+We will try and update this POC later to provide guidance on how to do properly do this for multiple frameworks.
+
+For now, the consumers can manually create a type definition on their side.
+
+For custom components used in a react application, you can create a type definition like this:
+
+```typescript
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace JSX {
+        interface IntrinsicElements {
+            "wl-movie-pop-up": React.DetailedHTMLProps<
+            React.HTMLAttributes<HTMLElement> & {
+                text?: string;
+            },
+            HTMLElement
+            >;
+
+            "wl-movie-details": React.DetailedHTMLProps<
+            React.HTMLAttributes<HTMLElement> & {
+                "show-ranking"?: string;
+            },
+            HTMLElement
+            >;
+
+            "wl-movie-context": React.DetailedHTMLProps<
+            React.HTMLAttributes<HTMLElement> & {
+                theme?: string;
+            },
+            HTMLElement
+            >;
+        }
+    }
+}
+```
+
+For the API available through the window.MovieWidgets object, you can create a type definition like this:
+
+```typescript
+interface MovieWidgetsConfig {
+    initialize: () => void;
+}
+
+declare global {
+    interface Window {
+        MovieWidgets?: MovieWidgetsConfig;
+    }
+}
+```
+
+## Future Improvements
+
+Even if the current POC is working, there are some improvements that we will look at in the future:
+
+- Possibility of implementing the widget using the Shadow DOM to avoid conflicts with the host app styles.
+- Further optimizations for bundle size with improved tree-shaking
+- Using preload scripts and styles to avoid page flickering for mission critical widgets like the Navbar
+- Better support for typescript for react applications
