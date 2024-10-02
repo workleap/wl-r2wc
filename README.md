@@ -236,8 +236,6 @@ This widgets project generates two files that need to be made available to our w
 
 These files need to be hosted in an Azure storage container, served via Azure Front Door. The storage system automatically handles compression in Brotli (`.br`) or Gzip (`.gz`) formats. Make sure to activate the compression in the optimization settings of the Front Door profile. That storage will need to be set up by the team that owns the widgets project.
 
-For the Workleap AI project, Max Beaudoin is currently setting up the storage system and will provide the necessary details to the team.
-
 ### How to deploy the changes on a CDN?
 
 #### Manual Upload
