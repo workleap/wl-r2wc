@@ -15,7 +15,6 @@ function initialize(config: MovieWidgetsSettings) {
 }
 
 function update(config: MovieWidgetsSettings) {
-    console.log("update", config);
     const appContextProviderProps = config;
     render(AppContextProvider, appContextProviderProps);
 }
