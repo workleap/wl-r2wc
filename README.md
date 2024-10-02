@@ -207,6 +207,31 @@ window.SearchWidgets = {
 };
 ```
 
+#### Build the output
+
+Everything is ready! Just make sure you have setup the `tsup.build.ts` correctly:
+
+- Include both `minify: true` and `treeshake: true`
+- Include the required css file and `widget.ts` inside the `src/index.ts` file.
+
+After running the `pnpm build` inside the `widgets` folder, you will get `index.ts` and `index.css` files inside the `dist` folder. You need them in consumer apps to load and render widgets.
+
+⚠️Note! This output is not for packaging. It is for direct usage as external urls inside the consumer apps.
+
 ## How to deploy the changes on a CDN?
 
 ## How to consume framework-agnostic widget?
+
+### Vanilla Js
+
+Add both the output script and css files in the main page header:
+
+```html
+<head>
+  ...
+  <script type="module" src="/cdn/index.js"></script>
+  <link rel="stylesheet" href="/cdn/index.css" />
+</head>
+```
+
+Then you can add your custom elements
