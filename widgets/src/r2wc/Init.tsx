@@ -30,11 +30,13 @@ function buildQuery() {
 }
 
 export function render(ContextProvider: ComponentType<PropsWithChildren>) {
-    const elements = document.querySelectorAll<WebComponentHTMLElementBase>(buildQuery());
+    const elements = document.querySelectorAll<WebComponentHTMLElementBase>(
+        buildQuery()
+    );
     const portals = [];
 
     for (const element of elements) {
-        portals.push(createPortal(element.reactComponent, element.root));
+        portals.push(createPortal(element.renderReactComponent(), element.root));
     }
 
     const root = document.createElement("div");

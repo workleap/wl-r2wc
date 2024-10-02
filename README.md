@@ -88,6 +88,14 @@ export function AppContextWidget({ theme }: AppContextWidgetProps) {
 
 In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)(part of Web Components) to expose our React components as framework agnostic wigets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
 
+The make life easier, we moved the generic codes to `r2wc` folder (React to Web-Component). This folder contains:
+
+- `WebComponentHTMLElement.tsx`: The base class for defining and creating custom elements.
+- `Init.tsx`: The main scripts to create and render custom elements in browser.
+- `PropsProvider.tsx`: It brings a mechanism to keep custom elements properties sync with React component properties.
+
+###
+
 ## How to deploy the changes on a CDN?
 
 ## How to consume framework-agnostic widget?
