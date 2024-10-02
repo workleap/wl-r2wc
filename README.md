@@ -1,20 +1,20 @@
-# framework-agnostic widgets
+# Framework Agnostic Widgets
 
 The purpose of this POC is:
 
 - Creating complex components in React and use them inside React and non-React applications.
 - Build once, deploy once. So, all the consumer apps gets updated automatically.
 
-To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elemnts, e.g `<wl-grid/>`. And we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) inside the web-componet creating to isolate the whole components rendering separate from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers get the same version.
+To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elemnts, e.g `<wl-search-result/>`. And we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) inside the web-componet creating to isolate the whole components rendering separate from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers get the same version.
 
-# Code structure
+## Code structure
 
-The main functionality is inside the `widget` project. React components live in `src/react` folder, and their web-components are in `src/web-components`.
-The `host-tests` are some host applications for the widget to test the functionality in different frameworks.
+The main functionality is inside the `widgets` folder. React components live in `src/react` folder, and their web-components are inside `src/web-components`.
+The `apps` are some host applications for testing the functionality in different frameworks.
 
-# How to create a framework-agnostic widget?
+## How to create a framework-agnostic widget?
 
-## main logic in React
+### Main logic in React
 
 Just build your regular react components and put them in `react` folder.
 
@@ -28,12 +28,21 @@ Note that above constraints are only for facade components. Any inner components
 For example:
 
 ```tsx
-export function SearchResult({ pageSize }: SearchResultProps) {
-  return <div>...</div>;
+export function SearchResult({ pageSize, onClickResult }: SearchResultProps) {
+  return (
+    <Body>
+      <Header />
+      <Content>
+        {items.map((data) => (
+          <Item />
+        ))}
+      </Content>
+    </Body>
+  );
 }
 ```
 
-### Sharing context
+#### Sharing context
 
 widgets inside a same project could share context as regular app. We have to export this context provider as well. We can wrap all the required contexts (e.g. i18n, localization, authentication, ...) into one and later reuse it in `web-components` folder. For example:
 
@@ -58,7 +67,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
 
 If you want to pass properties to the context, you have two options:
 
-- Pass them through widgents separately, which could be not a perfect approach if you have multiple widgets.
+- Pass them through widgets separately, which could be not a perfect approach if you have multiple widgets.
 - Create a context widget to handle the work.
 
 If you prefer the second approach, here is the sample code:
@@ -75,6 +84,18 @@ export function AppContextWidget({ theme }: AppContextWidgetProps) {
 }
 ```
 
-# How to deploy the changes on a CDN?
+### Create custom elements
 
-# How to consume framework-agnostic widget?
+In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)(part of Web Components) to expose our React components as framework agnostic wigets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
+
+The make life easier, we moved the generic codes to `r2wc` folder (React to Web-Component). This folder contains:
+
+- `WebComponentHTMLElement.tsx`: The base class for defining and creating custom elements.
+- `Init.tsx`: The main scripts to create and render custom elements in browser.
+- `PropsProvider.tsx`: It brings a mechanism to keep custom elements properties sync with React component properties.
+
+###
+
+## How to deploy the changes on a CDN?
+
+## How to consume framework-agnostic widget?

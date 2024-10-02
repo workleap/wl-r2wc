@@ -1,9 +1,10 @@
 import { Observable } from "./Observable.ts";
+import { PropsProvider } from "./PropsProvider.tsx";
 
 export class WebComponentHTMLElementBase extends HTMLElement {
     #root = null as HTMLDivElement | null;
 
-    get reactComponent(): JSX.Element {
+    renderReactComponent(): JSX.Element {
         throw new Error("You must implement this method in a subclass.");
     }
 
@@ -45,6 +46,16 @@ export class WebComponentHTMLElement<
 
     set data(value: Props) {
         this.#props.value = value;
+    }
+
+    protected get reactComponent(): React.ComponentType<Props> {
+        throw new Error("You must implement this method in a subclass.");
+    }
+
+    renderReactComponent() {
+        return (
+            <PropsProvider Component={this.reactComponent} observable={this.props} />
+        );
     }
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
