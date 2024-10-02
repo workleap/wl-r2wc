@@ -39,9 +39,10 @@ This repo is a template repo which also has some examples to see how this strate
   - Run `pnpm start` for Vanilla-Js app.
   - run `pnpm dev` for React app.
 
-Note: whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running app.
+> [!IMPORTANT] 
+> whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running app.
 
-you can follow the next steps to see how you can change and see the result.
+You can follow the next steps to see how you can change and see the result.
 
 ## How to create a framework-agnostic widget?
 
@@ -51,7 +52,7 @@ Just build your regular react components and put them in the `react` folder.
 
 You are free to create any kind of React component, just there are some rules for exposed components:
 
-- They should not have `children`. e.g.:
+- They should **NOT** have `children`. e.g.:
 
   ```tsx
   function NotAllowedComponenet({ children }: { children: ReactNode }) {
@@ -66,7 +67,8 @@ You are free to create any kind of React component, just there are some rules fo
   }
   ```
 
-Note that above constraints are ONLY for components that are getting exposed as web components. Any inner components can be implemented as usual.
+> [!NOTE] 
+> that above constraints are ONLY for components that are getting exposed as web components. Any inner components can be implemented as usual.
 
 Here is a valid component which we can later make a web component based on it:
 
@@ -88,7 +90,7 @@ export function SearchResult({ pageSize, onClickItem }: SearchResultProps) {
 
 #### Sharing context
 
-widgets inside the same project could share context as a regular React app. This context will be used at the rendering step. All widgets are getting rendered inside this context provider (check the `widgets.ts` file).
+Widgets inside the same project could share context as a regular React app. This context will be used at the rendering step. All widgets are getting rendered inside this context provider (check the [widgets.ts](widgets/src/web-components/widgets.ts) file).
 
 If you have multiple contexts, make sure you add them all here. For example:
 
@@ -114,9 +116,10 @@ export function useAppContext() {
 }
 ```
 
-⚠️Note! Children may be rendered in different DOM nodes. If that affects how `ThemeProvider` works, you need to adjust it.
+> [!WARNING]
+ Children may be rendered in different DOM nodes. If that affects how `ThemeProvider` works, you need to adjust it.
 
-#### Sharing config
+#### Sharing config with a context
 
 There are scenarios where you want to pass down some configs that are being used by all widgets. For example:
 
@@ -152,6 +155,7 @@ so consumer apps can use it in this way:
 ```html
 <wl-app-context theme="dark" language="en" app-name="Office Vibe" />
 ```
+You can see it in both [vanilla-js](/apps/vanilla-js/public/index.html) and [react](/apps/react/src/App.tsx) examples too.
 
 ### Create Web Components
 
@@ -216,7 +220,8 @@ Everything is ready! Just make sure you have setup the `tsup.build.ts` correctly
 
 After running the `pnpm build` inside the `widgets` folder, you will get `index.ts` and `index.css` files inside the `dist` folder. You need them in consumer apps to load and render widgets.
 
-⚠️Note! This output is not for packaging. It is for direct usage as external urls inside the consumer apps.
+> [!IMPORTANT] 
+> This output is not for packaging. It is for direct usage as external urls inside the consumer apps.
 
 ## Deployment
 
