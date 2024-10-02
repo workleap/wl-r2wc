@@ -251,8 +251,8 @@ After deployment, the files will be available on a public URL:
 
 For instance, for this POC, the URLs are:
 
-- JavaScript: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js
-- CSS: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css
+- JavaScript: https://cdn.workleap.com/search-widgets/index.css"
+- CSS: https://cdn.workleap.com/search-widgets/index.css
 
 #### Versioning
 
@@ -265,8 +265,8 @@ However, in the event that breaking changes need to be introduced, versioned fol
 
 For example, breaking changes might be deployed to:
 
-- JavaScript: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/2/index.js
-- CSS: https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/2/index.css
+- JavaScript: https://cdn.workleap.com/search-widgets/2/index.js
+- CSS: https://cdn.workleap.com/search-widgets/2/index.css
 
 In such cases, consumers will need to manually update the URLs in their applications to point to the new version (/2/index.js and /2/index.css). Since breaking changes are involved, this manual update is necessary to ensure compatibility with the new version.
 
@@ -277,11 +277,11 @@ The framework-agnostic widget can be consumed directly in any HTML page by refer
 ```html
 <script
   type="module"
-  src="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js"
+  src="https://cdn.workleap.com/search-widgets/index.js"
 ></script>
 <link
   rel="stylesheet"
-  href="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css"
+  href="https://cdn.workleap.com/search-widgets/index.css"
 />
 ```
 
