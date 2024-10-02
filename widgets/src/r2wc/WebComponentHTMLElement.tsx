@@ -59,7 +59,6 @@ export class WebComponentHTMLElement<
     }
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-        console.log("AA", newValue);
         if (name === "data" && oldValue !== newValue) {
             this.data = JSON.parse(newValue);
         }

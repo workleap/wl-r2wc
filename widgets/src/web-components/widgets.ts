@@ -4,9 +4,14 @@ import { AppContextElement } from "./AppContextElement.tsx";
 import { MovieDetailsElement } from "./MovieDetailsElement.tsx";
 import { MoviePopUpElement } from "./MoviePopUpElement.tsx";
 
+let initialized = false;
+
 function initialize() {
-    register([MovieDetailsElement, MoviePopUpElement, AppContextElement]);
-    render(AppContextProvider);
+    if (!initialized) {
+        initialized = true;
+        register([MovieDetailsElement, MoviePopUpElement, AppContextElement]);
+        render(AppContextProvider);
+    }
 }
 
 /**

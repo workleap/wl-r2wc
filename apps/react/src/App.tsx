@@ -9,15 +9,12 @@ declare global {
         MovieWidgets?: MovieWidgetsConfig;
     }
 }
-let initialized = false;
+
 function App() {
     const [theme, setTheme] = useState("dark");
-    console.log("theme is", theme);
+
     useEffect(() => {
-        if (!initialized) { // strict mode workaround, in order to not import the script twice in dev
-            initialized = true;
-            window.MovieWidgets?.initialize();
-        }
+        window.MovieWidgets?.initialize();
     }, []);
 
     return (
