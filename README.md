@@ -159,7 +159,7 @@ You can see it in both [vanilla-js](/apps/vanilla-js/public/index.html) and [rea
 
 ### Create Web Components
 
-In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)(part of Web Components) to expose our React components as framework agnostic widgets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
+In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements) (part of Web Components) to expose our React components as framework agnostic widgets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
 
 To make life easier, we moved the generic codes to the `r2wc` folder (React to Web-Component). This folder contains:
 
