@@ -1,5 +1,6 @@
-import { PropsProvider, WebComponentHTMLElement } from "../web-components-utils/index.ts";
-import { MovieDetails, type MovieDetailsProps } from "../widgets/movie-details/MovieDetails.tsx";
+import { PropsProvider } from "../r2wc/PropsProvider.tsx";
+import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
+import { MovieDetails, type MovieDetailsProps } from "../react/MovieDetails.tsx";
 
 export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsProps> {
     get reactComponent() {

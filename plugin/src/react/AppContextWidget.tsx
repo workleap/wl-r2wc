@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppContext } from "../../context-provider/ContextProvider.js";
+import { useAppContext } from "./AppContextProvider.tsx";
 
 export interface AppContextWidgetProps {
     theme: "light" | "dark" | "system";

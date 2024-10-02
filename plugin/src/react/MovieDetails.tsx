@@ -11,7 +11,7 @@ import {
     Tabs,
     ThemeProvider
 } from "@workleap/orbiter-ui";
-import { useAppContext } from "../../context-provider/ContextProvider.tsx";
+import { useAppContext } from "./AppContextProvider.tsx";
 
 export interface MovieDetailsProps {
     onClose: () => void;

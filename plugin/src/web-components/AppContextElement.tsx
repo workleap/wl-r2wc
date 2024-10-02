@@ -1,8 +1,9 @@
-import { PropsProvider, WebComponentHTMLElement } from "../web-components-utils/index.ts";
+import { PropsProvider } from "../r2wc/PropsProvider.tsx";
+import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
 import {
     AppContextWidget,
     type AppContextWidgetProps
-} from "../widgets/app-context-widget/AppContextWidget.tsx";
+} from "../react/AppContextWidget.tsx";
 
 export class AppContextElement extends WebComponentHTMLElement<AppContextWidgetProps> {
     get reactComponent() {
