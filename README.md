@@ -221,7 +221,7 @@ Everything is ready! Just make sure you have setup the `tsup.build.ts` correctly
 After running the `pnpm build` inside the `widgets` folder, you will get `index.ts` and `index.css` files inside the `dist` folder. You need them in consumer apps to load and render widgets.
 
 > [!IMPORTANT]
-> This output is not for packaging. It is for direct usage as external urls inside the consumer apps.
+> This output is not for packaging. It is expected to be downloaded by the consumers apps from a CDN.
 
 ## Deployment
 
