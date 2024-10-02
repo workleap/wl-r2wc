@@ -1,1 +1,1 @@
-- replace data property with actual web component properties
+- Replace the React app bootstrap with our stack instead of vite
