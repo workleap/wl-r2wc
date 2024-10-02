@@ -3,9 +3,9 @@
 The purpose of this POC is:
 
 - Creating complex components in React and use them inside React and non-React applications.
-- Build once, deploy once. So, all the consumer apps gets updated automatically.
+- Release once, available everywhere. So, all the consumer apps get updated automatically.
 
-To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elemnts, e.g `<wl-search-result/>`. And we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) inside the web-componet creating to isolate the whole components rendering separate from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers get the same version.
+To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elemnts, e.g `<wl-search-result/>`, and we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) to fully separate widgets rendering from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers get the same version.
 
 ## Code structure
 
@@ -28,6 +28,7 @@ Note that above constraints are only for facade components. Any inner components
 For example:
 
 ```tsx
+// src/react/SearchResult.tsx
 export function SearchResult({ pageSize, onClickResult }: SearchResultProps) {
   return (
     <Body>
@@ -47,6 +48,7 @@ export function SearchResult({ pageSize, onClickResult }: SearchResultProps) {
 widgets inside a same project could share context as regular app. We have to export this context provider as well. We can wrap all the required contexts (e.g. i18n, localization, authentication, ...) into one and later reuse it in `web-components` folder. For example:
 
 ```tsx
+// src/react/AppContextProvider.tsx
 export function AppContextProvider({ children }: AppContextProviderProps) {
   const [theme, setTheme] = useState("light");
   const [isResultOpen, setIsResultOpen] = useState(false);
@@ -73,6 +75,7 @@ If you want to pass properties to the context, you have two options:
 If you prefer the second approach, here is the sample code:
 
 ```tsx
+// src/react/AppContextWidget.tsx
 export function AppContextWidget({ theme }: AppContextWidgetProps) {
   const { setTheme } = useAppContext();
 
@@ -84,17 +87,59 @@ export function AppContextWidget({ theme }: AppContextWidgetProps) {
 }
 ```
 
-### Create custom elements
+### Create Web Components
 
-In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)(part of Web Components) to expose our React components as framework agnostic wigets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
+In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)(part of Web Components) to expose our React components as framework agnostic widgets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
 
-The make life easier, we moved the generic codes to `r2wc` folder (React to Web-Component). This folder contains:
+To make life easier, we moved the generic codes to `r2wc` folder (React to Web-Component). This folder contains:
 
 - `WebComponentHTMLElement.tsx`: The base class for defining and creating custom elements.
 - `Init.tsx`: The main scripts to create and render custom elements in browser.
 - `PropsProvider.tsx`: It brings a mechanism to keep custom elements properties sync with React component properties.
 
-###
+#### Define custom elements
+
+To create a custom element, simply inherit from `WebComponentHTMLElement<T>` class where `T` is the React component `Props` type. Then, implement `reactComponent` and static `tagName` getters. Put the file inside the `src/web-components` folder.
+
+For example:
+
+```tsx
+// src/web-components/SearchResultElement.tsx
+export class SearchResultElement extends WebComponentHTMLElement<SearchResultProps> {
+  get reactComponent() {
+    return SearchResult;
+  }
+
+  static get tagName() {
+    return "wl-search-result";
+  }
+}
+```
+
+#### Create initialize function
+
+After defining all custom elements, we need to register them and define an `initialize` function. This function will be called by host apps to define and render custom elements. To do that, create the `widgets.ts` file.
+
+Inside the file:
+
+- We register each custom element seperately. Without having them registered, you cannot use them inside the host app.
+- We render the widgets. We have to pass `AppContextProvider` to have all widgets access to the same context.
+
+```tsx
+// src/web-components/widgets.ts
+function initialize() {
+  register([SearchResultElement, SearchInputElement, AppContextElement]);
+  render(AppContextProvider);
+}
+
+export interface SearchWidgetsConfig {
+  initialize: () => void;
+}
+
+window.SearchWidgets = {
+  initialize,
+};
+```
 
 ## How to deploy the changes on a CDN?
 
