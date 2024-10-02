@@ -17,7 +17,7 @@ export function register(
     for (const element of array) {
         if (customElements.get(element.tagName)) {
             // Already defined, do nothing.
-            return;
+            continue;
         }
 
         customElements.define(element.tagName, element);
