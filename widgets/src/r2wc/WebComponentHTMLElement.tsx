@@ -12,13 +12,10 @@ export class WebComponentHTMLElementBase extends HTMLElement {
 }
 
 export class WebComponentHTMLElement<
-    Props
+    Props,
+    Attributes = Props
 > extends WebComponentHTMLElementBase {
-    #props = new Observable<Props>();
-
-    static get observedAttributes() {
-        return ["data"];
-    }
+    #props = new Observable<Attributes>();
 
     protected get props() {
         return this.#props;
@@ -28,23 +25,23 @@ export class WebComponentHTMLElement<
         throw new Error("You must implement this method in a subclass.");
     }
 
+    protected mapAttributesToProps(attributes: Attributes): Props {
+        // we could create a ensureProps function to ensure the attributes and props match.
+        // For instance the props could have a required field that is not properly set
+        return attributes as unknown as Props; // map 1 to 1 by default
+    }
+
     renderReactComponent() {
         return (
-            <PropsProvider Component={this.reactComponent} observable={this.props} />
+            <PropsProvider Component={this.reactComponent} observable={this.props} mapAttributesToProps={this.mapAttributesToProps} />
         );
     }
 
-    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-        if (WebComponentHTMLElement.observedAttributes.includes(name) && oldValue !== newValue) {
-            this.data = JSON.parse(newValue);
-        }
-    }
-
-    get data(): Props | undefined {
+    get customAttributes(): Attributes | undefined {
         return this.#props.value;
     }
 
-    set data(value: Props) {
+    set customAttributes(value: Attributes) {
         this.#props.value = value;
     }
 }

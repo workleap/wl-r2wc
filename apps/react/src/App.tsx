@@ -27,8 +27,8 @@ function App() {
             }}
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <wl-movie-details onClick={() => console.log("hello")} data={"{ \"showRanking\": \"true\" }"} ></wl-movie-details>
-                <wl-movie-context data={`{"theme" : "${theme}" }`}></wl-movie-context>
+                <wl-movie-details onClick={() => console.log("hello")} show-ranking="true" ></wl-movie-details>
+                <wl-movie-context theme={theme} ></wl-movie-context>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}>Host app area</h3>
@@ -36,7 +36,7 @@ function App() {
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <wl-movie-pop-up data='{"text": "Click Me!"}'></wl-movie-pop-up>
+                <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
             </div>
         </div>
     );
@@ -50,21 +50,21 @@ declare global {
         interface IntrinsicElements {
             "wl-movie-pop-up": React.DetailedHTMLProps<
             React.HTMLAttributes<HTMLElement> & {
-                data?: string;
+                text?: string;
             },
             HTMLElement
             >;
 
             "wl-movie-details": React.DetailedHTMLProps<
             React.HTMLAttributes<HTMLElement> & {
-                data?: string;
+                "show-ranking"?: string;
             },
             HTMLElement
             >;
 
             "wl-movie-context": React.DetailedHTMLProps<
             React.HTMLAttributes<HTMLElement> & {
-                data?: string;
+                theme?: string;
             },
             HTMLElement
             >;

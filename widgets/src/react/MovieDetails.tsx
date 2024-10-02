@@ -14,21 +14,18 @@ import {
 import { useAppContext } from "./AppContextProvider.tsx";
 
 export interface MovieDetailsProps {
-    onClose: () => void;
     showRanking: boolean;
 }
 
-export function MovieDetails({ onClose, showRanking }: MovieDetailsProps) {
+export function MovieDetails({ showRanking }: MovieDetailsProps) {
     const { isMovieDetailsOpen, setIsMovieDetailsOpen, theme } = useAppContext();
 
     const handleOpenChange = (event: unknown, newValue: boolean) => {
         setIsMovieDetailsOpen(newValue);
-        if (!newValue) {onClose();}
     };
 
     const handleClose = () => {
         setIsMovieDetailsOpen(false);
-        onClose();
     };
 
     return (
