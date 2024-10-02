@@ -7,10 +7,27 @@ The purpose of this POC is:
 
 To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elemnts, e.g `<wl-search-result/>`, and we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) to fully separate widgets rendering from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers get the same version.
 
+For example a simple HTML app can use the following `SearchResult` React component inside their pages as regular HTML tags:
+
+```tsx
+function SearchResult({ pageSize, theme }: SearchResultProps) {
+  return <Content></Content>;
+}
+```
+
+```html
+<body>
+  <div>
+    <div>Search Results:</div>
+    <search-result page-size="10" theme="light" />
+  </div>
+</body>
+```
+
 ## Code structure
 
-The main functionality is inside the `widgets` folder. React components live in `src/react` folder, and their web-components are inside `src/web-components`.
-The `apps` are some host applications for testing the functionality in different frameworks.
+The main functionality is inside the `widgets` folder.
+The `apps` folder contins a few examples to test the functionality in different frameworks.
 
 ## How to create a framework-agnostic widget?
 
@@ -18,18 +35,30 @@ The `apps` are some host applications for testing the functionality in different
 
 Just build your regular react components and put them in `react` folder.
 
-You are free to create any kind of React component, just there are some rules for components that are exposed as final Web Component:
+You are free to create any kind of React component, just there are some rules for exposed components:
 
-- They should not have `children`,
-- `JSX` props is not allowed as it cannot be translated easily to the similar HTML properties.
+- They should not have `children`. e.g.:
 
-Note that above constraints are only for facade components. Any inner components can be implemented as usual.
+  ```tsx
+  function NotAllowedComponenet({ children }: { children: ReactNode }) {
+    return <div>{children}</div>;
+  }
+  ```
 
-For example:
+- `JSX` props is not allowed as it cannot be translated easily to the similar HTML properties. e.g.:
+  ```tsx
+  function NotAllowedComponenet({ header }: { header: ReactNode }) {
+    return <div>{header}</div>;
+  }
+  ```
+
+Note that above constraints are ONLY for components that are getting exposed as web components. Any inner components can be implemented as usual.
+
+Here is a valid component which we can later make a web component based on it:
 
 ```tsx
 // src/react/SearchResult.tsx
-export function SearchResult({ pageSize, onClickResult }: SearchResultProps) {
+export function SearchResult({ pageSize, onClickItem }: SearchResultProps) {
   return (
     <Body>
       <Header />
@@ -45,7 +74,9 @@ export function SearchResult({ pageSize, onClickResult }: SearchResultProps) {
 
 #### Sharing context
 
-widgets inside a same project could share context as regular app. We have to export this context provider as well. We can wrap all the required contexts (e.g. i18n, localization, authentication, ...) into one and later reuse it in `web-components` folder. For example:
+widgets inside a same project could share context as regular React app. This context will be used at the rendering step. All widgets are getting rendered inside this context provider (check the `widgets.ts` file).
+
+If you have multiple contexts, make sure you add them all here. For example:
 
 ```tsx
 // src/react/AppContextProvider.tsx
@@ -63,24 +94,39 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
     </AppContext.Provider>
   );
 }
+
+export function useAppContext() {
+  return useContext(AppContext);
+}
 ```
 
-⚠️Note! children may be renderend in different DOM hirarichy. If that affects how `ThemeProvider` work, you need to adjust it later.
+⚠️Note! children may be renderend in different DOM hirarichy. If that affects how `ThemeProvider` work, you need to adjust it.
 
-If you want to pass properties to the context, you have two options:
+#### Sharing config
 
-- Pass them through widgets separately, which could be not a perfect approach if you have multiple widgets.
-- Create a context widget to handle the work.
+There are scenarios you want to pass down some configs that are being used by all widgets. For example:
 
-If you prefer the second approach, here is the sample code:
+- Passing app current Theme or language
+- Passing api URL, app name, app logo, etc.
+
+If you have only one widget, it is ok to pass them through it as widget props, but if you have multiple widgets, it is not perfect to do same for all widgets.
+
+The trick is to just create an empty Widget that gets all these configs and store them inside the previously mentioned `AppContextProvider`.
 
 ```tsx
 // src/react/AppContextWidget.tsx
-export function AppContextWidget({ theme }: AppContextWidgetProps) {
-  const { setTheme } = useAppContext();
+export function AppContextWidget({
+  theme,
+  appName,
+  appLogo,
+  apiUrl,
+}: AppContextWidgetProps) {
+  const { setTheme, setAppName, setAppLogo, setApiUrl } = useAppContext();
 
   useEffect(() => {
     setTheme(theme);
+    setAppName(appName);
+    //...
   });
 
   return <></>;
