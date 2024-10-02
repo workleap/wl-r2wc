@@ -253,6 +253,9 @@ For instance, for this POC, the URLs are:
 
 Versioning is not required in the default setup since we aim to avoid breaking changes. By avoiding breaking changes, all consumers can continue using the latest version of the files without needing to update their applications.
 
+- You should prioritize deprecating old features instead of removing them,
+- You should use feature flags to opt-in to new features that would otherwise be breaking changes.
+
 However, in the event that breaking changes need to be introduced, versioned folders can be added to the CDN.
 
 For example, breaking changes might be deployed to:
@@ -356,4 +359,12 @@ Even if the current POC is working, there are some improvements that we will loo
 - Possibility of implementing the widget using the Shadow DOM to avoid conflicts with the host app styles.
 - Further optimizations for bundle size with improved tree-shaking
 - Using preload scripts and styles to avoid page flickering for mission critical widgets like the Navbar
-- Better support for typescript for react applications
+- Better support for typescript for React applications
+- Extract the r2wc folder into a library package
+- Move to Cloudflare CDN and provide a pipeline to update the CDN files
+
+
+
+
+
+
