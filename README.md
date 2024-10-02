@@ -9,8 +9,8 @@ To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web
 
 # Code structure
 
-The main functionality is inside the `plugin` project. React components live in `src/react` folder, and their web-components are in `src/web-components`.
-The `host-tests` are some host applications for the plugin to test the functionality in different frameworks.
+The main functionality is inside the `widget` project. React components live in `src/react` folder, and their web-components are in `src/web-components`.
+The `host-tests` are some host applications for the widget to test the functionality in different frameworks.
 
 # How to create a framework-agnostic widget?
 
@@ -35,7 +35,7 @@ export function SearchResult({ pageSize }: SearchResultProps) {
 
 ### Sharing context
 
-widgets inside a same plugin could share context as regular app. We have to export this context provider as well. We can wrap all the required contexts (e.g. i18n, localization, authentication, ...) into one and later reuse it in `web-components` folder. For example:
+widgets inside a same project could share context as regular app. We have to export this context provider as well. We can wrap all the required contexts (e.g. i18n, localization, authentication, ...) into one and later reuse it in `web-components` folder. For example:
 
 ```tsx
 export function AppContextProvider({ children }: AppContextProviderProps) {

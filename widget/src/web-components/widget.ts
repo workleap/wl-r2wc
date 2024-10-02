@@ -10,9 +10,9 @@ function initialize() {
 }
 
 /**
- * This is the plugin's API. It will be exposed to the host application once the plugin is loaded.
+ * This is the widget's API. It will be exposed to the host application once the widget is loaded.
  * The host application will have access to the all the properties and methods defined in this object via the window object.
- * @example window.MoviePlugin.initialize()
+ * @example window.MovieWidgets.initialize()
  */
 export interface MovieWidgetsConfig {
     initialize: () => void;
@@ -20,12 +20,12 @@ export interface MovieWidgetsConfig {
 
 declare global {
     interface Window {
-        MoviePlugin?: MovieWidgetsConfig;
+        MovieWidgets?: MovieWidgetsConfig;
     }
 }
 
 
-window.MoviePlugin = {
+window.MovieWidgets = {
     initialize
 };
 

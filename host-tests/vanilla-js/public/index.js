@@ -1,7 +1,7 @@
 let theme = "dark";
 
 (function init() {
-    window.MoviePlugin.initialize();
+    window.MovieWidgets.initialize();
 
     updateContextData("context1", theme);
     updateMovieDetailsData("widget1");

@@ -11,7 +11,7 @@ app.use(compression());
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/cdn", express.static(path.join(__dirname, "../../plugin/dist")));//it is a sample of CDN
+app.use("/cdn", express.static(path.join(__dirname, "../../widget/dist")));//it is a sample of CDN
 
 // Define a route to serve the HTML file
 app.get("/", (req, res) => {
