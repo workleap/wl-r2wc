@@ -1,32 +1,30 @@
 <!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Express App</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Express App</title>
+        <script type="module" src="/cdn/index.js"></script>
+        <link rel="stylesheet" href="/cdn/index.css" />
+        <script type="module" src="index.js"></script>
 
-    <script type="module" src="/cdn/index.js"></script>
-    <link rel="stylesheet" href="/cdn/index.css" />
-    <script type="module" src="index.js"></script>
+    </head>
 
-</head>
-
-<body style="display: flex;">
-    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
-        <h3 style="text-align: center;"> Widget Area</h3>
-        <wl-movie-details id="widget1" />
-        <wl-movie-context id="context1" />
-    </div>
-    <div style="flex:1; margin: 50px; border: 5px solid; padding: 5px ">
-        <h3 style="text-align: center;">Host app area</h3>
-        <button id="changeTheme">ChangeTheme!</button>
-    </div>
-    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
-        <h3 style="text-align: center;"> Widget Area</h3>
-        <wl-movie-pop-up data='{"text": "Click Me!"}'></wl-movie-pop-up>
-    </div>
-</body>
-
+    <body style="display: flex;">
+        <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
+            <h3 style="text-align: center;"> Widget Area</h3>
+            <wl-movie-details show-ranking="true" ></wl-movie-details>
+            <wl-movie-context id="context1" theme="dark"></wl-movie-context>
+        </div>
+        <div style="flex:1; margin: 50px; border: 5px solid; padding: 5px ">
+            <h3 style="text-align: center;">Host app area</h3>
+            <button id="changeTheme">ChangeTheme!</button>
+        </div>
+        <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
+            <h3 style="text-align: center;"> Widget Area</h3>
+            <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
+        </div>
+    </body>
 </html>

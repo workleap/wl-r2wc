@@ -4,7 +4,6 @@ let theme = "dark";
     window.MovieWidgets.initialize();
 
     updateContextData("context1", theme);
-    updateMovieDetailsData("widget1");
     handleChangeTheme();
 })();
 
@@ -18,21 +17,7 @@ function handleChangeTheme() {
 }
 
 
-function updateMovieDetailsData(id) {
-    const widget = document.getElementById(id);
-
-    widget.data = {
-        showRanking: true,
-        onClose: () => {
-            console.log("Widget closed!");
-        }
-    };
-}
-
 function updateContextData(id, currentTheme) {
     const widget = document.getElementById(id);
-
-    widget.data = {
-        theme: currentTheme
-    };
+    widget.attributes.theme.value = currentTheme;
 }

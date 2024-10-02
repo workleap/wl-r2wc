@@ -34,7 +34,7 @@ export function render(ContextProvider: ComponentType<PropsWithChildren>) {
     const portals = [];
 
     for (const element of elements) {
-        portals.push(createPortal(element.reactComponent, element.root));
+        portals.push(createPortal(element.reactComponent, element));
     }
 
     const root = document.createElement("div");
