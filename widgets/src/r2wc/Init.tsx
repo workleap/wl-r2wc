@@ -1,6 +1,6 @@
 import type { ComponentType, PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
-import { createRoot } from "react-dom/client";
+import { createRoot, type Root } from "react-dom/client";
 import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
 
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
@@ -29,7 +29,8 @@ function buildQuery() {
     return registeredWidgets.map(x => x.tagName).join(",");
 }
 
-export function render(ContextProvider: ComponentType<PropsWithChildren>) {
+let container: Root | null = null;
+export function render<T extends PropsWithChildren>(ContextProvider: ComponentType<T>, props: T) {
     const elements = document.querySelectorAll<WebComponentHTMLElementBase>(
         buildQuery()
     );
@@ -38,9 +39,10 @@ export function render(ContextProvider: ComponentType<PropsWithChildren>) {
     for (const element of elements) {
         portals.push(createPortal(element.renderReactComponent(), element));
     }
+    if (!container) {
+        const root = document.createElement("div");
+        container = createRoot(root);
+    }
 
-    const root = document.createElement("div");
-    const container = createRoot(root);
-
-    container.render(<ContextProvider>{portals}</ContextProvider>);
+    container.render(<ContextProvider {...props}>{portals}</ContextProvider>);
 }

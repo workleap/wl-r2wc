@@ -284,7 +284,7 @@ Once this is added to the HTML page, the script can now inject the new web-compo
 An example usage of the widget in an React page:
 
 ```jsx
-<wl-movie-context theme={theme}></wl-movie-context>
+<wl-movie-details show-ranking="true"></wl-movie-details>
 ```
 
 An example of usage of the widget API :
@@ -320,13 +320,6 @@ declare global {
       "wl-movie-details": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & {
           "show-ranking"?: string;
-        },
-        HTMLElement
-      >;
-
-      "wl-movie-context": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          theme?: string;
         },
         HTMLElement
       >;

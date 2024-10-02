@@ -1,9 +1,7 @@
 let theme = "dark";
 
 (function init() {
-    window.MovieWidgets.initialize();
-
-    updateContextData("movie-context", theme);
+    window.MovieWidgets.initialize({ theme });
     addEventListenerOnChangeThemeButton();
 })();
 
@@ -12,11 +10,6 @@ function addEventListenerOnChangeThemeButton() {
 
     button.addEventListener("click", function () {
         theme = theme === "light" ? "dark" : "light";
-        updateContextData("movie-context", theme);
+        window.MovieWidgets.update({ theme });
     });
-}
-
-function updateContextData(id, currentTheme) {
-    const widget = document.getElementById(id);
-    widget.setAttribute("theme", currentTheme);
 }

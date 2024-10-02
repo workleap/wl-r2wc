@@ -1,17 +1,27 @@
 import { register, render } from "../r2wc/Init.tsx";
 import { AppContextProvider } from "../react/AppContextProvider.tsx";
-import { AppContextElement } from "./AppContextElement.tsx";
 import { MovieDetailsElement } from "./MovieDetailsElement.tsx";
 import { MoviePopUpElement } from "./MoviePopUpElement.tsx";
 
 let initialized = false;
 
-function initialize() {
+function initialize(config: MovieWidgetsSettings) {
     if (!initialized) {
         initialized = true;
-        register([MovieDetailsElement, MoviePopUpElement, AppContextElement]);
-        render(AppContextProvider);
+        register([MovieDetailsElement, MoviePopUpElement]);
+        const appContextProviderProps = config;
+        render(AppContextProvider, appContextProviderProps);
     }
+}
+
+function update(config: MovieWidgetsSettings) {
+    console.log("update", config);
+    const appContextProviderProps = config;
+    render(AppContextProvider, appContextProviderProps);
+}
+
+export interface MovieWidgetsSettings {
+    theme: "light" | "dark" | "system";
 }
 
 /**
@@ -20,7 +30,8 @@ function initialize() {
  * @example window.MovieWidgets.initialize()
  */
 export interface MovieWidgetsConfig {
-    initialize: () => void;
+    initialize: (config: MovieWidgetsSettings) => void;
+    update: (config: MovieWidgetsSettings) => void;
 }
 
 declare global {
@@ -31,7 +42,8 @@ declare global {
 
 
 window.MovieWidgets = {
-    initialize
+    initialize,
+    update
 };
 
 
