@@ -10,7 +10,7 @@ declare global {
     }
 }
 
-function App() {
+export function App() {
     const [theme, setTheme] = useState("dark");
 
     useEffect(() => {
@@ -41,8 +41,6 @@ function App() {
         </div>
     );
 }
-
-export default App;
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace

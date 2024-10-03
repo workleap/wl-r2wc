@@ -1,1 +1,0 @@
-- Replace the React app bootstrap with our stack instead of vite
