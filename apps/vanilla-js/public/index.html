@@ -7,27 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vanilla JS App</title>
 
-    <script type="module" src="/widget.js"></script>
-    <link rel="stylesheet" href="/widget.css" />
-    <!-- <script type="module" src="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js"></script>
-    <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css" /> -->
+    <script type="module" src="/cdn/movie-widgets/index.js"></script>
+    <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
     <script type="module" src="index.js"></script>
 
 </head>
+<body>
+    <div style="display: flex;">
+        <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
+            <h3 style="text-align: center;"> Widget Area</h3>
+            <wl-movie-details show-ranking="true"/>
+            <wl-movie-context id="movie-context" />
+        </div>
+        <div style="flex:1; margin: 50px; border: 5px solid; padding: 5px ">
+            <h3 style="text-align: center;">Host app area</h3>
+            <button id="changeTheme">ChangeTheme!</button>
+        </div>
+        <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
+            <h3 style="text-align: center;"> Widget Area</h3>
+            <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
+        </div>
+    </div>
+    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px" id="dynamincWidgetArea">
+        <h3 style="text-align: center;"> Dyanimc Widget Area</h3>
+        <button id="addDynamicWidget">Add dynamic widget</button>
+        <button id="removeDynamicWidget">Remove dynamic widget</button>
 
-<body style="display: flex;">
-    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
-        <h3 style="text-align: center;"> Widget Area</h3>
-        <wl-movie-details show-ranking="true"/>
-        <wl-movie-context id="movie-context" />
-    </div>
-    <div style="flex:1; margin: 50px; border: 5px solid; padding: 5px ">
-        <h3 style="text-align: center;">Host app area</h3>
-        <button id="changeTheme">ChangeTheme!</button>
-    </div>
-    <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
-        <h3 style="text-align: center;"> Widget Area</h3>
-        <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
     </div>
 </body>
 

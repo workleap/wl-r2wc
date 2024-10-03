@@ -1,5 +1,4 @@
 import type { ComponentType, PropsWithChildren } from "react";
-import { createPortal } from "react-dom";
 import { createRoot } from "react-dom/client";
 import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
 
@@ -29,18 +28,17 @@ function buildQuery() {
     return registeredWidgets.map(x => x.tagName).join(",");
 }
 
-function render(ContextProvider: ComponentType<PropsWithChildren>) {
+const container = createRoot(document.createElement("div"));
+
+export function render(ContextProvider: ComponentType<PropsWithChildren>) {
     const elements = document.querySelectorAll<WebComponentHTMLElementBase>(
         buildQuery()
     );
     const portals = [];
 
     for (const element of elements) {
-        portals.push(createPortal(element.renderReactComponent(), element));
+        portals.push(element.renderedPortal);
     }
-
-    const root = document.createElement("div");
-    const container = createRoot(root);
 
     container.render(<ContextProvider>{portals}</ContextProvider>);
 }
@@ -48,15 +46,25 @@ function render(ContextProvider: ComponentType<PropsWithChildren>) {
 
 let initialized = false;
 
-export function buildInitializeMethod({ elements, contextProvider }: {
+export function buildWidgetsConfig({ elements, contextProvider }: {
     elements: WebComponentHTMLElementType[];
     contextProvider: ComponentType<PropsWithChildren>;
-}) {
-    return () => {
-        if (!initialized) {
-            initialized = true;
-            register(elements);
+}) : WidgetsConfig {
+    return {
+        initialize: () => {
+            if (!initialized) {
+                initialized = true;
+                register(elements);
+                render(contextProvider);
+            }
+        },
+        render: () => {
             render(contextProvider);
-        } 
+        }
     };
+}
+
+export interface WidgetsConfig {
+    initialize: () => void;
+    render: () => void;
 }

@@ -1,13 +1,30 @@
+import type { ReactPortal } from "react";
+import { createPortal } from "react-dom";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
 
 export class WebComponentHTMLElementBase extends HTMLElement {
+    #portal: ReactPortal | null = null;
+
+    static get tagName(): string {
+        throw new Error("You must implement this method in a subclass.");
+    }
+
     renderReactComponent(): JSX.Element {
         throw new Error("You must implement this method in a subclass.");
     }
 
-    static get tagName(): string {
-        throw new Error("You must implement this method in a subclass.");
+    get renderedPortal(): ReactPortal {
+        if (!this.#portal) {
+            throw new Error("Portal has not been rendered yet.");
+        }
+
+        return this.#portal;
+    }
+
+    connectedCallback() {
+        this.#portal = createPortal(this.renderReactComponent(), this);
+        // notifyRenderer();
     }
 }
 
@@ -23,6 +40,10 @@ export class WebComponentHTMLElement<
 
     protected get reactComponent(): React.ComponentType<Props> {
         throw new Error("You must implement this method in a subclass.");
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
     }
 
     protected mapAttributesToProps(attributes: Attributes): Props {

@@ -4,6 +4,7 @@ logs
 pnpm-debug.log*
 
 node_modules
+cdn
 dist
 build
 dist-ssr

@@ -1,7 +1,20 @@
-let theme = "dark";
+let theme = "light";
 
 (function init() {
     window.MovieWidgets.initialize();
+
+    document.getElementById("addDynamicWidget").addEventListener("click", function () {
+        const newWidget = document.createElement("wl-movie-details");
+        document.getElementById("dynamincWidgetArea").appendChild(newWidget);
+
+        window.MovieWidgets.render();
+    });
+
+    document.getElementById("removeDynamicWidget").addEventListener("click", function () {
+        document.getElementById("dynamincWidgetArea").querySelector("wl-movie-details").remove();
+
+        window.MovieWidgets.render();
+    });
 
     updateContextData("movie-context", theme);
     addEventListenerOnChangeThemeButton();
