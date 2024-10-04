@@ -5,6 +5,11 @@ import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx"
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
 const activeWidgets = new Set<WebComponentHTMLElementBase>();
+let initialized = false;
+let widgetsConfig: WidgetsConfig | null = null;
+const container = createRoot(document.createElement("div"));
+let delayRendererHandle = 0;
+let render: (()=>void) = () => {throw new Error("Not initialized");};
 
 /**
  * Registers the web components to the custom elements.
@@ -25,6 +30,9 @@ function register(
     }
 }
 
+function delayRenderRequested() {
+    return delayRendererHandle !== 0;
+}
 
 export function notify(element: WebComponentHTMLElementBase, event: "connected" | "disconnected") {
     if (event === "connected") {
@@ -32,12 +40,21 @@ export function notify(element: WebComponentHTMLElementBase, event: "connected" 
     } else {
         activeWidgets.delete(element);
     }
-    if (initialized) {widgetConfig?.render();}
+
+    // When it is not initialized, we don't need to render. The initial function will do it.
+    // When a page is changed through a router, some widgets are being removed and some new widgets may be added.
+    // With delay rendering we avoid uneeded multiple rendering by waiting for all the changes to be done in current thread,
+    // and enqueue a render to be done at next step.
+    if (initialized && !delayRenderRequested()) {
+        delayRendererHandle = setTimeout(() => {
+            render();
+            delayRendererHandle = 0;
+        });
+    }
 }
 
-const container = createRoot(document.createElement("div"));
 
-export function render(ContextProvider: ComponentType<PropsWithChildren> | undefined) {
+function renderWidgets(ContextProvider: ComponentType<PropsWithChildren> | undefined) {
     const portals = [];
 
     console.log("rendered!->", activeWidgets.size, "initialized->", initialized);
@@ -52,30 +69,27 @@ export function render(ContextProvider: ComponentType<PropsWithChildren> | undef
 }
 
 
-let initialized = false;
-let widgetConfig: WidgetsConfig | null = null;
-
 export function buildWidgetsConfig({ elements, contextProvider }: {
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<PropsWithChildren>;
 }) : WidgetsConfig {
-    widgetConfig = {
+    render = () => {
+        renderWidgets(contextProvider);
+    };
+    widgetsConfig = {
         initialize: () => {
             if (!initialized) {
                 register(elements);
                 initialized = true;
-                widgetConfig?.render();
+                render();
             }
-        },
-        render: () => {
-            render(contextProvider);
         }
+
     };
 
-    return widgetConfig;
+    return widgetsConfig;
 }
 
 export interface WidgetsConfig {
     initialize: () => void;
-    render: () => void;
 }
