@@ -36,37 +36,24 @@ export class WebComponentHTMLElementBase extends HTMLElement {
     }
 }
 
-export class WebComponentHTMLElement<
-    Props,
-    Attributes = Props
-> extends WebComponentHTMLElementBase {
-    #props = new Observable<Attributes>();
+export class WebComponentHTMLElement<Props> extends WebComponentHTMLElementBase {
+    #props = new Observable<Props>();
 
-    protected get props() {
-        return this.#props;
-    }
 
     protected get reactComponent(): React.ComponentType<Props> {
         throw new Error("You must implement this method in a subclass.");
     }
-
-    protected mapAttributesToProps(attributes: Attributes): Props {
-        // we could create a ensureProps function to ensure the attributes and props match.
-        // For instance the props could have a required field that is not properly set
-        return attributes as unknown as Props; // map 1 to 1 by default
-    }
-
     renderReactComponent() {
         return (
-            <PropsProvider Component={this.reactComponent} observable={this.props} mapAttributesToProps={this.mapAttributesToProps} />
+            <PropsProvider Component={this.reactComponent} observable={this.#props} />
         );
     }
 
-    get customAttributes(): Attributes | undefined {
+    get data(): Props | undefined {
         return this.#props.value;
     }
 
-    set customAttributes(value: Attributes) {
+    set data(value: Props) {
         this.#props.value = value;
     }
 }

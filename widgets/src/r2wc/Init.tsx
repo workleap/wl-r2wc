@@ -1,12 +1,18 @@
 import { Fragment, type ComponentType, type PropsWithChildren } from "react";
 import { createRoot } from "react-dom/client";
+import { Observable } from "./Observable.ts";
+import { PropsProvider } from "./PropsProvider.tsx";
 import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
 
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
 const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [];
 let initialized = false;
-let widgetsConfig: WidgetsConfig | null = null;
+
+
+let widgetsConfig: WidgetsConfig<unknown> | null = null;
+let contextProps: Observable<unknown> | null = null;
+
 const container = createRoot(document.createElement("div"));
 let delayRendererHandle:number | null = null;
 let render: (()=>void) = () => {throw new Error("Not initialized");};
@@ -57,42 +63,64 @@ export function notify(element: WebComponentHTMLElementBase, event: "connected" 
 }
 
 
-function renderWidgets(ContextProvider: ComponentType<PropsWithChildren> | undefined) {
-    console.log("rendered!->", activeWidgets.length, "initialized->", initialized);
+function renderContextWithProps<Props>(ContextProvider: ComponentType<PropsWithChildren<Props>>, children: React.ReactNode | undefined) {
+    if (contextProps == null) {throw new Error("ContextProps is not initialized");}
 
+    return <PropsProvider Component={ContextProvider} observable={contextProps}>
+        {children}
+    </PropsProvider>;
+}
+
+function renderWidgets<Props>(ContextProvider: ComponentType<PropsWithChildren<Props>> | undefined) {
     const portals = activeWidgets.map(item =>
         //this unique key is needed to avoid losing the state of the component when some adjacent elements are removed.
         <Fragment key={item.key}>
             {item.element.renderedPortal}
         </Fragment>);
 
-    const content = ContextProvider == null ? <>{portals}</> : <ContextProvider>{portals}</ContextProvider>;
+    const content = ContextProvider == null ? <>{portals}</> : renderContextWithProps(ContextProvider, portals);
 
     container.render(content);
 }
 
 
-export function buildWidgetsConfig({ elements, contextProvider }: {
+export function buildWidgetsConfig<Props>({ elements, contextProvider }: {
     elements: WebComponentHTMLElementType[];
-    contextProvider?: ComponentType<PropsWithChildren>;
-}) : WidgetsConfig {
+    contextProvider?: ComponentType<PropsWithChildren<Props>>;
+}) : WidgetsConfig<Props> {
     render = () => {
         renderWidgets(contextProvider);
     };
     widgetsConfig = {
-        initialize: () => {
+        initialize: (config?: Props) => {
             if (!initialized) {
+                contextProps = new Observable<Props>() as Observable<unknown>;
+                (contextProps as Observable<Props>).value = config ?? {} as Props;
                 register(elements);
                 initialized = true;
                 render();
             }
+        },
+        update: (config: Partial<Props>) => {
+            const context = (contextProps as Observable<Props>);
+            context.value = {
+                ...(context.value || {} as Props),
+                ...config
+            };
+        },
+        getConfig: () => {
+            const context = (contextProps as Observable<Props>);
+
+            return context.value;
         }
 
-    };
+    } as WidgetsConfig<unknown>;
 
-    return widgetsConfig;
+    return widgetsConfig as WidgetsConfig<Props>;
 }
 
-export interface WidgetsConfig {
-    initialize: () => void;
+export interface WidgetsConfig<ContextProps> {
+    initialize: (props?: ContextProps) => void;
+    update: (props: ContextProps) => void;
+    getConfig: ()=>ContextProps;
 }

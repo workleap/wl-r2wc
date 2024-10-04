@@ -1,6 +1,5 @@
 import { buildWidgetsConfig, type WidgetsConfig } from "../r2wc/Init.tsx";
-import { AppContextProvider } from "../react/AppContextProvider.tsx";
-import { AppContextElement } from "./AppContextElement.tsx";
+import { AppContextProvider, type AppContextProviderProps } from "../react/AppContextProvider.tsx";
 import { MovieDetailsElement } from "./MovieDetailsElement.tsx";
 import { MoviePopUpElement } from "./MoviePopUpElement.tsx";
 
@@ -14,13 +13,13 @@ import { MoviePopUpElement } from "./MoviePopUpElement.tsx";
 
 declare global {
     interface Window {
-        MovieWidgets?: WidgetsConfig;
+        MovieWidgets?: WidgetsConfig<AppContextProviderProps>;
     }
 }
 
 
-window.MovieWidgets = buildWidgetsConfig({
-    elements: [MovieDetailsElement, MoviePopUpElement, AppContextElement],
+window.MovieWidgets = buildWidgetsConfig<AppContextProviderProps>({
+    elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
 });
 

@@ -3,6 +3,14 @@ let theme = "light";
 (function init() {
     window.MovieWidgets.initialize();
 
+    initDynamicParts();
+    handleMovieDetailsClick();
+
+    updateContextData("movie-context", theme);
+    addEventListenerOnChangeThemeButton();
+})();
+
+function initDynamicParts() {
     document.getElementById("addDynamicWidget").addEventListener("click", function () {
         // const newWidget = document.createElement("wl-movie-details");
         // document.getElementById("dynamincWidgetArea").appendChild(newWidget);
@@ -14,10 +22,7 @@ let theme = "light";
         //  document.getElementById("dynamincWidgetArea").querySelector("wl-movie-details:last-of-type").remove();
         document.getElementById("dynamincWidgetArea").querySelector("wl-movie-pop-up").remove();
     });
-
-    updateContextData("movie-context", theme);
-    addEventListenerOnChangeThemeButton();
-})();
+}
 
 function addEventListenerOnChangeThemeButton() {
     const button = document.getElementById("changeTheme");
@@ -31,4 +36,10 @@ function addEventListenerOnChangeThemeButton() {
 function updateContextData(id, currentTheme) {
     const widget = document.getElementById(id);
     widget.setAttribute("theme", currentTheme);
+}
+
+function handleMovieDetailsClick() {
+    document.getElementById("movide-details").addEventListener("on-item-add", function () {
+        alert(1);
+    });
 }
