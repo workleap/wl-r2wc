@@ -50,10 +50,6 @@ export class WebComponentHTMLElement<
         throw new Error("You must implement this method in a subclass.");
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-    }
-
     protected mapAttributesToProps(attributes: Attributes): Props {
         // we could create a ensureProps function to ensure the attributes and props match.
         // For instance the props could have a required field that is not properly set
