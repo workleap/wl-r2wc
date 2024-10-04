@@ -32,7 +32,7 @@ export function notify(element: WebComponentHTMLElementBase, event: "connected" 
     } else {
         activeWidgets.delete(element);
     }
-    widgetConfig?.render();
+    if (initialized) {widgetConfig?.render();}
 }
 
 const container = createRoot(document.createElement("div"));
@@ -40,7 +40,7 @@ const container = createRoot(document.createElement("div"));
 export function render(ContextProvider: ComponentType<PropsWithChildren> | undefined) {
     const portals = [];
 
-    console.log("rendered!->", activeWidgets.size);
+    console.log("rendered!->", activeWidgets.size, "initialized->", initialized);
 
     for (const element of activeWidgets) {
         portals.push(element.renderedPortal);
@@ -62,9 +62,9 @@ export function buildWidgetsConfig({ elements, contextProvider }: {
     widgetConfig = {
         initialize: () => {
             if (!initialized) {
-                initialized = true;
                 register(elements);
-                //render(contextProvider);
+                initialized = true;
+                widgetConfig?.render();
             }
         },
         render: () => {
