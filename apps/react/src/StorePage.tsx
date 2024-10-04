@@ -12,12 +12,6 @@ declare global {
 }
 
 export function StorePage() {
-    const [theme, setTheme] = useState("dark");
-
-    useEffect(() => {
-        window.MovieWidgets?.initialize();
-    }, []);
-
     return (<>
         <header style={{ backgroundColor:"yellowgreen", padding: "5px" }}>
             <h1>Online Store</h1>
@@ -33,11 +27,9 @@ export function StorePage() {
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
                 <wl-movie-details onClick={() => console.log("hello")} show-ranking="true" ></wl-movie-details>
-                <wl-movie-context theme={theme} ></wl-movie-context>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}>Host app area</h3>
-                <button type="button" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>ChangeTheme!</button>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface MovieWidgetsConfig {
@@ -13,10 +13,6 @@ declare global {
 
 export function MainPage() {
     const [theme, setTheme] = useState("dark");
-
-    useEffect(() => {
-        window.MovieWidgets?.initialize();
-    }, []);
 
     return (<>
         <header style={{ backgroundColor:"lightblue", padding: "5px" }}>
@@ -37,7 +33,10 @@ export function MainPage() {
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}>Host app area</h3>
-                <button type="button" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>ChangeTheme!</button>
+                <button type="button"
+                    onClick={() =>
+                        setTheme(theme === "light" ? "dark" : "light")}
+                >ChangeTheme!</button>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>

@@ -4,6 +4,7 @@ import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx"
 
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
+const activeWidgets = new Set<WebComponentHTMLElementBase>();
 
 /**
  * Registers the web components to the custom elements.
@@ -24,44 +25,54 @@ function register(
     }
 }
 
-function buildQuery() {
-    return registeredWidgets.map(x => x.tagName).join(",");
+
+export function notify(element: WebComponentHTMLElementBase, event: "connected" | "disconnected") {
+    if (event === "connected") {
+        activeWidgets.add(element);
+    } else {
+        activeWidgets.delete(element);
+    }
+    widgetConfig?.render();
 }
 
 const container = createRoot(document.createElement("div"));
 
-export function render(ContextProvider: ComponentType<PropsWithChildren>) {
-    const elements = document.querySelectorAll<WebComponentHTMLElementBase>(
-        buildQuery()
-    );
+export function render(ContextProvider: ComponentType<PropsWithChildren> | undefined) {
     const portals = [];
 
-    for (const element of elements) {
+    console.log("rendered!->", activeWidgets.size);
+
+    for (const element of activeWidgets) {
         portals.push(element.renderedPortal);
     }
 
-    container.render(<ContextProvider>{portals}</ContextProvider>);
+    const content = ContextProvider == null ? <>{portals}</> : <ContextProvider>{portals}</ContextProvider>;
+
+    container.render(content);
 }
 
 
 let initialized = false;
+let widgetConfig: WidgetsConfig | null = null;
 
 export function buildWidgetsConfig({ elements, contextProvider }: {
     elements: WebComponentHTMLElementType[];
-    contextProvider: ComponentType<PropsWithChildren>;
+    contextProvider?: ComponentType<PropsWithChildren>;
 }) : WidgetsConfig {
-    return {
+    widgetConfig = {
         initialize: () => {
             if (!initialized) {
                 initialized = true;
                 register(elements);
-                render(contextProvider);
+                //render(contextProvider);
             }
         },
         render: () => {
             render(contextProvider);
         }
     };
+
+    return widgetConfig;
 }
 
 export interface WidgetsConfig {
