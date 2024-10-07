@@ -8,7 +8,7 @@ const activeWidgets = new Set<WebComponentHTMLElementBase>();
 let initialized = false;
 let widgetsConfig: WidgetsConfig | null = null;
 const container = createRoot(document.createElement("div"));
-let delayRendererHandle = 0;
+let delayRendererHandle:number | null = null;
 let render: (()=>void) = () => {throw new Error("Not initialized");};
 
 /**
@@ -31,7 +31,7 @@ function register(
 }
 
 function delayRenderRequested() {
-    return delayRendererHandle !== 0;
+    return delayRendererHandle !== null;
 }
 
 export function notify(element: WebComponentHTMLElementBase, event: "connected" | "disconnected") {
@@ -48,7 +48,7 @@ export function notify(element: WebComponentHTMLElementBase, event: "connected" 
     if (initialized && !delayRenderRequested()) {
         delayRendererHandle = setTimeout(() => {
             render();
-            delayRendererHandle = 0;
+            delayRendererHandle = null;
         });
     }
 }
