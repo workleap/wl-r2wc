@@ -9,7 +9,7 @@ const __dirname = import.meta.dirname;
 /**
  * @type {import("@workleap/webpack-configs").WebpackConfigTransformer}
  */
-function enableInMemoryCache(config) {
+function virtualCdn(config) {
     config.devServer = {
         ...config.devServer,
         static:[{
@@ -22,5 +22,5 @@ function enableInMemoryCache(config) {
 }
 
 export default defineDevConfig(swcConfig, {
-    transformers:[enableInMemoryCache]
+    transformers:[virtualCdn]
 });
