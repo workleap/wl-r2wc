@@ -22,7 +22,9 @@ function SearchResult({ pageSize, theme }: SearchResultProps) {
 </head>
 <body>
   <script>
-      window.SearchWidgets.initialize();
+    window.addEventListener("load", () => {
+        window.MovieWidgets.initialize();
+    });
   </script>
   <div>
     <div>Search Results:</div>
@@ -47,7 +49,7 @@ This repo is a template repo which also has some examples to see how this strate
   - run `pnpm dev` for React app.
 
 > [!IMPORTANT]
-> whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running app.
+> whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running apps.
 
 You can follow the next steps to see how you can change and see the result.
 
@@ -95,9 +97,15 @@ export function SearchResult({ pageSize, onClickItem }: SearchResultProps) {
 }
 ```
 
-#### Sharing context
+#### [Optional] Sharing context
 
 Widgets inside the same project could share context as a regular React app. This context will be used at the rendering step. All widgets are getting rendered inside this context provider (check the [widgets.ts](widgets/src/web-components/widgets.ts) file).
+
+> [!NOTE]
+> This part is optional. You usually don't need it if you only expose one widget, or context is not shared between client routing.
+
+> [!CAUTION] 
+This context will be used at app level. If you are using client routers like [React Router](https://reactrouter.com/), this context stay live between page navigations. It is a great tool if you want to keep an state between pages (e.g. keeping the chatbox open). It is bad because you cannot keep its lifetime to page scope. 
 
 If you have multiple contexts, make sure you add them all here. For example:
 
@@ -124,7 +132,7 @@ export function useAppContext() {
 ```
 
 > [!WARNING]
- Children may be rendered in different DOM nodes. If that affects how `ThemeProvider` works, you need to adjust it.
+ Children will be the widgets and are being rendered in different DOM nodes through React [createPortal](https://react.dev/reference/react-dom/createPortal). If this affects how `ThemeProvider` works, you need to adjust it.
 
 #### Sharing config with a context
 
@@ -200,7 +208,7 @@ After defining all custom elements, we need to register them and define an `init
 Inside the file we build the `initialize` method by calling `buildInitializeMethod` and pass: 
 
 - Custom elements to register. Without having them registered, you cannot use them inside the host app.
-- `AppContextProvider` to have all widgets access to the same context.
+- [optional] `AppContextProvider` to have all widgets access to the same context if it is provided.
 
 We encapsulate the `initialize` inside the `window.SearchWidgets` object.
 
@@ -263,7 +271,7 @@ After deployment, the files will be available on a public URL:
 
 For instance, for this POC, the URLs are:
 
-- JavaScript: https://cdn.workleap.com/search-widgets/index.css"
+- JavaScript: https://cdn.workleap.com/search-widgets/index.css
 - CSS: https://cdn.workleap.com/search-widgets/index.css
 
 #### Versioning

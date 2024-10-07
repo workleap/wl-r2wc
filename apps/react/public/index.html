@@ -4,13 +4,19 @@
     <meta charset="UTF-8" />
     <link href="favicon.png" rel="icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/widget.js"></script>
-    <link rel="stylesheet" href="/widget.css" />
-    <!-- <script type="module" src="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.js"></script>
-    <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/hopper/workleap-ai-test/index.css" /> -->
+    <script type="module" src="/cdn/movie-widgets/index.js"></script>
+    <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
     <title>React app</title>
+
   </head>
   <body>
-    <div id="root" style="display: flex;"></div>
+    <wl-movie-pop-up text="Click Me - Layout!!"></wl-movie-pop-up>
+    <div id="root"></div>
+    <script>
+        window.addEventListener('load', () => {
+            window.MovieWidgets.initialize();
+        });
+   </script>
+
   </body>
 </html>
