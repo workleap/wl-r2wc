@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 interface MovieWidgetsManager<AppSettings> {
     initialize: (settings?: AppSettings) => void;
     update: (settings: Partial<AppSettings>) => void;
-    getAppSettings: ()=>AppSettings;
+    appSettings: AppSettings;
 }
 
 
@@ -57,11 +57,7 @@ export function MainPage() {
                 <h3 style={{ textAlign: "center" }}>Host app area</h3>
                 <button type="button"
                     onClick={() => {
-                        // const node = document.getElementById("context1")!;
-                        // node.data = { theme : node?.data?.theme === "light" ? "dark" : "light" };
-
-                        const oldTheme = window.MovieWidgets?.getAppSettings().theme;
-
+                        const oldTheme = window.MovieWidgets?.appSettings.theme;
                         window.MovieWidgets?.update({ theme:oldTheme === "light" ? "dark" : "light" });
                     }}
                 >ChangeTheme!</button>

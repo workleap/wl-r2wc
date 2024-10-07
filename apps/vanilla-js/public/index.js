@@ -12,14 +12,11 @@ let theme = "light";
 
 function initDynamicParts() {
     document.getElementById("addDynamicWidget").addEventListener("click", function () {
-        // const newWidget = document.createElement("wl-movie-details");
-        // document.getElementById("dynamincWidgetArea").appendChild(newWidget);
-        const newWidget2 = document.createElement("wl-movie-pop-up");
-        document.getElementById("dynamincWidgetArea").appendChild(newWidget2);
+        const newWidget = document.createElement("wl-movie-pop-up");
+        document.getElementById("dynamincWidgetArea").appendChild(newWidget);
     });
 
     document.getElementById("removeDynamicWidget").addEventListener("click", function () {
-        //  document.getElementById("dynamincWidgetArea").querySelector("wl-movie-details:last-of-type").remove();
         document.getElementById("dynamincWidgetArea").querySelector("wl-movie-pop-up").remove();
     });
 }

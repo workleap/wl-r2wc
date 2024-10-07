@@ -1,4 +1,4 @@
-import { Fragment, type ComponentType, type PropsWithChildren } from "react";
+import { Fragment, type ComponentType } from "react";
 import { createRoot } from "react-dom/client";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
@@ -8,10 +8,6 @@ type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
 const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [];
 let initialized = false;
-
-
-let widgetsManager: WidgetsManager<unknown> | null = null;
-let contextProps: Observable<unknown> | null = null;
 
 const rootContainer = document.createElement("div");
 const root = createRoot(rootContainer);
@@ -42,8 +38,8 @@ function delayRenderRequested() {
     return delayRendererHandle !== null;
 }
 
-export function notify(element: WebComponentHTMLElementBase, event: "connected" | "disconnected") {
-    if (event === "connected") {
+export function notifyWidgetMount(element: WebComponentHTMLElementBase, event: "mounted" | "unmounted") {
+    if (event === "mounted") {
         activeWidgets.push({ key: uniqueWidgetKey++, element });
     } else {
         activeWidgets.splice(activeWidgets.findIndex(x => x.element === element), 1);
@@ -63,66 +59,65 @@ export function notify(element: WebComponentHTMLElementBase, event: "connected" 
     }
 }
 
-
-function renderContextWithProps<Props>(ContextProvider: ComponentType<PropsWithChildren<Props>>, children: React.ReactNode | undefined) {
-    if (contextProps == null) {throw new Error("ContextProps is not initialized");}
-
-    return <PropsProvider Component={ContextProvider} observable={contextProps}>
-        {children}
-    </PropsProvider>;
-}
-
-function renderWidgets<Props>(ContextProvider: ComponentType<PropsWithChildren<Props>> | undefined) {
-    const portals = activeWidgets.map(item =>
-        //this unique key is needed to avoid losing the state of the component when some adjacent elements are removed.
-        <Fragment key={item.key}>
-            {item.element.renderedPortal}
-        </Fragment>);
-
-    const content = ContextProvider == null ? <>{portals}</> : renderContextWithProps(ContextProvider, portals);
-
-    root.render(content);
-}
-
-
-export function buildWidgetsManager<AppSettings>({ elements, contextProvider }: {
-    elements: WebComponentHTMLElementType[];
-    contextProvider?: ComponentType<PropsWithChildren<AppSettings>>;
-}) : WidgetsManager<AppSettings> {
-    render = () => {
-        renderWidgets(contextProvider);
-    };
-    widgetsManager = {
-        initialize: (settings?: AppSettings) => {
-            if (!initialized) {
-                contextProps = new Observable<AppSettings>() as Observable<unknown>;
-                (contextProps as Observable<AppSettings>).value = settings ?? {} as AppSettings;
-                register(elements);
-                initialized = true;
-                render();
-            }
-        },
-        update: (settings: Partial<AppSettings>) => {
-            const context = (contextProps as Observable<AppSettings>);
-            context.value = {
-                ...(context.value || {} as AppSettings),
-                ...settings
-            };
-        },
-        getAppSettings: () => {
-            const context = (contextProps as Observable<AppSettings>);
-
-            return context.value;
-        }
-
-    } as WidgetsManager<unknown>;
-
-    return widgetsManager as WidgetsManager<AppSettings>;
-}
-
-
-export interface WidgetsManager<AppSettings> {
+interface IWidgetsManager<AppSettings> {
     initialize: (settings?: AppSettings) => void;
     update: (settings: Partial<AppSettings>) => void;
-    getAppSettings: ()=> AppSettings;
+    appSettings: AppSettings | undefined;
 }
+
+export class WidgetsManager<AppSettings> implements IWidgetsManager<AppSettings> {
+    #contextProps: Observable<AppSettings> | null = null;
+
+    constructor (
+        { elements, contextProvider }:
+        { elements: WebComponentHTMLElementType[];
+            contextProvider?: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>;
+        }) {
+        if (initialized) {throw new Error("You cannot create multiple instances of WidgetsManager");}
+        register(elements);
+        render = () => {
+            this.#renderWidgets(contextProvider);
+        };
+    }
+
+    #renderContextWithProps(ContextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
+        if (this.#contextProps == null) {throw new Error("ContextProps is not initialized");}
+
+        return <PropsProvider Component={ContextProvider} observable={this.#contextProps}>
+            {children}
+        </PropsProvider>;
+    }
+
+    #renderWidgets(contextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })> | undefined) {
+        const portals = activeWidgets.map(item =>
+            //this unique key is needed to avoid losing the state of the component when some adjacent elements are removed.
+            <Fragment key={item.key}>
+                {item.element.renderedPortal}
+            </Fragment>);
+
+        const content = contextProvider == null ? <>{portals}</> : this.#renderContextWithProps(contextProvider, portals);
+
+        root.render(content);
+    }
+
+    initialize (settings?: AppSettings | undefined) {
+        if (!initialized) {
+            this.#contextProps = new Observable(settings) ;
+            initialized = true;
+            render();
+        }
+    }
+
+    update(settings: Partial<AppSettings>) {
+        if (this.#contextProps == null) {throw new Error("you cannot call update when contextManager is not initilized yet");}
+        this.#contextProps.value = {
+            ...this.#contextProps.value ?? {} as AppSettings,
+            ...settings
+        };
+    }
+    get appSettings() {
+        return this.#contextProps?.value;
+    }
+}
+
+

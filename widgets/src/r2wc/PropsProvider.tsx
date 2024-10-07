@@ -1,8 +1,8 @@
-import type { ComponentType, PropsWithChildren } from "react";
+import type { ComponentType } from "react";
 import { type Observable, useObservable } from "./Observable.ts";
 
-export interface PropsProvider<Props, T extends Props | PropsWithChildren<Props>> {
-    Component: ComponentType<T>;
+export interface PropsProvider <Props> {
+    Component: ComponentType<Props | (Props & { children?: React.ReactNode })> ;
     observable: Observable<Props>;
     children?: React.ReactNode;
 }
@@ -10,16 +10,12 @@ export interface PropsProvider<Props, T extends Props | PropsWithChildren<Props>
 /**
  * The PropsProvider is used to keep the web component's property in sync with the react component's props.
  */
-export function PropsProvider<Props, T extends Props | PropsWithChildren<Props>>({
+export function PropsProvider<Props>({
     Component,
     observable,
     children
-}: PropsProvider<Props, T>) {
-    const props = useObservable(observable)!;
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    //TODO: Fix this and remove the ts-ignore
+}: PropsProvider<Props>) {
+    const props = useObservable(observable) ?? {} as Props;
 
     return <Component {...props}>{children}</Component>;
 }

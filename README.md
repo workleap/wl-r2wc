@@ -194,7 +194,7 @@ export class SearchResultElement extends WebComponentHTMLElement<SearchResultPro
 
 #### Create host APIs
 
-The host app needs an API to register and initialize the widgets. `buildWidgetsManager` function does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and call `buildWidgetsManager` to: 
+The host app needs an API to register and initialize the widgets. `WidgetsManager` class  does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and create the `WidgetsManager` class to: 
 
 - Register defined widget. Without having them registered, you cannot use them in the host app.
 - [optional] to pass `AppContextProvider`.
@@ -209,7 +209,7 @@ declare global {
     }
 }
 
-window.MovieWidgets = buildWidgetsManager<AppSettings>({
+window.MovieWidgets = new WidgetsManager<AppSettings>({
     elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
 });
@@ -217,15 +217,22 @@ window.MovieWidgets = buildWidgetsManager<AppSettings>({
 
 If you don't have contextProvider, simply call this:
 ```tsx
-window.MovieWidgets = buildWidgetsManager({
+// src/web-components/widgets.ts
+declare global {
+    interface Window {
+        MovieWidgets?: WidgetsManager<unkown>;
+    }
+}
+
+window.MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement]
 });
 ```
 
-`buildWidgetsManager` output API:
+`WidgetsManager` has the following API:
 - `initialize` : To initiate the widgets and pass the initial state of `AppSettings` 
 - `update`: To change the initial state of `AppSettings`.
-- `getAppSettings`: To get the current app settings.
+- `appSettings`: To get the current app settings.
 
 #### Build the output
 
