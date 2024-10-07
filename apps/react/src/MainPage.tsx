@@ -1,30 +1,31 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-interface MovieWidgetsConfig<ContextProps> {
-    initialize: (props?: ContextProps) => void;
-    update: (props: ContextProps) => void;
-    getConfig: ()=>ContextProps;
+interface MovieWidgetsManager<AppSettings> {
+    initialize: (settings?: AppSettings) => void;
+    update: (settings: Partial<AppSettings>) => void;
+    getAppSettings: ()=>AppSettings;
 }
 
-interface AppContextProviderProps {
+
+interface AppSettings {
     theme: "light" | "dark" | "system";
 }
 declare global {
     interface Window {
-        MovieWidgets?: MovieWidgetsConfig<AppContextProviderProps>;
+        MovieWidgets?: MovieWidgetsManager<AppSettings>;
     }
 }
 
 export function MainPage() {
     const webComponentRef = useRef<HTMLElement>(null);
+    const [dynamicWidgets, setDynamicwidgets] = useState<{ text:string; key: string }[]>([]);
 
 
     useEffect(() => {
         const webComponent = webComponentRef.current;
         const onCustomEvent = () => {
-            const newWidget = document.createElement("wl-movie-pop-up");
-            document.getElementById("dynamincWidgetArea")?.appendChild(newWidget);
+            setDynamicwidgets([...dynamicWidgets, { text: "Click me!", key: dynamicWidgets.length.toString() }]);
         };
 
         // Add event listener
@@ -59,7 +60,7 @@ export function MainPage() {
                         // const node = document.getElementById("context1")!;
                         // node.data = { theme : node?.data?.theme === "light" ? "dark" : "light" };
 
-                        const oldTheme = window.MovieWidgets?.getConfig().theme;
+                        const oldTheme = window.MovieWidgets?.getAppSettings().theme;
 
                         window.MovieWidgets?.update({ theme:oldTheme === "light" ? "dark" : "light" });
                     }}
@@ -70,8 +71,9 @@ export function MainPage() {
                 <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
             </div>
         </div>
-        <div style={{ flex: 1, margin: "50px", border: "5px solid gray", padding: "5px" }} id="dynamincWidgetArea">
+        <div style={{ flex: 1, margin: "50px", border: "5px solid gray", padding: "5px" }}>
             <h3 style={{ textAlign: "center" }}> Dyanimc Widget Area</h3>
+            {dynamicWidgets.map(item => (<wl-movie-pop-up key={item.key} text={item.text}></wl-movie-pop-up>))}
 
         </div>
     </>

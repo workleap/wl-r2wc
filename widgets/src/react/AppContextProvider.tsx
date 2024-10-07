@@ -1,36 +1,33 @@
 import { ThemeProvider } from "@workleap/orbiter-ui";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 
 interface AppContextProps {
     theme: "light" | "dark" | "system";
-    setTheme: (theme: "light" | "dark" | "system") => void;
     isMovieDetailsOpen: boolean;
     setIsMovieDetailsOpen: (value: boolean) => void;
 }
 
 const AppContext = createContext<AppContextProps>({
     theme: "light",
-    setTheme: () => {},
     isMovieDetailsOpen: false,
     setIsMovieDetailsOpen: () => {}
 });
 
-export interface AppContextProviderProps {
+export interface AppSettings {
     theme: "light" | "dark" | "system";
 }
 
-export function AppContextProvider({ children, ...props }: AppContextProviderProps & { children?: ReactNode }) {
+export function AppContextProvider({ children, ...props }: PropsWithChildren<AppSettings>) {
     const [theme, setTheme] = useState(props.theme);
     const [isMovieDetailsOpen, setIsMovieDetailsOpen] = useState<boolean>(false);
-    console.log("theme", props.theme);
 
-    // useEffect(() => {
-    //     setTheme(props.theme);
-    // }, [props.theme]);
+    useEffect(() => {
+        setTheme(props.theme);
+    }, [props.theme]);
 
     return (
         <AppContext.Provider
-            value={{ theme, setTheme, isMovieDetailsOpen, setIsMovieDetailsOpen }}
+            value={{ isMovieDetailsOpen, setIsMovieDetailsOpen, theme }}
         >
             <ThemeProvider colorScheme={theme}>
                 {children}

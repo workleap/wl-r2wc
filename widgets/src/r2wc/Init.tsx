@@ -10,10 +10,11 @@ const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [
 let initialized = false;
 
 
-let widgetsConfig: WidgetsConfig<unknown> | null = null;
+let widgetsManager: WidgetsManager<unknown> | null = null;
 let contextProps: Observable<unknown> | null = null;
 
-const container = createRoot(document.createElement("div"));
+const rootContainer = document.createElement("div");
+const root = createRoot(rootContainer);
 let delayRendererHandle:number | null = null;
 let render: (()=>void) = () => {throw new Error("Not initialized");};
 let uniqueWidgetKey:number = 1;
@@ -80,47 +81,48 @@ function renderWidgets<Props>(ContextProvider: ComponentType<PropsWithChildren<P
 
     const content = ContextProvider == null ? <>{portals}</> : renderContextWithProps(ContextProvider, portals);
 
-    container.render(content);
+    root.render(content);
 }
 
 
-export function buildWidgetsConfig<Props>({ elements, contextProvider }: {
+export function buildWidgetsManager<AppSettings>({ elements, contextProvider }: {
     elements: WebComponentHTMLElementType[];
-    contextProvider?: ComponentType<PropsWithChildren<Props>>;
-}) : WidgetsConfig<Props> {
+    contextProvider?: ComponentType<PropsWithChildren<AppSettings>>;
+}) : WidgetsManager<AppSettings> {
     render = () => {
         renderWidgets(contextProvider);
     };
-    widgetsConfig = {
-        initialize: (config?: Props) => {
+    widgetsManager = {
+        initialize: (settings?: AppSettings) => {
             if (!initialized) {
-                contextProps = new Observable<Props>() as Observable<unknown>;
-                (contextProps as Observable<Props>).value = config ?? {} as Props;
+                contextProps = new Observable<AppSettings>() as Observable<unknown>;
+                (contextProps as Observable<AppSettings>).value = settings ?? {} as AppSettings;
                 register(elements);
                 initialized = true;
                 render();
             }
         },
-        update: (config: Partial<Props>) => {
-            const context = (contextProps as Observable<Props>);
+        update: (settings: Partial<AppSettings>) => {
+            const context = (contextProps as Observable<AppSettings>);
             context.value = {
-                ...(context.value || {} as Props),
-                ...config
+                ...(context.value || {} as AppSettings),
+                ...settings
             };
         },
-        getConfig: () => {
-            const context = (contextProps as Observable<Props>);
+        getAppSettings: () => {
+            const context = (contextProps as Observable<AppSettings>);
 
             return context.value;
         }
 
-    } as WidgetsConfig<unknown>;
+    } as WidgetsManager<unknown>;
 
-    return widgetsConfig as WidgetsConfig<Props>;
+    return widgetsManager as WidgetsManager<AppSettings>;
 }
 
-export interface WidgetsConfig<ContextProps> {
-    initialize: (props?: ContextProps) => void;
-    update: (props: ContextProps) => void;
-    getConfig: ()=>ContextProps;
+
+export interface WidgetsManager<AppSettings> {
+    initialize: (settings?: AppSettings) => void;
+    update: (settings: Partial<AppSettings>) => void;
+    getAppSettings: ()=> AppSettings;
 }
