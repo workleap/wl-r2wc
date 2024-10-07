@@ -61,7 +61,7 @@ function renderWidgets(ContextProvider: ComponentType<PropsWithChildren> | undef
     console.log("rendered!->", activeWidgets.length, "initialized->", initialized);
 
     const portals = activeWidgets.map(item =>
-        //this unique key is needed to avoid losing the state of the component when some elements are removed.
+        //this unique key is needed to avoid losing the state of the component when some adjacent elements are removed.
         <Fragment key={item.key}>
             {item.element.renderedPortal}
         </Fragment>);
