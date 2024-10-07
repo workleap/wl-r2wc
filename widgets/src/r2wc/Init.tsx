@@ -1,15 +1,16 @@
-import type { ComponentType, PropsWithChildren } from "react";
+import { Fragment, type ComponentType, type PropsWithChildren } from "react";
 import { createRoot } from "react-dom/client";
 import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
 
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
 const registeredWidgets: WebComponentHTMLElementType[] = [];
-const activeWidgets = new Set<WebComponentHTMLElementBase>();
+const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [];
 let initialized = false;
 let widgetsConfig: WidgetsConfig | null = null;
 const container = createRoot(document.createElement("div"));
 let delayRendererHandle:number | null = null;
 let render: (()=>void) = () => {throw new Error("Not initialized");};
+let uniqueWidgetKey:number = 1;
 
 /**
  * Registers the web components to the custom elements.
@@ -36,9 +37,11 @@ function delayRenderRequested() {
 
 export function notify(element: WebComponentHTMLElementBase, event: "connected" | "disconnected") {
     if (event === "connected") {
-        activeWidgets.add(element);
+        activeWidgets.push({ key: uniqueWidgetKey++, element });
     } else {
-        activeWidgets.delete(element);
+        activeWidgets.splice(activeWidgets.findIndex(x => x.element === element), 1);
+        //const index = activeWidgets.indexOf(element);
+        //activeWidgets[index] = null;
     }
 
     // When it is not initialized, we don't need to render. The initial function will do it.
@@ -55,13 +58,13 @@ export function notify(element: WebComponentHTMLElementBase, event: "connected" 
 
 
 function renderWidgets(ContextProvider: ComponentType<PropsWithChildren> | undefined) {
-    const portals = [];
+    console.log("rendered!->", activeWidgets.length, "initialized->", initialized);
 
-    console.log("rendered!->", activeWidgets.size, "initialized->", initialized);
-
-    for (const element of activeWidgets) {
-        portals.push(element.renderedPortal);
-    }
+    const portals = activeWidgets.map(item =>
+        //this unique key is needed to avoid losing the state of the component when some elements are removed.
+        <Fragment key={item.key}>
+            {item.element.renderedPortal}
+        </Fragment>);
 
     const content = ContextProvider == null ? <>{portals}</> : <ContextProvider>{portals}</ContextProvider>;
 
