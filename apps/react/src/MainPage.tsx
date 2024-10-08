@@ -70,8 +70,8 @@ export function MainPage() {
         <div style={{ flex: 1, margin: "50px", border: "5px solid gray", padding: "5px" }}>
             <h3 style={{ textAlign: "center" }}> Dyanimc Widget Area</h3>
             {dynamicWidgets.map(item => (<wl-movie-pop-up key={item.key} text={item.text}></wl-movie-pop-up>))}
-
         </div>
+        <wl-movie-finder></wl-movie-finder>
     </>
     );
 }

@@ -15,6 +15,11 @@ export declare global {
             },
             HTMLElement
             >;
+
+            "wl-movie-finder": React.DetailedHTMLProps<
+            React.HTMLAttributes<HTMLElement>,
+            HTMLElement
+            >;
         }
     }
 }

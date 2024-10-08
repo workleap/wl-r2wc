@@ -4,22 +4,24 @@ import {
     Header,
     Heading,
     Item,
-    Listbox,
     Modal,
     ModalTrigger,
     Paragraph,
     Tabs,
+    TextInput,
     ThemeProvider
 } from "@workleap/orbiter-ui";
+import { useState } from "react";
 import { useAppContext } from "./AppContextProvider.tsx";
 
 export interface MovieDetailsProps {
     showRanking: boolean;
-    onAddItem?: () => void;
+    onBuy?: (count: number) => void;
 }
 
-export function MovieDetails({ showRanking, onAddItem }: MovieDetailsProps) {
-    const { isMovieDetailsOpen, setIsMovieDetailsOpen, theme } = useAppContext();
+export function MovieDetails({ showRanking, onBuy }: MovieDetailsProps) {
+    const { isMovieDetailsOpen, setIsMovieDetailsOpen, theme, selectedMovie } = useAppContext();
+    const [ ticketsCount, setTicketsCount ] = useState(1);
 
     const handleOpenChange = (event: unknown, newValue: boolean) => {
         setIsMovieDetailsOpen(newValue);
@@ -32,18 +34,10 @@ export function MovieDetails({ showRanking, onAddItem }: MovieDetailsProps) {
     return (
         <>
             <ThemeProvider colorScheme={theme}>
-                <Heading>List of Movies:</Heading>
-                <Listbox onSelectionChange={() => setIsMovieDetailsOpen(true)}>
-                    <Item key="apollo11">Apollo 11</Item>
-                    <Item key="interstellar">Interstellar</Item>
-                    <Item key="gravity">Gravity</Item>
-                    <Item key="theMartian">The Martian</Item>
-                    <Item key="moon">Moon</Item>
-                </Listbox>
                 <ModalTrigger open={isMovieDetailsOpen} onOpenChange={handleOpenChange}>
                     <div />
                     <Modal>
-                        <Heading>Apollo 11 movie</Heading>
+                        <Heading>{selectedMovie?.title}</Heading>
                         <Content>
                             <Paragraph>
                 Apollo 11 is a 2019 American documentary film edited, produced
@@ -88,10 +82,11 @@ export function MovieDetails({ showRanking, onAddItem }: MovieDetailsProps) {
                         <Button onClick={handleClose} variant="secondary">
               Close
                         </Button>
-
-                        <Button onClick={onAddItem} variant="primary">Add dynamic item</Button>
+                        <TextInput placeholder="1" value={ticketsCount.toString()} onValueChange={(event, value) => setTicketsCount(Number(value))} />
+                        <Button onClick={() => onBuy?.(ticketsCount)} variant="primary">Buy tickets</Button>
                     </Modal>
                 </ModalTrigger>
+
             </ThemeProvider>
         </>
     );

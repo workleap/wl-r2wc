@@ -25,6 +25,7 @@ export function StorePage() {
                 <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
             </div>
         </div>
+        <wl-movie-finder></wl-movie-finder>
     </>
     );
 }

@@ -14,23 +14,14 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
     }
 
     static get observedAttributes() {
-        return ["show-ranking", "on-add-item"];
+        return ["show-ranking", "on-buy"];
     }
 
-    // protected mapAttributesToProps(attributes: MovieDetailsElementAttributes): MovieDetailsProps {
-    //     const { "show-ranking": showRanking, ...rest } = attributes;
-
-    //     return {
-    //         ...rest,
-    //         showRanking: showRanking === "true"
-    //     };
-    // }
-
     set data(value: MovieDetailsProps) {
-        const mainOnAddItem = value.onAddItem;
-        value.onAddItem = () => {
-            mainOnAddItem?.();
-            this.dispatchEvent(new CustomEvent("on-add-item", { }));
+        const mainOnAddItem = value.onBuy;
+        value.onBuy = (count: number) => {
+            mainOnAddItem?.(count);
+            this.dispatchEvent(new CustomEvent("on-buy", { }));
         };
 
 
