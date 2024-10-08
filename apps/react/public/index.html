@@ -1,22 +1,25 @@
-<!doctype html>
+<!-- <!doctype html> -->
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <link href="favicon.png" rel="icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/cdn/movie-widgets/index.js"></script>
+    <script  src="/cdn/movie-widgets/index.js"></script>
     <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
+    <!-- <link rel="preload" href="/cdn/movie-widgets/index.js" as="script"  /> -->
     <title>React app</title>
 
-  </head>
-  <body>
-    <wl-movie-pop-up text="Click Me - Layout!!"></wl-movie-pop-up>
+</head>
+
+<body>
     <div id="root"></div>
     <script>
         window.addEventListener('load', () => {
-            window.MovieWidgets.initialize();
+            window.MovieWidgets.initialize({ theme: "light" });
         });
-   </script>
+    </script>
 
-  </body>
+</body>
+
 </html>

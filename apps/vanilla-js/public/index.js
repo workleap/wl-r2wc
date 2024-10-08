@@ -1,34 +1,41 @@
-let theme = "light";
 
 (function init() {
-    window.MovieWidgets.initialize();
+    window.MovieWidgets.initialize({ theme: "light" });
 
+    initDynamicParts();
+    handleMovieDetailsClick();
+
+    addEventListenerOnChangeThemeButton();
+})();
+
+function initDynamicParts() {
     document.getElementById("addDynamicWidget").addEventListener("click", function () {
-        // const newWidget = document.createElement("wl-movie-details");
-        // document.getElementById("dynamincWidgetArea").appendChild(newWidget);
-        const newWidget2 = document.createElement("wl-movie-pop-up");
-        document.getElementById("dynamincWidgetArea").appendChild(newWidget2);
+        addDynamicWidget();
     });
 
     document.getElementById("removeDynamicWidget").addEventListener("click", function () {
-        //  document.getElementById("dynamincWidgetArea").querySelector("wl-movie-details:last-of-type").remove();
         document.getElementById("dynamincWidgetArea").querySelector("wl-movie-pop-up").remove();
     });
+}
 
-    updateContextData("movie-context", theme);
-    addEventListenerOnChangeThemeButton();
-})();
+function addDynamicWidget() {
+    const newWidget = document.createElement("wl-movie-pop-up");
+    newWidget.setAttribute("text", "Click!");
+    document.getElementById("dynamincWidgetArea").appendChild(newWidget);
+}
 
 function addEventListenerOnChangeThemeButton() {
     const button = document.getElementById("changeTheme");
 
     button.addEventListener("click", function () {
-        theme = theme === "light" ? "dark" : "light";
-        updateContextData("movie-context", theme);
+        const oldTheme = window.MovieWidgets?.appSettings?.theme;
+        window.MovieWidgets?.update({ theme: oldTheme === "dark" ? "light" : "dark" });
     });
 }
 
-function updateContextData(id, currentTheme) {
-    const widget = document.getElementById(id);
-    widget.setAttribute("theme", currentTheme);
+
+function handleMovieDetailsClick() {
+    document.getElementById("movide-details").addEventListener("on-add-item", function () {
+        addDynamicWidget();
+    });
 }

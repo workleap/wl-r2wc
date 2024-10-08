@@ -1,15 +1,5 @@
 import { Link } from "react-router-dom";
 
-interface MovieWidgetsConfig {
-    initialize: () => void;
-}
-
-declare global {
-    interface Window {
-        MovieWidgets?: MovieWidgetsConfig;
-    }
-}
-
 export function StorePage() {
     return (<>
         <header style={{ backgroundColor:"yellowgreen", padding: "5px" }}>
@@ -39,30 +29,3 @@ export function StorePage() {
     );
 }
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-        interface IntrinsicElements {
-            "wl-movie-pop-up": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement> & {
-                text?: string;
-            },
-            HTMLElement
-            >;
-
-            "wl-movie-details": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement> & {
-                "show-ranking"?: string;
-            },
-            HTMLElement
-            >;
-
-            "wl-movie-context": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement> & {
-                theme?: string;
-            },
-            HTMLElement
-            >;
-        }
-    }
-}
