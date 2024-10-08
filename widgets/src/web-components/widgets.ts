@@ -1,4 +1,4 @@
-import { WidgetsManager } from "../r2wc/Init.tsx";
+import { WidgetsManager } from "../r2wc/WidgetsManager.tsx";
 import { AppContextProvider, type AppSettings } from "../react/AppContextProvider.tsx";
 import { MovieDetailsElement } from "./MovieDetailsElement.tsx";
 import { MoviePopUpElement } from "./MoviePopUpElement.tsx";
@@ -18,9 +18,7 @@ declare global {
 }
 
 
-window.MovieWidgets = new WidgetsManager<AppSettings>({
+window.MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
 });
-
-

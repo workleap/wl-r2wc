@@ -1,8 +1,8 @@
 import type { ReactPortal } from "react";
 import { createPortal } from "react-dom";
-import { notifyWidgetMount } from "./Init.tsx";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
+import { notifyWidgetMountState } from "./WidgetsManager.tsx";
 
 export class WebComponentHTMLElementBase extends HTMLElement {
     #portal: ReactPortal | null = null;
@@ -26,13 +26,13 @@ export class WebComponentHTMLElementBase extends HTMLElement {
     connectedCallback() {
         this.#portal = createPortal(this.renderReactComponent(), this);
 
-        notifyWidgetMount(this, "mounted");
+        notifyWidgetMountState(this, "mounted");
     }
 
     disconnectedCallback() {
         this.#portal = null;
 
-        notifyWidgetMount(this, "unmounted");
+        notifyWidgetMountState(this, "unmounted");
     }
 }
 

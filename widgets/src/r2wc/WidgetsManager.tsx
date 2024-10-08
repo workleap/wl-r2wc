@@ -12,7 +12,7 @@ let initialized = false;
 const rootContainer = document.createElement("div");
 const root = createRoot(rootContainer);
 let delayRendererHandle:number | null = null;
-let render: (()=>void) = () => {throw new Error("Not initialized");};
+let render: (()=>void) = () => {throw new Error("WidgetsManager is not initialized yet");};
 let uniqueWidgetKey:number = 1;
 
 /**
@@ -38,13 +38,11 @@ function delayRenderRequested() {
     return delayRendererHandle !== null;
 }
 
-export function notifyWidgetMount(element: WebComponentHTMLElementBase, event: "mounted" | "unmounted") {
+export function notifyWidgetMountState(element: WebComponentHTMLElementBase, event: "mounted" | "unmounted") {
     if (event === "mounted") {
         activeWidgets.push({ key: uniqueWidgetKey++, element });
     } else {
         activeWidgets.splice(activeWidgets.findIndex(x => x.element === element), 1);
-        //const index = activeWidgets.indexOf(element);
-        //activeWidgets[index] = null;
     }
 
     // When it is not initialized, we don't need to render. The initial function will do it.
@@ -59,21 +57,26 @@ export function notifyWidgetMount(element: WebComponentHTMLElementBase, event: "
     }
 }
 
-interface IWidgetsManager<AppSettings> {
-    initialize: (settings?: AppSettings) => void;
-    update: (settings: Partial<AppSettings>) => void;
-    appSettings: AppSettings | undefined;
+interface IWidgetsManager<T> {
+    initialize: (settings?: T) => void;
+    update: (settings: Partial<T>) => void;
+    appSettings: T | undefined;
 }
 
-export class WidgetsManager<AppSettings> implements IWidgetsManager<AppSettings> {
-    #contextProps: Observable<AppSettings> | null = null;
+interface ConstructionOptions<T> {
+    elements: WebComponentHTMLElementType[];
+    contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
+}
+
+export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<AppSettings> {
+    #contextProps: Observable<AppSettings> = new Observable();
+    static #instanciated = false;
 
     constructor (
-        { elements, contextProvider }:
-        { elements: WebComponentHTMLElementType[];
-            contextProvider?: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>;
-        }) {
-        if (initialized) {throw new Error("You cannot create multiple instances of WidgetsManager");}
+        { elements, contextProvider }: ConstructionOptions<AppSettings>) {
+        if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
+        WidgetsManager.#instanciated = true;
+
         register(elements);
         render = () => {
             this.#renderWidgets(contextProvider);
@@ -81,8 +84,6 @@ export class WidgetsManager<AppSettings> implements IWidgetsManager<AppSettings>
     }
 
     #renderContextWithProps(ContextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
-        if (this.#contextProps == null) {throw new Error("ContextProps is not initialized");}
-
         return <PropsProvider Component={ContextProvider} observable={this.#contextProps}>
             {children}
         </PropsProvider>;
@@ -100,23 +101,20 @@ export class WidgetsManager<AppSettings> implements IWidgetsManager<AppSettings>
         root.render(content);
     }
 
-    initialize (settings?: AppSettings | undefined) {
-        if (!initialized) {
-            this.#contextProps = new Observable(settings) ;
-            initialized = true;
-            render();
-        }
+    initialize(settings?: AppSettings) {
+        this.#contextProps.value = settings ?? {} as AppSettings;
+        initialized = true;
+        render();
     }
 
     update(settings: Partial<AppSettings>) {
-        if (this.#contextProps == null) {throw new Error("you cannot call update when contextManager is not initilized yet");}
         this.#contextProps.value = {
             ...this.#contextProps.value ?? {} as AppSettings,
             ...settings
         };
     }
     get appSettings() {
-        return this.#contextProps?.value;
+        return this.#contextProps.value;
     }
 }
 

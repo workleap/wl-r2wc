@@ -194,12 +194,12 @@ export class SearchResultElement extends WebComponentHTMLElement<SearchResultPro
 
 #### Create host APIs
 
-The host app needs an API to register and initialize the widgets. `WidgetsManager` class  does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and create the `WidgetsManager` class to: 
+The host app needs an API to register and initialize the widgets. `WidgetsManager` class does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and create the `WidgetsManager` class to: 
 
 - Register defined widget. Without having them registered, you cannot use them in the host app.
-- [optional] to pass `AppContextProvider`.
+- [optional] Pass `AppContextProvider`.
 
-We encapsulate the result inside the `window.SearchWidgets` object.
+Then set the result to `window.SearchWidgets` global variable.
 
 ```tsx
 // src/web-components/widgets.ts
@@ -209,18 +209,18 @@ declare global {
     }
 }
 
-window.MovieWidgets = new WidgetsManager<AppSettings>({
+window.MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
 });
 ```
 
-If you don't have contextProvider, simply call this:
+If you don't have contextProvider, simply ignore it:
 ```tsx
 // src/web-components/widgets.ts
 declare global {
     interface Window {
-        MovieWidgets?: WidgetsManager<unkown>;
+        MovieWidgets?: WidgetsManager;
     }
 }
 
@@ -229,9 +229,9 @@ window.MovieWidgets = new WidgetsManager({
 });
 ```
 
-`WidgetsManager` has the following API:
-- `initialize` : To initiate the widgets and pass the initial state of `AppSettings` 
-- `update`: To change the initial state of `AppSettings`.
+`WidgetsManager` class has the following API:
+- `initialize` : To initiate the widgets and pass the initial state of `AppSettings`.
+- `update`: To change the state of `AppSettings`.
 - `appSettings`: To get the current app settings.
 
 #### Build the output
@@ -297,7 +297,6 @@ The framework-agnostic widget can be consumed directly in any HTML page by refer
 
 ```html
 <script
-  type="module"
   src="https://cdn.workleap.com/search-widgets/index.js"
 ></script>
 <link
@@ -313,10 +312,10 @@ Once this is added to the HTML page, the script can now inject the new web-compo
 An example usage of the widget in an React page:
 
 ```jsx
-<wl-movie-context theme={theme}></wl-movie-context>
+<wl-movie-pop-up text="click me"></wl-movie-pop-up>
 ```
 
-An example of usage of the widget API :
+An example of usage of the widget API:
 
 ```jsx
 useEffect(() => {
@@ -349,13 +348,6 @@ declare global {
       "wl-movie-details": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & {
           "show-ranking"?: string;
-        },
-        HTMLElement
-      >;
-
-      "wl-movie-context": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          theme?: string;
         },
         HTMLElement
       >;

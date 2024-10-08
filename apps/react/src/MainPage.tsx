@@ -57,8 +57,8 @@ export function MainPage() {
                 <h3 style={{ textAlign: "center" }}>Host app area</h3>
                 <button type="button"
                     onClick={() => {
-                        const oldTheme = window.MovieWidgets?.appSettings.theme;
-                        window.MovieWidgets?.update({ theme:oldTheme === "light" ? "dark" : "light" });
+                        const oldTheme = window.MovieWidgets?.appSettings?.theme;
+                        window.MovieWidgets?.update({ theme: oldTheme === "dark" ? "light" : "dark" });
                     }}
                 >ChangeTheme!</button>
             </div>
@@ -76,31 +76,4 @@ export function MainPage() {
     );
 }
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-        interface IntrinsicElements {
-            "wl-movie-pop-up": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement> & {
-                text?: string;
-            },
-            HTMLElement
-            >;
 
-            "wl-movie-details": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement> & {
-                "show-ranking"?: string;
-                "on-add-item"?: EventListener;
-            },
-            HTMLElement
-            >;
-
-            "wl-movie-context": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement> & {
-                theme?: string;
-            },
-            HTMLElement
-            >;
-        }
-    }
-}
