@@ -49,7 +49,7 @@ This repo is a template repo which also has some examples to see how this strate
   - run `pnpm dev` for React app.
 
 > [!IMPORTANT]
-> whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running apps.
+> Whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running apps.
 
 You can follow the next steps to see how you can change and see the result.
 
@@ -64,20 +64,20 @@ You are free to create any kind of React component, just there are some rules fo
 - They should **NOT** have `children`. e.g.:
 
   ```tsx
-  function NotAllowedComponenet({ children }: { children: ReactNode }) {
+  function NotAllowedComponent({ children }: { children: ReactNode }) {
     return <div>{children}</div>;
   }
   ```
 
 - `JSX` props are not allowed as they cannot be translated easily to the similar HTML properties. e.g.:
   ```tsx
-  function NotAllowedComponenet({ header }: { header: ReactNode }) {
+  function NotAllowedComponent({ header }: { header: ReactNode }) {
     return <div>{header}</div>;
   }
   ```
 
 > [!NOTE]
-> that above constraints are ONLY for components that are getting exposed as web components. Any inner components can be implemented as usual.
+> The above constraints are ONLY for components that are getting exposed as web components. Any inner components can be implemented as usual.
 
 Here is a valid component which we can later make a web component based on it:
 
@@ -215,7 +215,7 @@ window.MovieWidgets = new WidgetsManager({
 });
 ```
 
-If you don't have contextProvider, simply ignore it:
+If you don't have `contextProvider`, simply ignore it:
 ```tsx
 // src/web-components/widgets.ts
 declare global {
