@@ -1,31 +1,33 @@
 import { ThemeProvider } from "@workleap/orbiter-ui";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 
 interface AppContextProps {
     theme: "light" | "dark" | "system";
-    setTheme: (theme: "light" | "dark" | "system") => void;
     isMovieDetailsOpen: boolean;
     setIsMovieDetailsOpen: (value: boolean) => void;
 }
 
 const AppContext = createContext<AppContextProps>({
     theme: "light",
-    setTheme: () => {},
     isMovieDetailsOpen: false,
     setIsMovieDetailsOpen: () => {}
 });
 
-interface AppContextProviderProps {
-    children?: ReactNode;
+export interface AppSettings {
+    theme: "light" | "dark" | "system";
 }
 
-export function AppContextProvider({ children }: AppContextProviderProps) {
-    const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
+export function AppContextProvider({ children, ...props }: PropsWithChildren<AppSettings>) {
+    const [theme, setTheme] = useState(props.theme);
     const [isMovieDetailsOpen, setIsMovieDetailsOpen] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTheme(props.theme);
+    }, [props.theme]);
 
     return (
         <AppContext.Provider
-            value={{ theme, setTheme, isMovieDetailsOpen, setIsMovieDetailsOpen }}
+            value={{ isMovieDetailsOpen, setIsMovieDetailsOpen, theme }}
         >
             <ThemeProvider colorScheme={theme}>
                 {children}

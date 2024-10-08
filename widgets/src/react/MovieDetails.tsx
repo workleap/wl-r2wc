@@ -15,9 +15,10 @@ import { useAppContext } from "./AppContextProvider.tsx";
 
 export interface MovieDetailsProps {
     showRanking: boolean;
+    onAddItem?: () => void;
 }
 
-export function MovieDetails({ showRanking }: MovieDetailsProps) {
+export function MovieDetails({ showRanking, onAddItem }: MovieDetailsProps) {
     const { isMovieDetailsOpen, setIsMovieDetailsOpen, theme } = useAppContext();
 
     const handleOpenChange = (event: unknown, newValue: boolean) => {
@@ -87,6 +88,8 @@ export function MovieDetails({ showRanking }: MovieDetailsProps) {
                         <Button onClick={handleClose} variant="secondary">
               Close
                         </Button>
+
+                        <Button onClick={onAddItem} variant="primary">Add dynamic item</Button>
                     </Modal>
                 </ModalTrigger>
             </ThemeProvider>

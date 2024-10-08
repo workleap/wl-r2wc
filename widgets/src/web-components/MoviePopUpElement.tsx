@@ -2,18 +2,7 @@ import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
 import { MoviePopup, type MoviePopupProps } from "../react/MoviePopup.tsx";
 
 
-interface MovieDetailsElementAttributes {
-    text?: string;
-}
-
-export class MoviePopUpElement extends WebComponentHTMLElement<MoviePopupProps, MovieDetailsElementAttributes> {
-    constructor() {
-        super();
-        this.customAttributes = {
-            text: "Click"
-        };
-    }
-
+export class MoviePopUpElement extends WebComponentHTMLElement<MoviePopupProps> {
     get reactComponent() {
         return MoviePopup;
     }
@@ -29,8 +18,8 @@ export class MoviePopUpElement extends WebComponentHTMLElement<MoviePopupProps, 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         if (oldValue !== newValue) {
             if (name === "text") {
-                this.customAttributes = {
-                    ...this.customAttributes,
+                this.data = {
+                    ...this.data,
                     text: newValue
                 };
             }

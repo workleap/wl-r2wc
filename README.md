@@ -99,78 +99,69 @@ export function SearchResult({ pageSize, onClickItem }: SearchResultProps) {
 
 #### [Optional] Sharing context
 
-Widgets inside the same project could share context as a regular React app. This context will be used at the rendering step. All widgets are getting rendered inside this context provider (check the [widgets.ts](widgets/src/web-components/widgets.ts) file).
+Widgets inside the same project could share context as a regular React app. This context will be used at the rendering step. All widgets are getting rendered inside this context provider (check the [widgets.ts](widgets/src/web-components/widgets.ts) file). For example:
 
-> [!NOTE]
-> This part is optional. You usually don't need it if you only expose one widget, or context is not shared between client routing.
-
-> [!CAUTION] 
-This context will be used at app level. If you are using client routers like [React Router](https://reactrouter.com/), this context stay live between page navigations. It is a great tool if you want to keep an state between pages (e.g. keeping the chatbox open). It is bad because you cannot keep its lifetime to page scope. 
-
-If you have multiple contexts, make sure you add them all here. For example:
 
 ```tsx
 // src/react/AppContextProvider.tsx
-export function AppContextProvider({ children }: AppContextProviderProps) {
-  const [theme, setTheme] = useState("light");
-  const [isResultOpen, setIsResultOpen] = useState(false);
+export function AppContextProvider({ children }: {
+    children?: React.ReactNode | undefined;
+}) {
+  const [isResultOpen, setIsResultOpen] = useState(false);  
 
   return (
-    <AppContext.Provider
-      value={{ theme, setTheme, isResultOpen, setIsResultOpen }}
-    >
-      <I18nProvider>
-        <ThemeProvider colorScheme={theme}>{children}</ThemeProvider>
-      </I18nProvider>
+    <AppContext.Provider value={{ isResultOpen, setIsResultOpen }}>
+        {children}
     </AppContext.Provider>
   );
 }
-
-export function useAppContext() {
-  return useContext(AppContext);
-}
 ```
+
+> [!CAUTION] 
+> This context will be used at app level. If you are using client routers like [React Router](https://reactrouter.com/), this context stay live between client page navigations. By client page navigation, we mean the full refresh doesn't happen. 
+>
+> It is a great tool if you want to keep an state between page navigations (e.g. keeping the chatbox open). 
 
 > [!WARNING]
- Children will be the widgets and are being rendered in different DOM nodes through React [createPortal](https://react.dev/reference/react-dom/createPortal). If this affects how `ThemeProvider` works, you need to adjust it.
+ The above element is NOT being associated with any DOM element, and the `{children}` (i.e widgets) are being rendered in different DOM nodes (Thanks to React [createPortal](https://react.dev/reference/react-dom/createPortal)). So, if any of above providers generate DOM element, they are not being present in DOM hierarchy.   
 
-#### Sharing config with a context
+#### [Optional] App settings
 
-There are scenarios where you want to pass down some configs that are being used by all widgets. For example:
+There are scenarios where you want to pass down some app settings that are being used by all widgets. For example:
 
-- Passing app current Theme or language
+- Passing app current theme or language
 - Passing api URL, app name, app logo, etc.
 
-If you have only one widget, it is ok to pass them through it as widget props, but if you have multiple widgets, it is not perfect to do the same for all widgets.
-
-The trick is to just create an empty Widget that gets all these configs and store them inside the previously mentioned `AppContextProvider`.
+If you have only one widget, it is ok to pass them through it as widget props, but if you have multiple widgets, it is not perfect to do the same for all widgets. To do that, add these settings to `AppSettings` and modify previously created `AppContextProvider` to handle them.
 
 ```tsx
-// src/react/AppContext.tsx
-export function AppContext({
-  theme,
-  appName,
-  appLogo,
-  apiUrl,
-}: AppContextWidgetProps) {
-  const { setTheme, setAppName, setAppLogo, setApiUrl } = useAppContext();
+// src/react/AppContextProvider.tsx
+export interface AppSettings {
+    theme: "light" | "dark" | "system";
+    language: string;
+}
 
-  useEffect(() => {
-    setTheme(theme);
-    setAppName(appName);
-    //...
-  });
+export function AppContextProvider({ children, ...props }: PropsWithChildren<AppSettings>) {
+    const [theme, setTheme] = useState(props.theme);
 
-  return <></>;
+    useEffect(() => {
+        setTheme(props.theme);
+    }, [props.theme]);
+
+    return (
+        <I18nProvider lang={props.language}>
+            <ThemeProvider theme={theme}>
+                {children}
+            </ThemeProvider>
+        </I18nProvider>
+    );
 }
 ```
+Pay attention to the `useEffect` in above code. We need if we wrap a setting with `useSate` becuase passed value is only for initiation the state and it is not getting updated on later calls. As the host apps can change app settings through `update` method, we need to use `useEffect` to make sure the state gets the changes. 
 
-so consumer apps can use it in this way:
+> [!NOTE]
+You need to merge two above examples if you support both "Sharing context" and passing down"App Setting" use cases.
 
-```html
-<wl-app-context theme="dark" language="en" app-name="Office Vibe" />
-```
-You can see it in both [vanilla-js](/apps/vanilla-js/public/index.html) and [react](/apps/react/src/App.tsx) examples too.
 
 ### Create Web Components
 
@@ -201,37 +192,47 @@ export class SearchResultElement extends WebComponentHTMLElement<SearchResultPro
 }
 ```
 
-#### Create initialize function
+#### Create host APIs
 
-After defining all custom elements, we need to register them and define an `initialize` function. This function will be called by host apps to define and render custom elements. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file.
+The host app needs an API to register and initialize the widgets. `WidgetsManager` class does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and create the `WidgetsManager` class to: 
 
-Inside the file we build the `initialize` method by calling `buildInitializeMethod` and pass: 
+- Register defined widget. Without having them registered, you cannot use them in the host app.
+- [optional] Pass `AppContextProvider`.
 
-- Custom elements to register. Without having them registered, you cannot use them inside the host app.
-- [optional] `AppContextProvider` to have all widgets access to the same context if it is provided.
-
-We encapsulate the `initialize` inside the `window.SearchWidgets` object.
+Then set the result to `window.SearchWidgets` global variable.
 
 ```tsx
 // src/web-components/widgets.ts
-export interface MovieWidgetsConfig {
-    initialize: () => void;
-}
-
 declare global {
     interface Window {
-        MovieWidgets?: MovieWidgetsConfig;
+        MovieWidgets?: WidgetsManager<AppSettings>;
     }
 }
 
-
-window.MovieWidgets = {
-    initialize: buildInitializeMethod({
-        elements: [MovieDetailsElement, MoviePopUpElement, AppContextElement],
-        contextProvider: AppContextProvider
-    })
-};
+window.MovieWidgets = new WidgetsManager({
+    elements: [MovieDetailsElement, MoviePopUpElement],
+    contextProvider: AppContextProvider
+});
 ```
+
+If you don't have contextProvider, simply ignore it:
+```tsx
+// src/web-components/widgets.ts
+declare global {
+    interface Window {
+        MovieWidgets?: WidgetsManager;
+    }
+}
+
+window.MovieWidgets = new WidgetsManager({
+    elements: [MovieDetailsElement, MoviePopUpElement]
+});
+```
+
+`WidgetsManager` class has the following API:
+- `initialize` : To initiate the widgets and pass the initial state of `AppSettings`.
+- `update`: To change the state of `AppSettings`.
+- `appSettings`: To get the current app settings.
 
 #### Build the output
 
@@ -296,7 +297,6 @@ The framework-agnostic widget can be consumed directly in any HTML page by refer
 
 ```html
 <script
-  type="module"
   src="https://cdn.workleap.com/search-widgets/index.js"
 ></script>
 <link
@@ -312,10 +312,10 @@ Once this is added to the HTML page, the script can now inject the new web-compo
 An example usage of the widget in an React page:
 
 ```jsx
-<wl-movie-context theme={theme}></wl-movie-context>
+<wl-movie-pop-up text="click me"></wl-movie-pop-up>
 ```
 
-An example of usage of the widget API :
+An example of usage of the widget API:
 
 ```jsx
 useEffect(() => {
@@ -351,13 +351,6 @@ declare global {
         },
         HTMLElement
       >;
-
-      "wl-movie-context": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          theme?: string;
-        },
-        HTMLElement
-      >;
     }
   }
 }
@@ -366,13 +359,15 @@ declare global {
 For the API available through the window.MovieWidgets object, you can create a type definition like this:
 
 ```typescript
-interface MovieWidgetsConfig {
-  initialize: () => void;
+interface MovieWidgetsManager<AppSettings> {
+    initialize: (settings?: AppSettings) => void;
+    update: (settings: Partial<AppSettings>) => void;
+    getAppSettings: ()=> AppSettings;
 }
 
 declare global {
   interface Window {
-    MovieWidgets?: MovieWidgetsConfig;
+    MovieWidgets?: MovieWidgetsManager;
   }
 }
 ```
