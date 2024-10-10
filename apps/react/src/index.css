@@ -1,0 +1,11 @@
+/* index.css */
+
+@import "@workleap/orbiter-ui/index.css";
+
+body {
+    background-color: white; /* Default background color */
+}
+
+[data-theme="dark"] body {
+    background-color: #121212; /* Dark theme background color */
+}
