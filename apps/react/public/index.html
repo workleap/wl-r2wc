@@ -7,16 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script  src="/cdn/movie-widgets/index.js"></script>
     <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
-    <!-- <link rel="preload" href="/cdn/movie-widgets/index.js" as="script"  /> -->
     <title>React app</title>
-
 </head>
 
 <body>
     <div id="root"></div>
     <script>
         window.addEventListener('load', () => {
-            window.MovieWidgets.initialize({ theme: "light" });
+            window.MovieWidgets.initialize({
+                theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
+            });
         });
     </script>
 

@@ -36,7 +36,7 @@ export class WebComponentHTMLElementBase extends HTMLElement {
     }
 }
 
-export class WebComponentHTMLElement<Props> extends WebComponentHTMLElementBase {
+export class WebComponentHTMLElement<Props = unknown> extends WebComponentHTMLElementBase {
     #props = new Observable<Props>();
 
 

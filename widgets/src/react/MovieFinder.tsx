@@ -3,8 +3,10 @@ import {
     IconButton,
     Item,
     Menu,
-    MenuTrigger
+    MenuTrigger,
+    TextInput
 } from "@workleap/orbiter-ui";
+import { useState } from "react";
 import { type MovieData, useAppContext } from "./AppContextProvider.tsx";
 
 
@@ -28,6 +30,7 @@ const movies : MovieData[] = [
 
 export function MovieFinder() {
     const { isMovieFinderOpen, setIsMovieFinderOpen, setSelectedMovie, setIsMovieDetailsOpen } = useAppContext();
+    const [search, setSearch] = useState("");
 
 
     const handleSelectionChange = (event: React.SyntheticEvent, keys: string[]) => {
@@ -35,7 +38,11 @@ export function MovieFinder() {
             setIsMovieDetailsOpen(false);
             setSelectedMovie(null);
         } else {
-            setSelectedMovie(movies.find(movie => movie.key === keys[0]) ?? null);
+            const key = keys[0].replace(/^0:/, "");
+            if (key === "searchfiled") {
+                return;
+            }
+            setSelectedMovie(movies.find(movie => movie.key === key) ?? null);
             setIsMovieDetailsOpen(true);
         }
         setIsMovieFinderOpen(false);
@@ -43,13 +50,14 @@ export function MovieFinder() {
 
     return (
         <MenuTrigger open={isMovieFinderOpen} >
-            <IconButton aria-label="View movies" style={{ position:"fixed", bottom:"20px", right:"20px" }} onClick={() => {setIsMovieFinderOpen(true);}}>
+            <IconButton aria-label="Find movies" style={{ position:"fixed", bottom:"20px", right:"20px" }} onClick={() => {setIsMovieFinderOpen(!isMovieFinderOpen);}}>
                 <Avatar size="2xl" name="⚡" />
             </IconButton>
             <Menu onSelectionChange={handleSelectionChange }>
-                {movies.map(movie => (
+                {(search.trim().length === 0 ? movies : movies.filter(o => o.title.indexOf(search) >= 0)).map(movie => (
                     <Item key={movie.key}>{movie.title}</Item>
                 ))}
+                <Item key="searchfiled"><TextInput placeholder="search for movie..." fluid value={search} onValueChange={(event, value) => setSearch(value)}/></Item>
             </Menu>
         </MenuTrigger>
     );

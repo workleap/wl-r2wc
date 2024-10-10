@@ -13,29 +13,29 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
         return "wl-movie-details";
     }
 
-    static get observedAttributes() {
-        return ["show-ranking", "on-buy"];
-    }
+    // static get observedAttributes() {
+    //     return ["show-ranking", "on-buy"];
+    // }
 
-    set data(value: MovieDetailsProps) {
-        const mainOnAddItem = value.onBuy;
-        value.onBuy = (count: number) => {
-            mainOnAddItem?.(count);
-            this.dispatchEvent(new CustomEvent("on-buy", { }));
-        };
+    // set data(value: MovieDetailsProps) {
+    //     const mainOnAddItem = value.onBuy;
+    //     value.onBuy = (count: number) => {
+    //         mainOnAddItem?.(count);
+    //         this.dispatchEvent(new CustomEvent("on-buy", { }));
+    //     };
 
 
-        super.data = value;
-    }
+    //     super.data = value;
+    // }
 
-    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-        if (oldValue !== newValue) {
-            if (name === "show-ranking") {
-                this.data = {
-                    ...this.data,
-                    showRanking: newValue === "true"
-                };
-            }
-        }
-    }
+    // attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    //     if (oldValue !== newValue) {
+    //         if (name === "show-ranking") {
+    //             this.data = {
+    //                 ...this.data,
+    //                 showRanking: newValue === "true"
+    //             };
+    //         }
+    //     }
+    // }
 }

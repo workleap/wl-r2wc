@@ -6,16 +6,16 @@ export interface MoviePopupProps {
 }
 
 export function MoviePopup({ text }: MoviePopupProps) {
-    const { setIsMovieFinderOpen } = useAppContext();
+    const { setIsMovieFinderOpen, isMovieFinderOpen } = useAppContext();
     const { theme } = useAppContext();
 
     const handleClick = () => {
-        setIsMovieFinderOpen(true);
+        setIsMovieFinderOpen(!isMovieFinderOpen);
     };
 
     return (
         <ThemeProvider colorScheme={theme}>
-            <Button onClick={handleClick}>{text}</Button>
+            <Button onClick={handleClick} variant="secondary">{text}</Button>
         </ThemeProvider>
     );
 }
