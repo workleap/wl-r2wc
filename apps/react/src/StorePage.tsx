@@ -12,8 +12,9 @@ export function StorePage() {
             }}
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <MovieDetails showRanking={false} mode="inline" ></MovieDetails>
-                <SelectedMovie></SelectedMovie>
+                <SelectedMovie style={{ fontWeight:"bold" }}></SelectedMovie>
+                <MovieDetails data={{ showRanking:false, mode: "inline" }} ></MovieDetails>
+
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}>Host app area</h3>

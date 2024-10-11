@@ -3,7 +3,7 @@
 @import "@workleap/orbiter-ui/index.css";
 
 body {
-    background-color: white; /* Default background color */
+    background-color: whitesmoke; /* Default background color */
 }
 
 [data-theme="dark"] body {

@@ -47,7 +47,7 @@ export function MainPage() {
             }}
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <MovieDetails mode="modal" showRanking onBuy={buyTickets}></MovieDetails>
+                <MovieDetails data={{ mode:"modal", showRanking: true, onBuy: buyTickets }}></MovieDetails>
                 <SelectedMovie></SelectedMovie>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
@@ -63,12 +63,13 @@ export function MainPage() {
             <h3 style={{ textAlign: "center" }}> Dyanimc Widget Area</h3>
             <Flex style={{ flexWrap: "wrap", gap: "10px" }}>
                 {boughtTickets.map(item => (<Ticket key={item.key}
-                    title={item.title}
-                    count={item.count}
-                    onRemove={() => {
-                        setBoughtTickets(boughtTickets.filter(t => t.key !== item.key));
-                    }}
-
+                    data={{
+                        key:item.key,
+                        title:item.title,
+                        count:item.count,
+                        onRemove:() => {
+                            setBoughtTickets(boughtTickets.filter(t => t.key !== item.key));
+                        } }}
                 ></Ticket>))}
             </Flex>
         </div>

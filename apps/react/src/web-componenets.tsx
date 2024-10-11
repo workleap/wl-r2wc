@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 // we should get all ths types from the widgets project
 export interface MovieDetailsProps {
@@ -31,70 +31,28 @@ export class WebComponentHTMLElementBase<Props> extends HTMLElement {
         return this.#props.value;
     }
 
-    set data(value: Props) {
+    set data(value: Props | undefined) {
         this.#props.value = value;
     }
 }
 
-export function MovieDetails(props: MovieDetailsProps) {
-    const { ...rest } = props;
-    const ref = useRef<WebComponentHTMLElementBase<MovieDetailsProps>>(null);
+function createWebComponent<Props = unknown>(tagName: keyof JSX.IntrinsicElements) {
+    return function WebComponent(props: { data?: Props } & React.HTMLAttributes<HTMLElement>) {
+        const { data, ...rest } = props;
+        const ref = useRef<WebComponentHTMLElementBase<Props>>(null);
 
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.data = rest;
-        }
-    }, [rest]);
+        useEffect(() => {
+            if (ref.current) {
+                ref.current.data = data;
+            }
+        }, [data]);
 
-    return <wl-movie-details ref={ref} />;
+        return React.createElement(tagName, { ref, ...rest });
+    };
 }
 
-export function Ticket(props: TicketProps) {
-    const { ...rest } = props;
-    const ref = useRef<WebComponentHTMLElementBase<TicketProps>>(null);
-
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.data = rest;
-        }
-    }, [rest]);
-
-    return <wl-ticket ref={ref} />;
-}
-
-export function SelectedMovie() {
-    const ref = useRef<WebComponentHTMLElementBase<unknown>>(null);
-
-    // useEffect(() => {
-    //     if (ref.current) {
-    //         ref.current.data = rest;
-    //     }
-    // }, [rest]);
-
-    return <wl-selected-movie ref={ref} />;
-}
-
-export function MovieFinder() {
-    const ref = useRef<WebComponentHTMLElementBase<unknown>>(null);
-
-    // useEffect(() => {
-    //     if (ref.current) {
-    //         ref.current.data = rest;
-    //     }
-    // }, [rest]);
-
-    return <wl-movie-finder ref={ref} />;
-}
-
-export function MoviePopup(props: { data: MoviePopupProps } & React.HTMLAttributes<HTMLElement>) {
-    const { data, ...rest } = props;
-    const ref = useRef<WebComponentHTMLElementBase<MoviePopupProps>>(null);
-
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.data = data;
-        }
-    }, [data]);
-
-    return <wl-movie-pop-up ref={ref} {...rest} />;
-}
+export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
+export const Ticket = createWebComponent<TicketProps>("wl-ticket");
+export const SelectedMovie = createWebComponent("wl-selected-movie");
+export const MovieFinder = createWebComponent("wl-movie-finder");
+export const MoviePopup = createWebComponent<MoviePopupProps>("wl-movie-pop-up");

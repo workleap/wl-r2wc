@@ -12,7 +12,7 @@ import {
     TextInput,
     ThemeProvider
 } from "@workleap/orbiter-ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type MovieData, useAppContext } from "./AppContextProvider.tsx";
 
 export interface MovieDetailsProps {
@@ -90,6 +90,14 @@ https://www.metacritic.com/movie/apollo-11/critic-reviews/
             </Footer>
         </Modal>
     </ModalTrigger> : null;
+
+
+    useEffect(() => {
+        // To not show the modal suddenly when page chages, we set it to close in inline mode.
+        if (mode === "inline" && isMovieDetailsOpen) {
+            setIsMovieDetailsOpen(false);
+        }
+    }, [mode, isMovieDetailsOpen]);
 
 
     return (

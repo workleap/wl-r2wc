@@ -15,7 +15,7 @@ export function MoviePopup({ text }: MoviePopupProps) {
 
     return (
         <ThemeProvider colorScheme={theme}>
-            <Button onClick={handleClick} variant="secondary">{text}</Button>
+            <Button onClick={handleClick} >{text}</Button>
         </ThemeProvider>
     );
 }
