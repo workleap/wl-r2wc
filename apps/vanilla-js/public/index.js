@@ -2,26 +2,23 @@
 (function init() {
     window.MovieWidgets.initialize({ theme: "light" });
 
-    initDynamicParts();
     handleMovieDetailsClick();
 
     addEventListenerOnChangeThemeButton();
 })();
 
-function initDynamicParts() {
-    document.getElementById("addDynamicWidget").addEventListener("click", function () {
-        addDynamicWidget();
+
+function buyMovie(movie, count) {
+    const newTicket = document.createElement("wl-ticket");
+
+    newTicket.setAttribute("key", movie.key);
+    newTicket.setAttribute("title", movie.title);
+    newTicket.setAttribute("count", count);
+    newTicket.addEventListener("onRemove", function () {
+        newTicket.parentNode.removeChild(newTicket);
     });
 
-    document.getElementById("removeDynamicWidget").addEventListener("click", function () {
-        document.getElementById("dynamincWidgetArea").querySelector("wl-movie-pop-up").remove();
-    });
-}
-
-function addDynamicWidget() {
-    const newWidget = document.createElement("wl-movie-pop-up");
-    newWidget.setAttribute("text", "Click!");
-    document.getElementById("dynamincWidgetArea").appendChild(newWidget);
+    document.getElementById("dynamincWidgetArea").appendChild(newTicket);
 }
 
 function addEventListenerOnChangeThemeButton() {
@@ -29,13 +26,17 @@ function addEventListenerOnChangeThemeButton() {
 
     button.addEventListener("click", function () {
         const oldTheme = window.MovieWidgets?.appSettings?.theme;
-        window.MovieWidgets?.update({ theme: oldTheme === "dark" ? "light" : "dark" });
+        const newTheme = oldTheme === "dark" ? "light" : "dark" ;
+
+        document.documentElement.setAttribute("data-theme", newTheme);
+
+        window.MovieWidgets?.update({ theme: newTheme });
     });
 }
 
 
 function handleMovieDetailsClick() {
-    document.getElementById("movide-details").addEventListener("on-add-item", function () {
-        addDynamicWidget();
+    document.getElementById("movide-details").addEventListener("on-buy", function (movie, count) {
+        buyMovie(movie, count);
     });
 }

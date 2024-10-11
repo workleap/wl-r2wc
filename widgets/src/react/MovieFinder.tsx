@@ -29,13 +29,12 @@ const movies : MovieData[] = [
 ];
 
 export function MovieFinder() {
-    const { isMovieFinderOpen, setIsMovieFinderOpen, setSelectedMovie, setIsMovieDetailsOpen } = useAppContext();
+    const { isMovieFinderOpen, setIsMovieFinderOpen, setSelectedMovie } = useAppContext();
     const [search, setSearch] = useState("");
 
 
     const handleSelectionChange = (event: React.SyntheticEvent, keys: string[]) => {
         if (keys.length === 0) {
-            setIsMovieDetailsOpen(false);
             setSelectedMovie(null);
         } else {
             const key = keys[0].replace(/^0:/, "");
@@ -43,7 +42,6 @@ export function MovieFinder() {
                 return;
             }
             setSelectedMovie(movies.find(movie => movie.key === key) ?? null);
-            setIsMovieDetailsOpen(true);
         }
         setIsMovieFinderOpen(false);
     };

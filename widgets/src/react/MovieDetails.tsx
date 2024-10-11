@@ -22,16 +22,24 @@ export interface MovieDetailsProps {
 }
 
 export function MovieDetails({ showRanking, onBuy, mode = "modal" }: MovieDetailsProps) {
-    const { isMovieDetailsOpen, setIsMovieDetailsOpen, theme, selectedMovie } = useAppContext();
+    const { theme, selectedMovie } = useAppContext();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
     const [ ticketsCount, setTicketsCount ] = useState(1);
 
     const handleOpenChange = (event: unknown, newValue: boolean) => {
-        setIsMovieDetailsOpen(newValue);
+        setIsModalOpen(newValue);
     };
 
     const handleClose = () => {
-        setIsMovieDetailsOpen(false);
+        setIsModalOpen(false);
     };
+
+    useEffect(() => {
+        if (selectedMovie != null && mode === "modal") {
+            setIsModalOpen(true);
+        }
+    }, [selectedMovie, mode]);
 
     const content = <Content>
         <Paragraph>
@@ -75,7 +83,7 @@ https://www.metacritic.com/movie/apollo-11/critic-reviews/
         </div>
     </Content>;
 
-    const modal = selectedMovie ? <ModalTrigger open={isMovieDetailsOpen} onOpenChange={handleOpenChange}>
+    const modal = selectedMovie ? <ModalTrigger open={isModalOpen} onOpenChange={handleOpenChange}>
         <div />
         <Modal>
             <Heading>{selectedMovie?.title}</Heading>
@@ -90,15 +98,6 @@ https://www.metacritic.com/movie/apollo-11/critic-reviews/
             </Footer>
         </Modal>
     </ModalTrigger> : null;
-
-
-    useEffect(() => {
-        // To not show the modal suddenly when page chages, we set it to close in inline mode.
-        if (mode === "inline" && isMovieDetailsOpen) {
-            setIsMovieDetailsOpen(false);
-        }
-    }, [mode, isMovieDetailsOpen]);
-
 
     return (
         selectedMovie ? <>

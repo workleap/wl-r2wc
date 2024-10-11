@@ -10,8 +10,6 @@ interface AppContextProps {
     theme: "light" | "dark" | "system";
     isMovieFinderOpen: boolean;
     setIsMovieFinderOpen: (value: boolean) => void;
-    isMovieDetailsOpen: boolean;
-    setIsMovieDetailsOpen: (value: boolean) => void;
     selectedMovie: MovieData | null;
     setSelectedMovie: (value: MovieData | null) => void;
 }
@@ -20,8 +18,6 @@ const AppContext = createContext<AppContextProps>({
     theme: "light",
     isMovieFinderOpen: false,
     setIsMovieFinderOpen: () => {},
-    isMovieDetailsOpen: false,
-    setIsMovieDetailsOpen: () => {},
     selectedMovie: null,
     setSelectedMovie: () => {}
 });
@@ -33,7 +29,6 @@ export interface AppSettings {
 export function AppContextProvider({ children, ...props }: PropsWithChildren<AppSettings>) {
     const [theme, setTheme] = useState(props.theme);
     const [isMovieFinderOpen, setIsMovieFinderOpen] = useState<boolean>(false);
-    const [isMovieDetailsOpen, setIsMovieDetailsOpen] = useState<boolean>(false);
     const [selectedMovie, setSelectedMovie] = useState<MovieData | null>(null);
 
     useEffect(() => {
@@ -42,7 +37,7 @@ export function AppContextProvider({ children, ...props }: PropsWithChildren<App
 
     return (
         <AppContext.Provider
-            value={{ selectedMovie, setSelectedMovie, isMovieFinderOpen, setIsMovieFinderOpen, theme, isMovieDetailsOpen, setIsMovieDetailsOpen }}
+            value={{ selectedMovie, setSelectedMovie, isMovieFinderOpen, setIsMovieFinderOpen, theme }}
         >
             <ThemeProvider colorScheme={theme}>
                 {children}

@@ -36,6 +36,8 @@ export class WebComponentHTMLElementBase extends HTMLElement {
     }
 }
 
+export interface MapType<Props> { [key: string]: { to: keyof Props; convert?: (value: string | null) => Props[keyof Props] } }
+
 export class WebComponentHTMLElement<Props = unknown> extends WebComponentHTMLElementBase {
     #props = new Observable<Props>();
 
@@ -53,7 +55,38 @@ export class WebComponentHTMLElement<Props = unknown> extends WebComponentHTMLEl
         return this.#props.value;
     }
 
-    set data(value: Props) {
+    set data(value: Props | undefined) {
         this.#props.value = value;
     }
+
+    get attributesMap(): MapType<Props> | undefined {
+        return undefined;
+    }
+
+    addEventListener(eventName: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
+        super.addEventListener(eventName, listener, options);
+
+        const map = this.attributesMap?.[eventName];
+
+        if (map != null) {
+            this.data = {
+                ...this.data ?? {} as Props,
+                [map.to]: listener
+            };
+        }
+    }
+
+
+    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+        if (oldValue !== newValue) {
+            const map = this.attributesMap?.[name];
+            const mapName = map != null ? map.to : name;
+            const mapValue = map?.convert != null ? map.convert(newValue) : newValue;
+            this.data = {
+                ...this.data ?? {} as Props,
+                [mapName]: mapValue
+            };
+        }
+    }
 }
+

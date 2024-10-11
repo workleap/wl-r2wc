@@ -1,4 +1,4 @@
-import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
+import { type MapType, WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
 import {
     MovieDetails,
     type MovieDetailsProps
@@ -13,29 +13,16 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
         return "wl-movie-details";
     }
 
-    // static get observedAttributes() {
-    //     return ["show-ranking", "on-buy"];
-    // }
-
-    // set data(value: MovieDetailsProps) {
-    //     const mainOnAddItem = value.onBuy;
-    //     value.onBuy = (count: number) => {
-    //         mainOnAddItem?.(count);
-    //         this.dispatchEvent(new CustomEvent("on-buy", { }));
-    //     };
+    static observedAttributes =
+        ["show-ranking", "mode"];
 
 
-    //     super.data = value;
-    // }
+    get attributesMap() {
+        const map: MapType<MovieDetailsProps> = {
+            "show-ranking": { to: "showRanking", convert: value => value === "true" },
+            "on-buy": { to: "onBuy" }
+        };
 
-    // attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    //     if (oldValue !== newValue) {
-    //         if (name === "show-ranking") {
-    //             this.data = {
-    //                 ...this.data,
-    //                 showRanking: newValue === "true"
-    //             };
-    //         }
-    //     }
-    // }
+        return map;
+    }
 }
