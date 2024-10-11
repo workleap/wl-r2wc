@@ -22,24 +22,31 @@ export interface MovieDetailsProps {
 }
 
 export function MovieDetails({ showRanking, onBuy, mode = "modal" }: MovieDetailsProps) {
-    const { theme, selectedMovie } = useAppContext();
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const { theme, selectedMovie, eventEmitter } = useAppContext();
 
     const [ ticketsCount, setTicketsCount ] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleOpenChange = (event: unknown, newValue: boolean) => {
-        setIsModalOpen(newValue);
+    const handleOpenChange = () => {
+        handleClose();
     };
 
     const handleClose = () => {
         setIsModalOpen(false);
     };
+    console.log("MovieDetails", "123");
 
     useEffect(() => {
-        if (selectedMovie != null && mode === "modal") {
+        const handleOpenModal = () => {
             setIsModalOpen(true);
-        }
-    }, [selectedMovie, mode]);
+        };
+
+        eventEmitter.on("movieSelected", handleOpenModal);
+
+        return () => {
+            eventEmitter.off("movieSelected", handleOpenModal);
+        };
+    }, [eventEmitter]);
 
     const content = <Content>
         <Paragraph>

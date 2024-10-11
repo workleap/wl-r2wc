@@ -15,8 +15,8 @@ export function Layout() {
                 <header style={{ borderBottom: "1px solid black", padding: "5px" }}>
                     <h1>React App</h1>
 
-                    <Link to="/">Home page</Link> &nbsp;
-                    <Link to="/store">Online Store</Link>
+                    <Link to="/">Buy Tickets</Link> &nbsp;
+                    <Link to="/store">Online Shop</Link>
                     <Flex
                         direction="column"
                         style={{

@@ -27,14 +27,6 @@ export function MainPage() {
             title:movie.title,
             count: count }]);
     };
-    const [counter, setCounter] = useState(0);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setCounter(counter + 1);
-        }, 1000);
-    });
-
 
     return (<>
 
@@ -51,12 +43,12 @@ export function MainPage() {
                 <SelectedMovie></SelectedMovie>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
-                <h3 style={{ textAlign: "center" }}>Host app area</h3>
+                <h3 style={{ textAlign: "center" }}>Host App Area</h3>
 
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <MoviePopup style={{ margin: "auto" }} data = {{ text : "Open Movies List - " + counter.toString() }}></MoviePopup>
+                <MoviePopup style={{ margin: "auto" }} data = {{ text : "Open Movies List" }}></MoviePopup>
             </div>
         </div>
         <div style={{ flex: 1, margin: "50px", border: "5px solid gray", padding: "5px" }}>

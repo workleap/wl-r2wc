@@ -17,7 +17,7 @@ export function StorePage() {
 
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
-                <h3 style={{ textAlign: "center" }}>Host app area</h3>
+                <h3 style={{ textAlign: "center" }}>Host App Area</h3>
                 <div style={{ textAlign: "center" }}>
                     <h3>Items for Sale</h3>
                     <ul style={{ listStyleType: "none", padding: 0 }}>
