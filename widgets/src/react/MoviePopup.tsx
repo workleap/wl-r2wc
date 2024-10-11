@@ -1,4 +1,4 @@
-import { Button, Div, ThemeProvider } from "@workleap/orbiter-ui";
+import { Button, ThemeProvider } from "@workleap/orbiter-ui";
 import { useAppContext } from "./AppContextProvider.tsx";
 
 export interface MoviePopupProps {
@@ -6,18 +6,16 @@ export interface MoviePopupProps {
 }
 
 export function MoviePopup({ text }: MoviePopupProps) {
-    const { setIsMovieDetailsOpen } = useAppContext();
+    const { setIsMovieFinderOpen, isMovieFinderOpen } = useAppContext();
     const { theme } = useAppContext();
 
     const handleClick = () => {
-        setIsMovieDetailsOpen(true);
+        setIsMovieFinderOpen(!isMovieFinderOpen);
     };
 
     return (
         <ThemeProvider colorScheme={theme}>
-            <Button onClick={handleClick}>{text}</Button>
-            <Div>Selected Theme: {theme}</Div>
-            <hr />
+            <Button onClick={handleClick} >{text}</Button>
         </ThemeProvider>
     );
 }

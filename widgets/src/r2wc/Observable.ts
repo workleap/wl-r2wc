@@ -6,9 +6,9 @@ import { useSyncExternalStore } from "react";
  * Has a `value` and lets you subscribe and unsubscribe to changes.
  */
 export class Observable<T = unknown> {
-    #listeners: ((value: T) => void)[] = [];
+    #listeners: ((value: T | undefined) => void)[] = [];
     #value: T | undefined;
-    set value(value: T) {
+    set value(value: T | undefined) {
         this.#value = value;
 
         for (const listener of this.#listeners) {
@@ -24,7 +24,7 @@ export class Observable<T = unknown> {
         this.#value = value;
     }
 
-    addValueChangeListener(listener: (value: T) => void) {
+    addValueChangeListener(listener: (value: T | undefined) => void) {
         if (this.#listeners.includes(listener)) {
             return;
         }
@@ -32,7 +32,7 @@ export class Observable<T = unknown> {
         this.#listeners.push(listener);
     }
 
-    removeValueChangeListener(listener: (value: T) => void) {
+    removeValueChangeListener(listener: (value: T | undefined) => void) {
         const index = this.#listeners.indexOf(listener);
 
         if (index === -1) {
@@ -46,7 +46,7 @@ export class Observable<T = unknown> {
     }
 }
 
-function subscribe<T>(observable: Observable<T>, listener: (value: T) => void) {
+function subscribe<T>(observable: Observable<T>, listener: (value: T | undefined) => void) {
     observable.addValueChangeListener(listener);
 
     return () => {

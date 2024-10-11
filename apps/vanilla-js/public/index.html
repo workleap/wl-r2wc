@@ -10,16 +10,29 @@
     <script src="/cdn/movie-widgets/index.js"></script>
     <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
     <script type="module" src="index.js"></script>
+    <style>
+        body {
+            background-color: whitesmoke;
+            /* Default background color */
+        }
 
+        [data-theme="dark"] body {
+            background-color: #121212;
+            /* Dark theme background color */
+        }
+    </style>
 </head>
+
 <body>
     <div style="display: flex;">
         <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
             <h3 style="text-align: center;"> Widget Area</h3>
-            <wl-movie-details id="movide-details" show-ranking="true"/>
+            <wl-selected-movie style="font-weight: bold; margin:3px;"></wl-selected-movie>
+            <wl-movie-details id="movide-details" show-ranking="true" />
+            <wl-movie-details show-ranking="false" mode="inline" />
         </div>
         <div style="flex:1; margin: 50px; border: 5px solid; padding: 5px ">
-            <h3 style="text-align: center;">Host app area</h3>
+            <h3 style="text-align: center;">Host App Area</h3>
             <button id="changeTheme">ChangeTheme!</button>
         </div>
         <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
@@ -29,10 +42,8 @@
     </div>
     <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px" id="dynamincWidgetArea">
         <h3 style="text-align: center;"> Dyanimc Widget Area</h3>
-        <button id="addDynamicWidget">Add dynamic widget</button>
-        <button id="removeDynamicWidget">Remove dynamic widget</button>
-
     </div>
+    <wl-movie-finder></wl-movie-finder>
 </body>
 
 </html>

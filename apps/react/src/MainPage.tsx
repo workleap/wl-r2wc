@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Flex } from "@workleap/orbiter-ui";
+import { useEffect, useState } from "react";
+import { MovieDetails, MoviePopup, SelectedMovie, Ticket } from "./web-componenets.tsx";
 
 interface MovieWidgetsManager<AppSettings> {
     initialize: (settings?: AppSettings) => void;
@@ -18,30 +19,17 @@ declare global {
 }
 
 export function MainPage() {
-    const webComponentRef = useRef<HTMLElement>(null);
-    const [dynamicWidgets, setDynamicwidgets] = useState<{ text:string; key: string }[]>([]);
+    const [boughtTickets, setBoughtTickets] = useState<{ key: string; count:number; title: string }[]>([]);
 
-
-    useEffect(() => {
-        const webComponent = webComponentRef.current;
-        const onCustomEvent = () => {
-            setDynamicwidgets([...dynamicWidgets, { text: "Click me!", key: dynamicWidgets.length.toString() }]);
-        };
-
-        // Add event listener
-        webComponent?.addEventListener("on-add-item", onCustomEvent);
-
-        // Cleanup function to remove event listener
-        return () => {
-            webComponent?.removeEventListener("on-add-item", onCustomEvent);
-        };
-    });
+    const buyTickets = (movie: { key: string; title: string }, count: number) => {
+        setBoughtTickets([...boughtTickets, {
+            key: Math.random().toString(36).substring(7),
+            title:movie.title,
+            count: count }]);
+    };
 
     return (<>
-        <header style={{ backgroundColor:"lightblue", padding: "5px" }}>
-            <h1>Welcome to the Movie App</h1>
-            <Link to="/store">Goto Online Store</Link>
-        </header>
+
         <div style={{ display: "flex" }}>
             <div style={{
                 flex: 1,
@@ -51,26 +39,31 @@ export function MainPage() {
             }}
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <wl-movie-details onClick={() => console.log("hello")} show-ranking="true" ref={webComponentRef} ></wl-movie-details>
+                <MovieDetails data={{ mode:"modal", showRanking: true, onBuy: buyTickets }}></MovieDetails>
+                <SelectedMovie></SelectedMovie>
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
-                <h3 style={{ textAlign: "center" }}>Host app area</h3>
-                <button type="button"
-                    onClick={() => {
-                        const oldTheme = window.MovieWidgets?.appSettings?.theme;
-                        window.MovieWidgets?.update({ theme: oldTheme === "dark" ? "light" : "dark" });
-                    }}
-                >ChangeTheme!</button>
+                <h3 style={{ textAlign: "center" }}>Host App Area</h3>
+
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <wl-movie-pop-up text="Click Me!!"></wl-movie-pop-up>
+                <MoviePopup style={{ margin: "auto" }} data = {{ text : "Open Movies List" }}></MoviePopup>
             </div>
         </div>
         <div style={{ flex: 1, margin: "50px", border: "5px solid gray", padding: "5px" }}>
             <h3 style={{ textAlign: "center" }}> Dyanimc Widget Area</h3>
-            {dynamicWidgets.map(item => (<wl-movie-pop-up key={item.key} text={item.text}></wl-movie-pop-up>))}
-
+            <Flex style={{ flexWrap: "wrap", gap: "10px" }}>
+                {boughtTickets.map(item => (<Ticket key={item.key}
+                    data={{
+                        key:item.key,
+                        title:item.title,
+                        count:item.count,
+                        onRemove:() => {
+                            setBoughtTickets(boughtTickets.filter(t => t.key !== item.key));
+                        } }}
+                ></Ticket>))}
+            </Flex>
         </div>
     </>
     );
