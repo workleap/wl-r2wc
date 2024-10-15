@@ -1,34 +1,34 @@
 # Framework Agnostic Widgets
 
-The purpose of this POC is:
+The purpose of this template is:
 
 - Creating complex components in React and using them inside React and non-React applications.
 - Release once, available everywhere. So, all the consumer apps get updated automatically.
 
-To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elements, e.g `<wl-search-result/>`, and we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) to fully separate widgets rendering from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers to get the same version.
+To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elements, e.g `<wl-movie-details/>`, and we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) to fully separate widgets rendering from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers to get the same version.
 
-For example a simple HTML app can use the following `SearchResult` React component inside their pages as regular HTML tags:
+For example a simple HTML app can use the following `MovieDetails` React component inside their pages as regular HTML tags:
 
 ```tsx
-function SearchResult({ pageSize, theme }: SearchResultProps) {
-  return <Content></Content>;
+function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
+  return <Content>...</Content>;
 }
 ```
 
 ```html
 <head>
-    <script type="module" src="https://cdn.platform.workleap-dev.com/search-widgets/index.js"></script>
-    <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/search-widgets/index.css" />
+    <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.css" />
+  <script>
+    window.MovieWidgets.initialize();
+  </script>    
 </head>
 <body>
-  <script>
-    window.addEventListener("load", () => {
-        window.MovieWidgets.initialize();
-    });
-  </script>
+
   <div>
-    <div>Search Results:</div>
-    <search-result page-size="10" theme="light" />
+    <div>Selected Movie Details:</div>
+    <wl-movie-details mode="modal" show-ranking="true" />
+    <wl-movie-finder />
   </div>
 </body>
 ```
@@ -59,7 +59,7 @@ You can follow the next steps to see how you can change and see the result.
 
 Just build your regular react components and put them in the `react` folder.
 
-You are free to create any kind of React component, just there are some rules for exposed components:
+You are free to create any kind of React component, just there are some rules for **exposed** components:
 
 - They should **NOT** have `children`. e.g.:
 
@@ -69,7 +69,7 @@ You are free to create any kind of React component, just there are some rules fo
   }
   ```
 
-- `JSX` props are not allowed as they cannot be translated easily to the similar HTML properties. e.g.:
+- `JSX` props **NOT** not allowed as they cannot be translated easily to the similar HTML properties. e.g.:
   ```tsx
   function NotAllowedComponent({ header }: { header: ReactNode }) {
     return <div>{header}</div>;
@@ -79,20 +79,27 @@ You are free to create any kind of React component, just there are some rules fo
 > [!NOTE]
 > The above constraints are ONLY for components that are getting exposed as web components. Any inner components can be implemented as usual.
 
-Here is a valid component which we can later make a web component based on it:
+Here is a valid component which we can later make a web component based on it. Note that `<Layout/>`, `<Header/>`, `<Content/>` are inner components.
 
 ```tsx
-// src/react/SearchResult.tsx
-export function SearchResult({ pageSize, onClickItem }: SearchResultProps) {
+// src/react/MovieDetails.tsx
+export interface MovieDetailsProps {
+    showRanking: boolean;
+    onBuy: (movie : MovieData, count: number) => void;
+    mode: "modal" | "inline";
+}
+
+export function MovieDetails({ showRanking, mode, onBuy }: MovieDetailsProps) {
+  const { selectedMovie } = useAppContext();
+
   return (
-    <Body>
+    <Layout mode={mode}>
       <Header />
       <Content>
-        {items.map((data) => (
-          <Item />
-        ))}
+        {movie.details}
       </Content>
-    </Body>
+      <Button onClick={()=> onBuy(selectedMovie, 1);}>
+    </Layout>
   );
 }
 ```
@@ -157,10 +164,10 @@ export function AppContextProvider({ children, ...props }: PropsWithChildren<App
     );
 }
 ```
-Pay attention to the `useEffect` in above code. We need if we wrap a setting with `useSate` becuase passed value is only for initiation the state and it is not getting updated on later calls. As the host apps can change app settings through `update` method, we need to use `useEffect` to make sure the state gets the changes. 
+Pay attention to the `useEffect` in above code. We need it if we wrap a setting with `useSate`. In this case, passed value to `useState` is only for initiation and it is not getting updated on later calls. As the host apps can change app settings through `update` method, we need to use `useEffect` to make sure the state gets the changes. 
 
 > [!NOTE]
-You need to merge two above examples if you support both "Sharing context" and passing down"App Setting" use cases.
+You need to merge two above examples if you support both "Sharing context" and passing down"App Settings" use cases.
 
 
 ### Create Web Components
@@ -170,36 +177,83 @@ In this section we create [custom elements](https://developer.mozilla.org/en-US/
 To make life easier, we moved the generic codes to the `r2wc` folder (React to Web-Component). This folder contains:
 
 - `WebComponentHTMLElement.tsx`: The base class for defining and creating custom elements.
-- `Init.tsx`: The main scripts to create and render custom elements in the browser.
+- `WidgetsManager.tsx`: The main scripts to create and render custom elements in the browser.
 - `PropsProvider.tsx`: It brings a mechanism to keep custom element properties sync with React component properties.
 
 #### Define custom elements
 
-To create a custom element, simply inherit from the `WebComponentHTMLElement<T>` class where `T` is the React component `Props` type. Then, implement `reactComponent` and static `tagName` getters. Put the file inside the `src/web-components` folder.
+To create a custom element, inherit from the `WebComponentHTMLElement<Props, ObservedAttributesType>` class where:
+- (optional) `Props` is the React component `Props` type. 
+- (optional) `ObservedAttributesType` is the union type for new observed HTML attributes. This helps to keep type-safty for them. You will see the usage in the following example. 
 
-For example:
+It is required to define four properties in the inherited class:
+- `tagName`: (required) To set the HTML attribute name.
+- `observedAttributes`: (optional) to set the newly added HTML attributes if there is any. 
+- `reactComponent`: to set the related React component,
+- `map`: to define a map for HTML attributes to React props, and HTML events to React callback props.
+
+It is also required to define a `ObservedAttributesType`  union type based on the `observedAttributes` values.
 
 ```tsx
-// src/web-components/SearchResultElement.tsx
-export class SearchResultElement extends WebComponentHTMLElement<SearchResultProps> {
-  get reactComponent() {
-    return SearchResult;
-  }
+// src/web-components/MovieDetailsElement.tsx
+type ObservedAttributesType = (typeof MovieDetailsElement.observedAttributes)[number];
 
-  static get tagName() {
-    return "wl-search-result";
-  }
+export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsProps, ObservedAttributesType> {
+    static tagName = "wl-movie-details";
+    static observedAttributes = ["show-ranking", "mode"] as const;
+
+    get reactComponent() {
+        return MovieDetails;
+    }
+
+    get map(): Map<MovieDetailsProps, ObservedAttributesType> {
+        return {
+            attributes: {
+                "show-ranking": { to: "showRanking", convert: value => value === "true" },
+                "mode": "mode"
+            },
+            events: {
+                "on-buy": "onBuy"
+            }
+        };
+    }
 }
 ```
 
-#### Create host APIs
+> [!NOTE] observedAttributes field:
+> - Attribute names should follow Kebab-Case naming convention. 
+> - Follow the array with `as const`  to get type-safty support.
+
+
+> [!NOTE] map getter:
+> It has two parts: `attributes` and `events`. 
+> 
+> **`attributes`:**
+> 
+> The left side of each map item is attribute name, and the right side says how to map from attribute to the related React prop:
+> - You have to define a map for all attributes defined in `observedAttributes` array.
+> - The right side of the map could be:
+>    - The React property name `Props`, or
+>    - An object that also define how to convert the passed HTML attribute value from string.
+> 
+> **`events`:**
+> 
+> This section defines new HTML events for related callbacks in `Props`. Note that unlike `observedAttributes`, we don't need to define these event names separately.  
+ 
+> [!TIP]
+> The base class has the `data` property ([not attribute](https://open-wc.org/guides/knowledge/attributes-and-properties/)) for the underlying React component. In other words, you can use the `data` property in Javascript to get and set all React props regardless of declaring attributes or events. 
+
+Put the created file inside the `src/web-components` folder.
+
+
+#### Define WidgetsManager
 
 The host app needs an API to register and initialize the widgets. `WidgetsManager` class does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and create the `WidgetsManager` class to: 
 
 - Register defined widget. Without having them registered, you cannot use them in the host app.
 - [optional] Pass `AppContextProvider`.
 
-Then set the result to `window.SearchWidgets` global variable.
+Then set the result to `window.MovieWidgets` global variable.
 
 ```tsx
 // src/web-components/widgets.ts
@@ -229,10 +283,10 @@ window.MovieWidgets = new WidgetsManager({
 });
 ```
 
-`WidgetsManager` class has the following API:
-- `initialize` : To initiate the widgets and pass the initial state of `AppSettings`.
-- `update`: To change the state of `AppSettings`.
-- `appSettings`: To get the current app settings.
+`WidgetsManager` class exposes the following API which is being used inside the host apps.
+- `initialize(config: AppSettings)` : To initiate the widgets and pass the initial state of `AppSettings`.
+- `update(config: Partial<AppSettings>)`: To change the state of `AppSettings`. You only need to pass the changed settings.
+- `appSettings: AppSettings`: To get the current app settings.
 
 #### Build the output
 
@@ -270,10 +324,10 @@ This proof of concept does not currently have an automated deployment process. H
 
 After deployment, the files will be available on a public URL:
 
-For instance, for this POC, the URLs are:
+For instance, for this template, the URLs are:
 
-- JavaScript: https://cdn.workleap.com/search-widgets/index.css
-- CSS: https://cdn.workleap.com/search-widgets/index.css
+- JavaScript: https://cdn.workleap.com/movie-widgets/index.css
+- CSS: https://cdn.workleap.com/movie-widgets/index.css
 
 #### Versioning
 
@@ -286,69 +340,83 @@ However, in the event that breaking changes need to be introduced, versioned fol
 
 For example, breaking changes might be deployed to:
 
-- JavaScript: https://cdn.workleap.com/search-widgets/2/index.js
-- CSS: https://cdn.workleap.com/search-widgets/2/index.css
+- JavaScript: https://cdn.workleap.com/movie-widgets/2/index.js
+- CSS: https://cdn.workleap.com/movie-widgets/2/index.css
 
 In such cases, consumers will need to manually update the URLs in their applications to point to the new version (/2/index.js and /2/index.css). Since breaking changes are involved, this manual update is necessary to ensure compatibility with the new version.
 
-### How to consume framework-agnostic widget?
+## Usage
+**How to consume framework-agnostic widget?**
 
 The framework-agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widget in your project, use the following snippet:
 
 ```html
 <script
-  src="https://cdn.workleap.com/search-widgets/index.js"
+  src="https://cdn.workleap.com/movie-widgets/index.js"
 ></script>
 <link
   rel="stylesheet"
-  href="https://cdn.workleap.com/search-widgets/index.css"
+  href="https://cdn.workleap.com/movie-widgets/index.css"
 />
 ```
 
-Once this is added to the HTML page, the script can now inject the new web-components into the page. This can be done as soon as the script loads, or after a method `initialize` is called.
+Once this is added to the HTML page, the script can now inject the new web-components into the page. This can be done through calling  `initialize` method.
 
-#### React
+### Vanilla Js 
 
 An example usage of the widget in an React page:
 
-```jsx
-<wl-movie-pop-up text="click me"></wl-movie-pop-up>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <script src="/cdn/movie-widgets/index.js"></script>
+    <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
+    <script type="module" src="index.js"></script>
+    <script>
+        window.MovieWidgets.initialize({ theme: "light" });
+
+        const movieDetails = document.getElementByTagName("movie-details")
+        movieDetails.addEventListener("on-buy", function (movie, count) {
+            alert(`bought ${count} tickets of ${movie.title}`);
+        });        
+    </script>
+</head>
+
+<body>
+    <wl-movie-details mode="inline" show-ranking="true" />
+    <wl-movie-finder />
+</body>
 ```
 
-An example of usage of the widget API:
+### React + Typescript
 
-```jsx
-useEffect(() => {
-  window.MovieWidgets?.initialize();
-}, []);
-```
+In order to use your generated Web Components inside a React+Typescript app, we need to: 
+- Provide type definitions for the widget props.
+- Build a wrapper component for each web component to easily interact with them.
 
-#### Typescript
+> [!CAUTION]
+> Although it is possible, we **STRONGLY** recommend not using custom HTML attributes and events. Instead, only use the provided `data` and the following utility functions. With this, you will have a unified pattern across your codebase.
 
-If the app consuming the widget is written in TypeScript, you will need to provide type definitions for the widget props.
 
-We will try to update this POC later to provide guidance on how to properly do this for multiple frameworks.
+### Declare types
 
-For now, the consumers can manually create a type definition on their side.
-
-For custom components used in a react application, you can create a type definition like this:
+Create type definitions inside [web-components.d.ts](/apps/react/widgets/web-components.d.ts) like this:
 
 ```typescript
+// apps/react/widgets/web-components.d.ts
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
-      "wl-movie-pop-up": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          text?: string;
-        },
+      "wl-movie-finder": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
         HTMLElement
       >;
 
       "wl-movie-details": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          "show-ranking"?: string;
-        },
+        React.HTMLAttributes<HTMLElement>,
         HTMLElement
       >;
     }
@@ -356,21 +424,90 @@ declare global {
 }
 ```
 
-For the API available through the window.MovieWidgets object, you can create a type definition like this:
+For the API available through the `window.MovieWidgets` object, you should create a type definition [widgets-manager.d.ts](/apps/react/widgets/widgets-manager.d.ts) like this:
 
 ```typescript
-interface MovieWidgetsManager<AppSettings> {
-    initialize: (settings?: AppSettings) => void;
-    update: (settings: Partial<AppSettings>) => void;
-    getAppSettings: ()=> AppSettings;
+// apps/react/widgets/widgets-manager.d.ts
+interface AppSettings {
+    theme: "light" | "dark" | "system";
 }
 
-declare global {
-  interface Window {
-    MovieWidgets?: MovieWidgetsManager;
-  }
+interface IWidgetsManager<T> {
+    initialize: (settings?: T) => void;
+    update: (settings: Partial<T>) => void;
+    appSettings?: T | null;
+}
+
+export declare global {
+    interface Window {
+        MovieWidgets?: IWidgetsManager<AppSettings>;
+    }
 }
 ```
+
+### Wrapper components
+Although you can use basic HTML web components, but it is encouraged to use the following helper functions to have full and straightforward access to the underlying React component props, mostly like how it is defined.
+
+To do that, first you need put the components props declartions inside the [widgets-props.d.ts](/apps/react/widgets/widgets-props.d.ts)
+
+```ts
+// apps/react/widgets/widgets-props.d.t
+export declare interface MovieData {
+    key: string;
+    title: string;
+}
+
+export declare interface MovieDetailsProps {
+    showRanking: boolean;
+    onBuy?: (movie : MovieData, count: number) => void;
+    mode: "modal" | "inline";
+}
+```
+
+Then inside the [Widgets.tsx](/apps/react/widgets/Widgets.tsx) we create the React version of web components that get their props through the `data` property. 
+
+```tsx
+// apps/react/widgets/Widgets.tsx
+import { createElement, type HTMLAttributes, useEffect, useRef } from "react";
+import type { MovieDetailsProps, MoviePopupProps, TicketProps } from "./widgets-props.js";
+
+declare class WebComponentHTMLElement<Props= unknown> extends HTMLElement {
+    get data(): Props | null| undefined;
+    set data(value: Props | null | undefined);
+}
+
+function createWebComponent<Props = unknown, CustomAttributes= unknown>(tagName: keyof JSX.IntrinsicElements) {
+    return function WebComponent(props: { data?: Props | null } & HTMLAttributes<HTMLElement> & CustomAttributes) {
+        const { data, ...rest } = props;
+        const ref = useRef <WebComponentHTMLElement<Props>>(null);
+
+        useEffect(() => {
+            if (data !== undefined && ref.current) {
+                ref.current.data = data;
+            }
+        }, [data]);
+
+        return createElement(tagName, { ref, ...rest });
+    };
+}
+
+export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
+export const MovieFinder = createWebComponent("wl-movie-finder");
+
+```
+
+Now you can easily use them as regular React components like this:
+
+```jsx
+<MovieDetails data={{ mode:"modal", showRanking: true, onBuy: buyTickets }} />
+<MovieDetails data={{ showRanking:false, mode: "inline" }} />
+<MovieFinder style={{ fontWeight:"bold" }} />
+```
+
+> [!NOTE]
+> You can use regular HTML attributes, like `style` with these components.
+
+
 
 ## Future Improvements
 

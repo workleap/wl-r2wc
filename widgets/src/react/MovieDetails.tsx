@@ -34,7 +34,6 @@ export function MovieDetails({ showRanking, onBuy, mode = "modal" }: MovieDetail
     const handleClose = () => {
         setIsModalOpen(false);
     };
-    console.log("MovieDetails", "123");
 
     useEffect(() => {
         const handleOpenModal = () => {

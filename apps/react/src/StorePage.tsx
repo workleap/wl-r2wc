@@ -1,4 +1,4 @@
-import { MovieDetails, SelectedMovie } from "./web-componenets.tsx";
+import { MovieDetails, SelectedMovie } from "../widgets/Widgets.tsx";
 
 export function StorePage() {
     return (<>
@@ -12,8 +12,8 @@ export function StorePage() {
             }}
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <SelectedMovie style={{ fontWeight:"bold" }}></SelectedMovie>
-                <MovieDetails data={{ showRanking:false, mode: "inline" }} ></MovieDetails>
+                <SelectedMovie style={{ fontWeight:"bold" }} />
+                <MovieDetails data={{ showRanking:false, mode: "inline" }} />
 
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>

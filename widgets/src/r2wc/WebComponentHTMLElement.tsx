@@ -2,6 +2,7 @@ import type { ReactPortal } from "react";
 import { createPortal } from "react-dom";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
+import { type Map, getMapConvert, getMapName } from "./utils.ts";
 import { notifyWidgetMountState } from "./WidgetsManager.tsx";
 
 export class WebComponentHTMLElementBase extends HTMLElement {
@@ -36,9 +37,7 @@ export class WebComponentHTMLElementBase extends HTMLElement {
     }
 }
 
-export interface MapType<Props> { [key: string]: { to: keyof Props; convert?: (value: string | null) => Props[keyof Props] } }
-
-export class WebComponentHTMLElement<Props = unknown> extends WebComponentHTMLElementBase {
+export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType extends string = never> extends WebComponentHTMLElementBase {
     #props = new Observable<Props>();
 
 
@@ -51,27 +50,27 @@ export class WebComponentHTMLElement<Props = unknown> extends WebComponentHTMLEl
         );
     }
 
-    get data(): Props | undefined {
+    get data() {
         return this.#props.value;
     }
 
-    set data(value: Props | undefined) {
+    set data(value: Props | null | undefined) {
         this.#props.value = value;
     }
 
-    get attributesMap(): MapType<Props> | undefined {
+    get map(): Map<Props, ObservedAttributesType> | undefined {
         return undefined;
     }
 
     addEventListener(eventName: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
         super.addEventListener(eventName, listener, options);
 
-        const map = this.attributesMap?.[eventName];
+        const map = this.map?.events?.[eventName];
 
         if (map != null) {
             this.data = {
-                ...this.data ?? {} as Props,
-                [map.to]: listener
+                ...(this.data ?? {} as Props),
+                [getMapName(map)]: listener
             };
         }
     }
@@ -79,13 +78,15 @@ export class WebComponentHTMLElement<Props = unknown> extends WebComponentHTMLEl
 
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
         if (oldValue !== newValue) {
-            const map = this.attributesMap?.[name];
-            const mapName = map != null ? map.to : name;
-            const mapValue = map?.convert != null ? map.convert(newValue) : newValue;
-            this.data = {
-                ...this.data ?? {} as Props,
-                [mapName]: mapValue
-            };
+            const map = this.map?.attributes?.[name as ObservedAttributesType];
+            if (map != null) {
+                const mapName = getMapName(map) ;
+                const mapValue = getMapConvert(map)?.(newValue) ?? newValue;
+                this.data = {
+                    ...this.data ?? {} as Props,
+                    [mapName]: mapValue
+                };
+            }
         }
     }
 }

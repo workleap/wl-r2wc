@@ -60,7 +60,7 @@ export function notifyWidgetMountState(element: WebComponentHTMLElementBase, eve
 interface IWidgetsManager<T> {
     initialize: (settings?: T) => void;
     update: (settings: Partial<T>) => void;
-    appSettings: T | undefined;
+    appSettings?: T | null;
 }
 
 interface ConstructionOptions<T> {
