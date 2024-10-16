@@ -5,13 +5,13 @@ The purpose of this template is:
 - Creating complex components in React and using them inside React and non-React applications.
 - Release once, available everywhere. So, all the consumer apps get updated automatically.
 
-To do that, we use [Web-components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elements, e.g `<wl-movie-details/>`, and we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) to fully separate widgets rendering from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers to get the same version.
+To do that, we use [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) to define custom html elements, e.g `<wl-movie-details/>`, and we use [createRoot](https://react.dev/reference/react-dom/client/createRoot) and [createPortal](https://react.dev/reference/react-dom/createPortal) to fully separate widgets rendering from the hosted app rendering. Then we deploy the scripts on a CDN to allow all consumers to get the same version.
 
 For example a simple HTML app can use the following `MovieDetails` React component inside their pages as regular HTML tags:
 
 ```tsx
 function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
-  return <Content>...</Content>;
+    return <Content>...</Content>;
 }
 ```
 
@@ -19,17 +19,16 @@ function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
 <head>
     <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
     <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.css" />
-  <script>
-    window.MovieWidgets.initialize();
-  </script>    
+    <script>
+        window.MovieWidgets.initialize();
+    </script>    
 </head>
 <body>
-
-  <div>
-    <div>Selected Movie Details:</div>
-    <wl-movie-details mode="modal" show-ranking="true" />
-    <wl-movie-finder />
-  </div>
+    <div>
+        <div>Selected Movie Details:</div>
+        <wl-movie-details mode="modal" show-ranking="true" />
+        <wl-movie-finder />
+    </div>
 </body>
 ```
 
@@ -57,7 +56,7 @@ You can follow the next steps to see how you can change and see the result.
 
 ### Main logic in React
 
-Just build your regular react components and put them in the `react` folder.
+Just build your regular React components and put them in the `react` folder.
 
 You are free to create any kind of React component, just there are some rules for **exposed** components:
 
@@ -65,14 +64,14 @@ You are free to create any kind of React component, just there are some rules fo
 
   ```tsx
   function NotAllowedComponent({ children }: { children: ReactNode }) {
-    return <div>{children}</div>;
+      return <div>{children}</div>;
   }
   ```
 
-- `JSX` props **NOT** not allowed as they cannot be translated easily to the similar HTML properties. e.g.:
+- `JSX` props are **NOT** not allowed as they cannot be translated easily to the similar HTML properties. e.g.:
   ```tsx
   function NotAllowedComponent({ header }: { header: ReactNode }) {
-    return <div>{header}</div>;
+      return <div>{header}</div>;
   }
   ```
 
@@ -90,17 +89,17 @@ export interface MovieDetailsProps {
 }
 
 export function MovieDetails({ showRanking, mode, onBuy }: MovieDetailsProps) {
-  const { selectedMovie } = useAppContext();
+    const { selectedMovie } = useAppContext();
 
-  return (
-    <Layout mode={mode}>
-      <Header />
-      <Content>
-        {movie.details}
-      </Content>
-      <Button onClick={()=> onBuy(selectedMovie, 1);}>
-    </Layout>
-  );
+    return (
+      <Layout mode={mode}>
+        <Header />
+        <Content>
+          {movie.details}
+        </Content>
+        <Button onClick={()=> onBuy(selectedMovie, 1);}>
+      </Layout>
+    );
 }
 ```
 
@@ -114,13 +113,13 @@ Widgets inside the same project could share context as a regular React app. This
 export function AppContextProvider({ children }: {
     children?: React.ReactNode | undefined;
 }) {
-  const [isResultOpen, setIsResultOpen] = useState(false);  
+    const [isResultOpen, setIsResultOpen] = useState(false);  
 
-  return (
-    <AppContext.Provider value={{ isResultOpen, setIsResultOpen }}>
-        {children}
-    </AppContext.Provider>
-  );
+    return (
+      <AppContext.Provider value={{ isResultOpen, setIsResultOpen }}>
+          {children}
+      </AppContext.Provider>
+    );
 }
 ```
 
@@ -164,17 +163,17 @@ export function AppContextProvider({ children, ...props }: PropsWithChildren<App
     );
 }
 ```
-Pay attention to the `useEffect` in above code. We need it if we wrap a setting with `useSate`. In this case, passed value to `useState` is only for initiation and it is not getting updated on later calls. As the host apps can change app settings through `update` method, we need to use `useEffect` to make sure the state gets the changes. 
+Pay attention to the `useEffect` in the above code. We need it if we wrap a setting with `useSate`. In this case, the passed value to `useState` is only for initiation and it is not getting updated on later calls. As the host app can change the app settings through the `update` method, we need to use `useEffect` to make sure the state gets the changes. 
 
 > [!NOTE]
-You need to merge two above examples if you support both "Sharing context" and passing down"App Settings" use cases.
+You need to merge the two above examples if you support both optional "Sharing context" and passing down "App Settings" use cases.
 
 
 ### Create Web Components
 
 In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements) (part of Web Components) to expose our React components as framework agnostic widgets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
 
-To make life easier, we moved the generic codes to the `r2wc` folder (React to Web-Component). This folder contains:
+To make life easier, we moved the generic codes to the `r2wc` folder (React to Web Component). This folder contains:
 
 - `WebComponentHTMLElement.tsx`: The base class for defining and creating custom elements.
 - `WidgetsManager.tsx`: The main scripts to create and render custom elements in the browser.
@@ -184,7 +183,7 @@ To make life easier, we moved the generic codes to the `r2wc` folder (React to W
 
 To create a custom element, inherit from the `WebComponentHTMLElement<Props, ObservedAttributesType>` class where:
 - (optional) `Props` is the React component `Props` type. 
-- (optional) `ObservedAttributesType` is the union type for new observed HTML attributes. This helps to keep type-safty for them. You will see the usage in the following example. 
+- (optional) `ObservedAttributesType` is the union type for new observed HTML attributes. This helps to keep type safety for them. You will see the usage in the following example. 
 
 It is required to define four properties in the inherited class:
 - `tagName`: (required) To set the HTML attribute name.
@@ -220,25 +219,30 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
 }
 ```
 
-> [!NOTE] observedAttributes field:
+> [!NOTE]
+> **`static observedAttributes`**
 > - Attribute names should follow Kebab-Case naming convention. 
-> - Follow the array with `as const`  to get type-safty support.
-
-
-> [!NOTE] map getter:
+> - Follow the array with `as const`  to get type-safety support.
+>
+> &nbsp;
+>
+> **`get map()`**
+> 
 > It has two parts: `attributes` and `events`. 
 > 
-> **`attributes`:**
+> - **`attributes`**
 > 
-> The left side of each map item is attribute name, and the right side says how to map from attribute to the related React prop:
-> - You have to define a map for all attributes defined in `observedAttributes` array.
-> - The right side of the map could be:
->    - The React property name `Props`, or
->    - An object that also define how to convert the passed HTML attribute value from string.
+>   The left side of each map item is attribute name, and the right side says how to map from attribute to the related React prop. You have to define a map for all attributes defined in `observedAttributes` array.
+>   
+>   The right side of the map could be:
+>   - The React property name defined in `Props`, or
+>   - An object that also defines how to convert the passed HTML attribute value from string. `{to: 'propName', convert: (value:string)=> PropertyType}`
+>
+> &nbsp;
 > 
-> **`events`:**
+> - **`events`**
 > 
-> This section defines new HTML events for related callbacks in `Props`. Note that unlike `observedAttributes`, we don't need to define these event names separately.  
+>   This section defines new HTML events for related callbacks in `Props`. Note that unlike `observedAttributes`, we don't need to define these event names separately.  
  
 > [!TIP]
 > The base class has the `data` property ([not attribute](https://open-wc.org/guides/knowledge/attributes-and-properties/)) for the underlying React component. In other words, you can use the `data` property in Javascript to get and set all React props regardless of declaring attributes or events. 
@@ -360,7 +364,7 @@ The framework-agnostic widget can be consumed directly in any HTML page by refer
 />
 ```
 
-Once this is added to the HTML page, the script can now inject the new web-components into the page. This can be done through calling  `initialize` method.
+Once this is added to the HTML page, the script can now inject the new Web Components into the page. This can be done through calling  `initialize` method.
 
 ### Vanilla Js 
 
@@ -407,20 +411,20 @@ Create type definitions inside [web-components.d.ts](/apps/react/widgets/web-com
 ```typescript
 // apps/react/widgets/web-components.d.ts
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      "wl-movie-finder": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace JSX {
+        interface IntrinsicElements {
+            "wl-movie-finder": React.DetailedHTMLProps<
+            React.HTMLAttributes<HTMLElement>,
+            HTMLElement
+            >;
 
-      "wl-movie-details": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
+            "wl-movie-details": React.DetailedHTMLProps<
+            React.HTMLAttributes<HTMLElement>,
+            HTMLElement
+            >;
+        }
     }
-  }
 }
 ```
 
@@ -499,9 +503,9 @@ export const MovieFinder = createWebComponent("wl-movie-finder");
 Now you can easily use them as regular React components like this:
 
 ```jsx
-<MovieDetails data={{ mode:"modal", showRanking: true, onBuy: buyTickets }} />
-<MovieDetails data={{ showRanking:false, mode: "inline" }} />
-<MovieFinder style={{ fontWeight:"bold" }} />
+<MovieDetails data={{ mode: "modal", showRanking: true, onBuy: buyTickets }} />
+<MovieDetails data={{ showRanking: false, mode: "inline" }} />
+<MovieFinder style={{ fontWeight: "bold" }} />
 ```
 
 > [!NOTE]
@@ -516,9 +520,7 @@ Even if the current POC is working, there are some improvements that we will loo
 - Possibility of implementing the widget using the Shadow DOM to avoid conflicts with the host app styles.
 - Further optimizations for bundle size with improved tree-shaking
 - Using preload scripts and styles to avoid page flickering for mission critical widgets like the Navbar
-- Better support for typescript for React applications
 - Extract the r2wc folder into a library package
-- Move to Cloudflare CDN and provide a pipeline to update the CDN files
 
 
 
