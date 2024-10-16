@@ -410,19 +410,18 @@ Create type definitions inside [web-components.d.ts](/apps/react/widgets/web-com
 
 ```typescript
 // apps/react/widgets/web-components.d.ts
+
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
+
+    declare class WebComponentHTMLElement<Props= unknown> extends HTMLElement {
+        get data(): Props | undefined;
+        set data(value: Props);
+    }    
+    
     namespace JSX {
         interface IntrinsicElements {
-            "wl-movie-finder": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement>,
-            HTMLElement
-            >;
-
-            "wl-movie-details": React.DetailedHTMLProps<
-            React.HTMLAttributes<HTMLElement>,
-            HTMLElement
-            >;
+            "wl-movie-finder": WebComponentHTMLElement;
+            "wl-movie-details": WebComponentHTMLElement;
         }
     }
 }
@@ -468,32 +467,24 @@ export declare interface MovieDetailsProps {
 }
 ```
 
-Then inside the [Widgets.tsx](/apps/react/widgets/Widgets.tsx) we create the React version of web components that get their props through the `data` property. 
+Then, create the `widgets-utils.ts` file and copy and pase the utility function from the provided [widgets-utils.ts](/apps/react/widgets/widgets-utils.ts) file. 
+```tsx
+// apps/react/widgets/widgets-utils.ts
+import { createElement, type HTMLAttributes, useEffect, useRef } from "react";
+
+export function createWebComponent<Props = unknown, CustomAttributes = unknown>(tagName: keyof JSX.IntrinsicElements) {
+    //left empty by intention. Copy the whole file from the source code
+}
+
+```
+
+Finally, create the [Widgets.tsx](/apps/react/widgets/Widgets.tsx) file and create the React version of web components which get their props through the `data` property. 
 
 ```tsx
 // apps/react/widgets/Widgets.tsx
-import { createElement, type HTMLAttributes, useEffect, useRef } from "react";
+import { createWebComponent } from "./widgets-utils.ts";
 import type { MovieDetailsProps, MoviePopupProps, TicketProps } from "./widgets-props.js";
 
-declare class WebComponentHTMLElement<Props= unknown> extends HTMLElement {
-    get data(): Props | null| undefined;
-    set data(value: Props | null | undefined);
-}
-
-function createWebComponent<Props = unknown, CustomAttributes= unknown>(tagName: keyof JSX.IntrinsicElements) {
-    return function WebComponent(props: { data?: Props | null } & HTMLAttributes<HTMLElement> & CustomAttributes) {
-        const { data, ...rest } = props;
-        const ref = useRef <WebComponentHTMLElement<Props>>(null);
-
-        useEffect(() => {
-            if (data !== undefined && ref.current) {
-                ref.current.data = data;
-            }
-        }, [data]);
-
-        return createElement(tagName, { ref, ...rest });
-    };
-}
 
 export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
 export const MovieFinder = createWebComponent("wl-movie-finder");
