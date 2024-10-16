@@ -2,7 +2,7 @@ import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
 import { MovieFinder } from "../react/MovieFinder.tsx";
 
 
-export class MovieFinderElement extends WebComponentHTMLElement<unknown> {
+export class MovieFinderElement extends WebComponentHTMLElement {
     get reactComponent() {
         return MovieFinder;
     }

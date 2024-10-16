@@ -8,18 +8,16 @@
     <script  src="/cdn/movie-widgets/index.js"></script>
     <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
     <title>React app</title>
+    <script>
+        window.MovieWidgets.initialize({
+            theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
+        });
+    </script>
 </head>
 
 <body>
-    <div id="root"></div>
-    <script>
-        window.addEventListener('load', () => {
-            window.MovieWidgets.initialize({
-                theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
-            });
-        });
-    </script>
 
+    <div id="root"></div>
 </body>
 
 </html>

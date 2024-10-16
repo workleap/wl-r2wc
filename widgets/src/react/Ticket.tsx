@@ -6,7 +6,7 @@ export interface TicketProps {
     key: string;
     title: string;
     count: number;
-    onRemove: ()=> void;
+    onRemove?: ()=> void;
 }
 
 export function Ticket({ title, count, onRemove }: TicketProps) {

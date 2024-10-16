@@ -2,8 +2,8 @@
 import { Button, Div, Flex } from "@workleap/orbiter-ui";
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import { MovieFinder, SelectedMovie } from "../widgets/Widgets.tsx";
 import { AppContextProvider, useAppContext } from "./AppContext.tsx";
-import { MovieFinder, SelectedMovie } from "./web-componenets.tsx";
 
 
 export function Layout() {
@@ -27,17 +27,17 @@ export function Layout() {
                             right: "10px",
                             width: "200px"
                         }}
-                        onClick={() => {
-                            const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-                            document.documentElement.setAttribute("data-theme", newTheme);
-                            setTheme(newTheme);
-                            window.MovieWidgets?.update({ theme: newTheme });
-                        }}
                     >
 
                         <Button
                             size="sm"
                             variant="secondary"
+                            onClick={() => {
+                                const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                                document.documentElement.setAttribute("data-theme", newTheme);
+                                setTheme(newTheme);
+                                window.MovieWidgets?.update({ theme: newTheme });
+                            }}
                         >Change Theme</Button>
                         <SelectedMovie />
                     </Flex>

@@ -33,5 +33,3 @@ export declare global {
         }
     }
 }
-
-

@@ -1,7 +1,6 @@
+window.MovieWidgets.initialize({ theme: "light" });
 
 (function init() {
-    window.MovieWidgets.initialize({ theme: "light" });
-
     handleMovieDetailsClick();
 
     addEventListenerOnChangeThemeButton();
