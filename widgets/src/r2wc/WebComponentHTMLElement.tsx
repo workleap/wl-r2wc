@@ -50,11 +50,11 @@ export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType exte
         );
     }
 
-    get data() {
+    get data(): Props | undefined {
         return this.#props.value;
     }
 
-    set data(value: Props | null | undefined) {
+    set data(value: Props) {
         this.#props.value = value;
     }
 

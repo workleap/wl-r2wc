@@ -1,6 +1,10 @@
+import { Checkbox } from "@workleap/orbiter-ui";
+import { useState } from "react";
 import { MovieDetails, SelectedMovie } from "../widgets/Widgets.tsx";
 
 export function StorePage() {
+    const [showRanking, setShowRanking] = useState(false);
+
     return (<>
 
         <div style={{ display: "flex" }}>
@@ -12,8 +16,12 @@ export function StorePage() {
             }}
             >
                 <h3 style={{ textAlign: "center" }}> Widget Area</h3>
-                <SelectedMovie style={{ fontWeight:"bold" }} />
-                <MovieDetails data={{ showRanking:false, mode: "inline" }} />
+                <div style={{ marginBottom: "15px" }}>
+                    <Checkbox style={{ marginBottom: "15px", float: "right" }} onChange={() => {setShowRanking(!showRanking);}} >Show Ranking</Checkbox>
+                    <SelectedMovie style={{ fontWeight:"bold" }} />
+                </div>
+
+                <MovieDetails data={{ showRanking, mode: "inline" }} />
 
             </div>
             <div style={{ flex: 1, margin: "50px", border: "5px solid", padding: "5px" }}>
