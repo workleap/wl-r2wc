@@ -311,7 +311,7 @@ This widgets project generates two files that need to be made available to our w
 > [!CAUTION]
 > #### The total combined size of these two files (after minification and Gzip compression) **SHOULD NOT** exceed 100KB.
 > 
-> You can use [this extension](https://marketplace.visualstudio.com/items?itemName=mkxml.vscode-filesize) to see the Gzip size of generated files.
+> You can use [this extension](https://marketplace.visualstudio.com/items?itemName=mkxml.vscode-filesize) to see the Gzip size of the generated files.
 
 These files need to be hosted in an Azure storage container, served via Azure Front Door. The storage system automatically handles compression in Brotli (`.br`) or Gzip (`.gz`) formats. Make sure to activate the compression in the optimization settings of the Front Door profile. That storage will need to be set up by the team that owns the widgets project.
 
