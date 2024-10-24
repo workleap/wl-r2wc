@@ -64,6 +64,7 @@ interface IWidgetsManager<T> {
 }
 
 interface ConstructionOptions<T> {
+    loadCss?: boolean;
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
 }
@@ -73,14 +74,36 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     static #instanciated = false;
 
     constructor (
-        { elements, contextProvider }: ConstructionOptions<AppSettings>) {
+        { elements, contextProvider, loadCss = true }: ConstructionOptions<AppSettings>) {
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
         WidgetsManager.#instanciated = true;
+
+        if (loadCss) {this.#loadCssFile();}
 
         register(elements);
         render = () => {
             this.#renderWidgets(contextProvider);
         };
+    }
+
+    #loadCssFile() {
+        const currentScript = document.currentScript as HTMLScriptElement;
+        if (currentScript?.src == null) {
+            throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded from a script tag. Otherwise load it manually.");
+        }
+        const scriptPath = currentScript.src;
+
+        const cssPath = scriptPath.replace(".js", ".css");
+
+        // Create and append the preload link that converts to stylesheet
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "style";
+        link.href = cssPath;
+        link.onload = () => { link.rel = "stylesheet"; };
+
+        // Append the element
+        document.head.appendChild(link);
     }
 
     #renderContextWithProps(ContextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
@@ -117,5 +140,4 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         return this.#contextProps.value;
     }
 }
-
 
