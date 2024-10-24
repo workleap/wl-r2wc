@@ -1,7 +1,7 @@
 import { Fragment, type ComponentType } from "react";
-import { createRoot } from "react-dom/client";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
+import { RndererModule, type IRenderingConfig } from "./RndererModule.ts";
 import type { WebComponentHTMLElementBase } from "./WebComponentHTMLElement.tsx";
 
 type WebComponentHTMLElementType = typeof WebComponentHTMLElementBase;
@@ -9,15 +9,10 @@ const registeredWidgets: WebComponentHTMLElementType[] = [];
 const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [];
 let initialized = false;
 
-const rootContainer = document.createElement("div");
-const root = createRoot(rootContainer);
 let delayRendererHandle:number | null = null;
 let render: (()=>void) = () => {throw new Error("WidgetsManager is not initialized yet");};
 let uniqueWidgetKey:number = 1;
 
-/**
- * Registers the web components to the custom elements.
- */
 function register(
     elements: WebComponentHTMLElementType | WebComponentHTMLElementType[]
 ) {
@@ -57,8 +52,9 @@ export function notifyWidgetMountState(element: WebComponentHTMLElementBase, eve
     }
 }
 
+
 interface IWidgetsManager<T> {
-    initialize: (settings?: T) => void;
+    initialize: (settings?: T, renderingConfig?: IRenderingConfig) => void;
     update: (settings: Partial<T>) => void;
     appSettings?: T | null;
 }
@@ -85,6 +81,7 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
             this.#renderWidgets(contextProvider);
         };
     }
+
 
     #loadCssFile() {
         const currentScript = document.currentScript as HTMLScriptElement;
@@ -119,10 +116,12 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
 
         const content = contextProvider == null ? <>{portals}</> : this.#renderContextWithProps(contextProvider, portals);
 
-        root.render(content);
+        RndererModule.root.render(content);
     }
 
-    initialize(settings?: AppSettings) {
+    initialize(settings?: AppSettings, renderingConfig?: IRenderingConfig) {
+        if (renderingConfig) {RndererModule.init(renderingConfig);}
+
         this.#contextProps.value = settings ?? {} as AppSettings;
         initialized = true;
         render();

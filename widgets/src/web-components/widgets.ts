@@ -23,4 +23,5 @@ declare global {
 window.MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement, MovieFinderElement, SelectedMovieElement, TicketElement],
     contextProvider: AppContextProvider
+
 });

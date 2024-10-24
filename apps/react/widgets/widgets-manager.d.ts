@@ -3,8 +3,13 @@ interface AppSettings {
     theme: "light" | "dark" | "system";
 }
 
+interface IRenderingConfig {
+    createRoot: typeof CreateRootType;
+    createPortal: typeof CreatePortalType;
+}
+
 interface IWidgetsManager<T> {
-    initialize: (settings?: T) => void;
+    initialize: (settings?: T, renderingConfig?: IRenderingConfig) => void;
     update: (settings: Partial<T>) => void;
     appSettings?: T | null;
 }

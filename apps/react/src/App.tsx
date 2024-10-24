@@ -3,7 +3,6 @@ import { Layout } from "./Layout.tsx";
 import { MainPage } from "./MainPage.tsx";
 import { StorePage } from "./StorePage.tsx";
 
-
 export function App() {
     return (
         <Routes>

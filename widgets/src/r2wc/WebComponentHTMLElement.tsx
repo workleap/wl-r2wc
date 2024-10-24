@@ -1,7 +1,7 @@
 import type { ReactPortal } from "react";
-import { createPortal } from "react-dom";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
+import { RndererModule } from "./RndererModule.ts";
 import { type Map, getMapConvert, getMapName } from "./utils.ts";
 import { notifyWidgetMountState } from "./WidgetsManager.tsx";
 
@@ -25,7 +25,7 @@ export class WebComponentHTMLElementBase extends HTMLElement {
     }
 
     connectedCallback() {
-        this.#portal = createPortal(this.renderReactComponent(), this);
+        this.#portal = RndererModule.createPortal(this.renderReactComponent(), this);
 
         notifyWidgetMountState(this, "mounted");
     }
