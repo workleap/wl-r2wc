@@ -287,6 +287,8 @@ window.MovieWidgets = new WidgetsManager({
 });
 ```
 
+`WidgetsManager` loades the related `CSS` file automatically at the time of load. If you want to load the CSS file manually, you can pass the `loadCss: false` to the constructor.
+
 `WidgetsManager` class exposes the following API which is being used inside the host apps.
 - `initialize(config: AppSettings)` : To initiate the widgets and pass the initial state of `AppSettings`.
 - `update(config: Partial<AppSettings>)`: To change the state of `AppSettings`. You only need to pass the changed settings.
@@ -363,11 +365,11 @@ The framework-agnostic widget can be consumed directly in any HTML page by refer
 <script
   src="https://cdn.workleap.com/movie-widgets/index.js"
 ></script>
-<link
-  rel="stylesheet"
-  href="https://cdn.workleap.com/movie-widgets/index.css"
-/>
 ```
+
+
+> [!TIP]
+> The `css` file is being loaded automatically through the above script if you haven't disabled it. 
 
 Once this is added to the HTML page, the script can now inject the new Web Components into the page. This can be done through calling  `initialize` method.
 
@@ -378,25 +380,23 @@ An example usage of the widget in an React page:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
+        <script src="/cdn/movie-widgets/index.js"></script>
+        <script type="module" src="index.js"></script>
+        <script>
+            window.MovieWidgets.initialize({ theme: "light" });
 
-    <script src="/cdn/movie-widgets/index.js"></script>
-    <link rel="stylesheet" href="/cdn/movie-widgets/index.css" />
-    <script type="module" src="index.js"></script>
-    <script>
-        window.MovieWidgets.initialize({ theme: "light" });
-
-        const movieDetails = document.getElementByTagName("movie-details")
-        movieDetails.addEventListener("on-buy", function (movie, count) {
-            alert(`bought ${count} tickets of ${movie.title}`);
-        });        
-    </script>
-</head>
-
-<body>
-    <wl-movie-details mode="inline" show-ranking="true" />
-    <wl-movie-finder />
-</body>
+            const movieDetails = document.getElementByTagName("movie-details")
+            movieDetails.addEventListener("on-buy", function (movie, count) {
+                alert(`bought ${count} tickets of ${movie.title}`);
+            });        
+        </script>
+    </head>
+    <body>
+        <wl-movie-details mode="inline" show-ranking="true" />
+        <wl-movie-finder />
+    </body>
+</html>
 ```
 
 ### React + Typescript
