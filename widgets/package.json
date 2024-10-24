@@ -10,6 +10,7 @@
         "lint:types": "tsc --noEmit"
     },
     "dependencies": {
+        "@hopper-ui/icons": "^2.8.4",
         "@hopper-ui/tokens": "4.4.0",
         "@workleap/orbiter-ui": "5.5.0",
         "react": "18.3.1",
