@@ -1,4 +1,6 @@
-window.MovieWidgets.initialize({ theme: "light" });
+import { MovieWidgets } from "/cdn/movie-widgets/index.js";
+
+MovieWidgets.initialize({ theme: "light" });
 
 (function init() {
     handleMovieDetailsClick();
