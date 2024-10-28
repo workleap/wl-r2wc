@@ -17,7 +17,8 @@ function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
 
 ```html
 <head>
-    <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
+    <link rel="preload" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
+
     <script type="module">
         import { MovieWidgets } from "https://cdn.platform.workleap-dev.com/movie-widgets/index.js";
 
@@ -258,14 +259,24 @@ The host app needs an API to register and initialize the widgets. `WidgetsManage
 - Register defined widget. Without having them registered, you cannot use them in the host app.
 - [optional] Pass `AppContextProvider`.
 
-Then export it as `MovieWidgets` const.
+Then set the result to a const and export it from the module. 
+
+If you like to have access to it accross the whole document, you can assign it to a window variable.
 
 ```tsx
 // src/web-components/widgets.ts
+declare global {
+    interface Window {
+        MovieWidgets?: WidgetsManager<AppSettings>;
+    }
+}
+
 const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
 });
+
+window.MovieWidgets = MovieWidgets;
 
 export { MovieWidgets };
 ```
@@ -355,9 +366,7 @@ In such cases, consumers will need to manually update the URLs in their applicat
 The framework-agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widget in your project, use the following snippet:
 
 ```html
-<script tyle="module"
-  src="https://cdn.workleap.com/movie-widgets/index.js"
-></script>
+<link rel="preload" href="https://cdn.workleap.com/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
 ```
 
 
@@ -373,7 +382,7 @@ An example usage of the widget in an React page:
 ```html
 <html lang="en">
     <head>
-        <script type="module" src="/cdn/movie-widgets/index.js"></script>
+        <link rel="preload" href="/cdn/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
         <script type="module">
             import { MovieWidgets } from "/cdn/movie-widgets/index.js";
 
@@ -500,16 +509,15 @@ Now you can easily use them as regular React components like this:
 > [!NOTE]
 > You can use regular HTML attributes, like `style` with these components.
 
-### Initiate
+### Initial script
 This part is pretty similar to VanilaJS example. As we load this package from CDN, **NOT** as a package, we have to load it separately in `index.html` file:
 
 ```html
 <html lang="en">
     <head>
-        <script type="module" src="/cdn/movie-widgets/index.js"></script>
+        <link rel="preload" href="/cdn/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
         <script type="module">
             import { MovieWidgets } from "/cdn/movie-widgets/index.js";
-
             MovieWidgets.initialize({ theme: "light" });
         </script>
     </head>

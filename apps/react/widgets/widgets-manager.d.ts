@@ -9,6 +9,8 @@ interface IWidgetsManager<T> {
     appSettings?: T | null;
 }
 
-interface MovieWidgets {
-    MovieWidgets?: IWidgetsManager<AppSettings>;
+export declare global {
+    interface Window {
+        MovieWidgets?: IWidgetsManager<AppSettings>;
+    }
 }

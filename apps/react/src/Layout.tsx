@@ -31,7 +31,7 @@ export function Layout() {
 
                         <Button
                             size="sm"
-                            variant="secondary"
+                            variant="primary"
                             onClick={() => {
                                 const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
                                 document.documentElement.setAttribute("data-theme", newTheme);
