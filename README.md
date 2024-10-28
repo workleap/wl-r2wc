@@ -17,7 +17,7 @@ function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
 
 ```html
 <head>
-    <link rel="preload" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
+    <link rel="modulepreload" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.js" />
 
     <script type="module">
         import { MovieWidgets } from "https://cdn.platform.workleap-dev.com/movie-widgets/index.js";
@@ -366,9 +366,12 @@ In such cases, consumers will need to manually update the URLs in their applicat
 The framework-agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widget in your project, use the following snippet:
 
 ```html
-<link rel="preload" href="https://cdn.workleap.com/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
+<link rel="modulepreload" href="https://cdn.workleap.com/movie-widgets/index.js" />
+<script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
 ```
 
+> [!IMPORTANT]
+> The `modulepreload` is almost enough but to get better perforamnce, add the `script` tag right after to run it immediately. This helps on faster custom element registeration. Without it, the script will run when the first usage comes up. 
 
 > [!TIP]
 > The `css` file is being loaded automatically through the above script if you haven't disabled it. 
@@ -382,7 +385,8 @@ An example usage of the widget in an React page:
 ```html
 <html lang="en">
     <head>
-        <link rel="preload" href="/cdn/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
+        <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
         <script type="module">
             import { MovieWidgets } from "/cdn/movie-widgets/index.js";
 
@@ -515,7 +519,8 @@ This part is pretty similar to VanilaJS example. As we load this package from CD
 ```html
 <html lang="en">
     <head>
-        <link rel="preload" href="/cdn/movie-widgets/index.js" as="script" crossorigin="anonymous"/>
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
+        <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
         <script type="module">
             import { MovieWidgets } from "/cdn/movie-widgets/index.js";
             MovieWidgets.initialize({ theme: "light" });
