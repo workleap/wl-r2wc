@@ -14,5 +14,3 @@ export declare global {
         MovieWidgets?: IWidgetsManager<AppSettings>;
     }
 }
-
-

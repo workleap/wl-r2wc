@@ -4,10 +4,13 @@
         <meta charset="UTF-8" />
         <link href="favicon.png" rel="icon">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script  src="/cdn/movie-widgets/index.js"></script>
         <title>React app</title>
-        <script>
-            window.MovieWidgets.initialize({
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js"/>
+        <script type="module" src="/cdn/movie-widgets/index.js"></script>
+        <script type="module">
+            import { MovieWidgets } from "/cdn/movie-widgets/index.js";
+
+            MovieWidgets.initialize({
                 theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
             });
         </script>

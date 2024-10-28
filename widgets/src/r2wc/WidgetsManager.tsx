@@ -87,15 +87,12 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     }
 
     #loadCssFile() {
-        const currentScript = document.currentScript as HTMLScriptElement;
-        if (currentScript?.src == null) {
-            throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded from a script tag. Otherwise load it manually.");
+        if (import.meta == null || import.meta.url == null) {
+            throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded as a module not regular <script/>. Otherwise load it manually.");
         }
-
-        const scriptPath = currentScript.src;
-        const cssPath = scriptPath.replace(".js", ".css");
-
+        const cssPath = import.meta.url.replace(".js", ".css");
         const link = document.createElement("link");
+
         link.rel = "preload";
         link.as = "style";
         link.href = cssPath;

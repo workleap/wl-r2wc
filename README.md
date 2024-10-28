@@ -17,10 +17,12 @@ function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
 
 ```html
 <head>
-    <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
-    <link rel="stylesheet" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.css" />
-    <script>
-        window.MovieWidgets.initialize();
+    <link rel="modulepreload" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.js" />
+
+    <script type="module">
+        import { MovieWidgets } from "https://cdn.platform.workleap-dev.com/movie-widgets/index.js";
+
+        MovieWidgets.initialize();
     </script>    
 </head>
 <body>
@@ -257,7 +259,9 @@ The host app needs an API to register and initialize the widgets. `WidgetsManage
 - Register defined widget. Without having them registered, you cannot use them in the host app.
 - [optional] Pass `AppContextProvider`.
 
-Then set the result to `window.MovieWidgets` global variable.
+Then set the result to a const and export it from the module. 
+
+If you like to have access to it accross the whole document, you can assign it to a window variable.
 
 ```tsx
 // src/web-components/widgets.ts
@@ -267,24 +271,24 @@ declare global {
     }
 }
 
-window.MovieWidgets = new WidgetsManager({
+const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
 });
+
+window.MovieWidgets = MovieWidgets;
+
+export { MovieWidgets };
 ```
 
 If you don't have `contextProvider`, simply ignore it:
 ```tsx
 // src/web-components/widgets.ts
-declare global {
-    interface Window {
-        MovieWidgets?: WidgetsManager;
-    }
-}
-
 window.MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement]
 });
+
+export { MovieWidgets };
 ```
 
 `WidgetsManager` loades the related `CSS` file automatically at the time of load. If you want to load the CSS file manually, you can pass the `loadCss: false` to the constructor.
@@ -362,11 +366,12 @@ In such cases, consumers will need to manually update the URLs in their applicat
 The framework-agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widget in your project, use the following snippet:
 
 ```html
-<script
-  src="https://cdn.workleap.com/movie-widgets/index.js"
-></script>
+<link rel="modulepreload" href="https://cdn.workleap.com/movie-widgets/index.js" />
+<script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
 ```
 
+> [!IMPORTANT]
+> The `modulepreload` is almost enough but to get better perforamnce, add the `script` tag right after to run it immediately. This helps on faster custom element registeration. Without it, the script will run when the first usage comes up. 
 
 > [!TIP]
 > The `css` file is being loaded automatically through the above script if you haven't disabled it. 
@@ -378,13 +383,14 @@ Once this is added to the HTML page, the script can now inject the new Web Compo
 An example usage of the widget in an React page:
 
 ```html
-<!DOCTYPE html>
 <html lang="en">
     <head>
-        <script src="/cdn/movie-widgets/index.js"></script>
-        <script type="module" src="index.js"></script>
-        <script>
-            window.MovieWidgets.initialize({ theme: "light" });
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
+        <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
+        <script type="module">
+            import { MovieWidgets } from "/cdn/movie-widgets/index.js";
+
+            MovieWidgets.initialize({ theme: "light" });
 
             const movieDetails = document.getElementByTagName("movie-details")
             movieDetails.addEventListener("on-buy", function (movie, count) {
@@ -404,6 +410,7 @@ An example usage of the widget in an React page:
 In order to use your generated Web Components inside a React+Typescript app, we need to: 
 - Provide type definitions for the widget props.
 - Build a wrapper component for each web component to easily interact with them.
+- Add initial script to the main page
 
 > [!CAUTION]
 > Although it is possible, we **STRONGLY** recommend not using custom HTML attributes and events. Instead, only use the provided `data` and the following utility functions. With this, you will have a unified pattern across your codebase.
@@ -490,7 +497,6 @@ Finally, create the [Widgets.tsx](/apps/react/widgets/Widgets.tsx) file and crea
 import { createWebComponent } from "./widgets-utils.ts";
 import type { MovieDetailsProps, MoviePopupProps, TicketProps } from "./widgets-props.js";
 
-
 export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
 export const MovieFinder = createWebComponent("wl-movie-finder");
 
@@ -507,6 +513,24 @@ Now you can easily use them as regular React components like this:
 > [!NOTE]
 > You can use regular HTML attributes, like `style` with these components.
 
+### Initial script
+This part is pretty similar to VanilaJS example. As we load this package from CDN, **NOT** as a package, we have to load it separately in `index.html` file:
+
+```html
+<html lang="en">
+    <head>
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
+        <script type="module" src="https://cdn.platform.workleap-dev.com/movie-widgets/index.js"></script>
+        <script type="module">
+            import { MovieWidgets } from "/cdn/movie-widgets/index.js";
+            MovieWidgets.initialize({ theme: "light" });
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+    </body>
+</html>
+```
 
 
 ## Future Improvements
