@@ -9,6 +9,7 @@ const registeredWidgets: WebComponentHTMLElementType[] = [];
 const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [];
 let initialized = false;
 
+export const styleSheet = new CSSStyleSheet();
 const rootContainer = document.createElement("div");
 const root = createRoot(rootContainer);
 let delayRendererHandle:number | null = null;
@@ -86,19 +87,33 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         };
     }
 
-    #loadCssFile() {
+    async #loadCssFile() {
         if (import.meta == null || import.meta.url == null) {
             throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded as a module not regular <script/>. Otherwise load it manually.");
         }
         const cssPath = import.meta.url.replace(".js", ".css");
-        const link = document.createElement("link");
+        // const link = document.createElement("link");
 
-        link.rel = "preload";
-        link.as = "style";
-        link.href = cssPath;
-        link.onload = () => { link.rel = "stylesheet"; };
+        // link.rel = "preload";
+        // link.as = "style";
+        // link.href = cssPath;
+        // link.onload = () => {
+        //     link.rel = "stylesheet";
+        //     document.adoptedStyleSheets.push(link.sheet!);
+        //     console.log("link sheet", link.sheet);
+        // };
 
-        document.head.appendChild(link);
+
+        styleSheet.replaceSync(await (await fetch(cssPath)).text());
+
+        // document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
+
+        // link.sheet!.replaceSync(`@import url('${cssPath}');`);
+
+
+        //link.sheet
+
+        // document.head.appendChild(link);
     }
 
     #renderContextWithProps(ContextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
