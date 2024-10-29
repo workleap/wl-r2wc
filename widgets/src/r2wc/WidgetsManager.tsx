@@ -65,7 +65,7 @@ interface IWidgetsManager<T> {
 }
 
 interface ConstructionOptions<T> {
-    loadCss?: boolean;
+    loadCssConfig?: { loadAtDocumentLevelToo?: boolean };
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
 }
@@ -75,11 +75,11 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     static #instanciated = false;
 
     constructor (
-        { elements, contextProvider, loadCss = true }: ConstructionOptions<AppSettings>) {
+        { elements, contextProvider, loadCssConfig = { loadAtDocumentLevelToo: true } }: ConstructionOptions<AppSettings>) {
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
         WidgetsManager.#instanciated = true;
 
-        if (loadCss) {this.#loadCssFile();}
+        this.#loadCssFile(loadCssConfig.loadAtDocumentLevelToo);
 
         register(elements);
         render = () => {
@@ -87,33 +87,18 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         };
     }
 
-    async #loadCssFile() {
+    async #loadCssFile(loadAtDocumentLevelToo = true) {
         if (import.meta == null || import.meta.url == null) {
             throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded as a module not regular <script/>. Otherwise load it manually.");
         }
         const cssPath = import.meta.url.replace(".js", ".css");
-        // const link = document.createElement("link");
-
-        // link.rel = "preload";
-        // link.as = "style";
-        // link.href = cssPath;
-        // link.onload = () => {
-        //     link.rel = "stylesheet";
-        //     document.adoptedStyleSheets.push(link.sheet!);
-        //     console.log("link sheet", link.sheet);
-        // };
-
 
         styleSheet.replaceSync(await (await fetch(cssPath)).text());
 
-        // document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
-
-        // link.sheet!.replaceSync(`@import url('${cssPath}');`);
-
-
-        //link.sheet
-
-        // document.head.appendChild(link);
+        //We need to have it at document level to unlock shadow doms that
+        //render at document.body still get the styles.
+        //It is not the best approach but it is working for now.
+        if (loadAtDocumentLevelToo) {document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];}
     }
 
     #renderContextWithProps(ContextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
