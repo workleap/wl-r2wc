@@ -538,9 +538,13 @@ This part is pretty similar to VanilaJS example. As we load this package from CD
 Even if the current POC is working, there are some improvements that we will look at in the future:
 
 - Possibility of implementing the widget using the Shadow DOM to avoid conflicts with the host app styles.
+  - [x] Having styles [loaded inside shadow elements](https://github.com/gsoft-inc/wl-framework-agnostic-widgets-template/pull/10)
+  - [ ] Pushing all elements to render inside Shadow root. Currently Orbiter renders Modal and Menu at document level which causes them to get their styles from the main document, not the shadow root styles.
 - Further optimizations for bundle size with improved tree-shaking
-- Using preload scripts and styles to avoid page flickering for mission critical widgets like the Navbar
+- Using preload scripts and styles to mitigate page flickering for mission critical widgets like the Navbar
 - Extract the r2wc folder into a library package
+- Strategy to load some components dynamically to decrease the whole package size
+- [Use SSR + Declarative Shadow Dom](https://web.dev/articles/declarative-shadow-dom) to boost performance and remove flickering at all
 
 
 
