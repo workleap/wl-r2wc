@@ -50,7 +50,7 @@ export function notifyWidgetMountState(element: WebComponentHTMLElementBase, eve
     // With delay rendering we avoid uneeded multiple rendering by waiting for all the changes to be done in current thread,
     // and enqueue a render to be done at next step.
     if (initialized && !delayRenderRequested()) {
-        delayRendererHandle = setTimeout(() => {
+        delayRendererHandle = window.setTimeout(() => {
             render();
             delayRendererHandle = null;
         });
