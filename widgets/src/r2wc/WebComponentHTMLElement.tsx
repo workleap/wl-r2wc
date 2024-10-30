@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
 import { type Map, getMapConvert, getMapName } from "./utils.ts";
-import { notifyWidgetMountState } from "./WidgetsManager.tsx";
+import { notifyWidgetMountState, styleSheet } from "./WidgetsManager.tsx";
 
 export class WebComponentHTMLElementBase extends HTMLElement {
     #portal: ReactPortal | null = null;
@@ -24,9 +24,15 @@ export class WebComponentHTMLElementBase extends HTMLElement {
         return this.#portal;
     }
 
-    connectedCallback() {
-        this.#portal = createPortal(this.renderReactComponent(), this);
+    protected buildElement() {
+        const shadow = this.attachShadow({ mode: "closed" });
+        shadow.adoptedStyleSheets = [styleSheet];
+        this.#portal = createPortal(this.renderReactComponent(), shadow);
+    }
 
+    connectedCallback() {
+        //altough we can call it in constructor, we do it here as it is recommended: https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#custom_element_lifecycle_callbacks
+        this.buildElement();
         notifyWidgetMountState(this, "mounted");
     }
 
@@ -39,7 +45,6 @@ export class WebComponentHTMLElementBase extends HTMLElement {
 
 export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType extends string = never> extends WebComponentHTMLElementBase {
     #props = new Observable<Props>();
-
 
     protected get reactComponent(): React.ComponentType<Props> {
         throw new Error("You must implement this method in a subclass.");
