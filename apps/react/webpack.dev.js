@@ -15,6 +15,9 @@ function virtualCdn(config) {
         static:[{
             publicPath: "/cdn/movie-widgets",
             directory: join(__dirname, "../../widgets/dist")
+        }, {
+            publicPath: "/cdn/workleap-header",
+            directory: "/home/mahmoudmoravej/workleap/workleap-navigation-components/dist/cdn"
         }]
     };
 

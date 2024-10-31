@@ -1,4 +1,5 @@
-import { Fragment, type ComponentType } from "react";
+import React, { Fragment, type ComponentType } from "react";
+import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
@@ -65,6 +66,7 @@ interface IWidgetsManager<T> {
 
 interface ConstructionOptions<T> {
     loadCss?: boolean;
+    syncRendering?: boolean;
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
 }
@@ -72,12 +74,14 @@ interface ConstructionOptions<T> {
 export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<AppSettings> {
     #contextProps: Observable<AppSettings> = new Observable();
     static #instanciated = false;
+    #syncRendering: boolean;
 
     constructor (
-        { elements, contextProvider, loadCss = true }: ConstructionOptions<AppSettings>) {
+        { elements, contextProvider, loadCss = true, syncRendering = false }: ConstructionOptions<AppSettings>) {
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
         WidgetsManager.#instanciated = true;
 
+        this.#syncRendering = syncRendering;
         if (loadCss) {this.#loadCssFile();}
 
         register(elements);
@@ -86,11 +90,19 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         };
     }
 
+    #countOccurrences(mainString: string, subString: string) {
+        return mainString.split(subString).length - 1;
+    }
+
     #loadCssFile() {
-        if (import.meta == null || import.meta.url == null) {
+        const { url } = import.meta;
+        if (url == null) {
             throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded as a module not regular <script/>. Otherwise load it manually.");
+        } else if (this.#countOccurrences(url, ".js") > 1) {
+            throw new Error("The WidgetsManager should be loaded from a file with only one '.js' occurrence in its path to load the CSS file automatically.");
         }
-        const cssPath = import.meta.url.replace(".js", ".css");
+
+        const cssPath = url.replace(".js", ".css");
         const link = document.createElement("link");
 
         link.rel = "preload";
@@ -116,7 +128,11 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
 
         const content = contextProvider == null ? <>{portals}</> : this.#renderContextWithProps(contextProvider, portals);
 
-        root.render(content);
+        if (this.#syncRendering) {
+            flushSync(() => {
+                root.render(content);
+            });
+        } else {root.render(content);}
     }
 
     initialize(settings?: AppSettings) {
@@ -135,4 +151,3 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         return this.#contextProps.value;
     }
 }
-

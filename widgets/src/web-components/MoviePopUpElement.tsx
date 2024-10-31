@@ -1,5 +1,4 @@
-import type { Map } from "../r2wc/utils.ts";
-import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
+import { WebComponentHTMLElement, type Map } from "@workleap/r2wc/core";
 import { MoviePopup, type MoviePopupProps } from "../react/MoviePopup.tsx";
 
 type ObservedAttributesType = (typeof MoviePopUpElement.observedAttributes)[number];

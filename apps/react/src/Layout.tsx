@@ -2,6 +2,7 @@
 import { Button, Div, Flex } from "@workleap/orbiter-ui";
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import { WorkleapHeader } from "workleap-nav/react";
 import { MovieFinder, SelectedMovie } from "../widgets/Widgets.tsx";
 import { AppContextProvider, useAppContext } from "./AppContext.tsx";
 
@@ -12,6 +13,8 @@ export function Layout() {
     return (
         <AppContextProvider>
             <Div>
+                <WorkleapHeader data={{}} >
+                </WorkleapHeader>
                 <header style={{ borderBottom: "1px solid black", padding: "5px" }}>
                     <h1>React App</h1>
 

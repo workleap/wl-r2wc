@@ -1,9 +1,6 @@
-export declare global {
-    declare class WebComponentHTMLElement<Props= unknown> extends HTMLElement {
-        get data(): Props | undefined;
-        set data(value: Props);
-    }
+import type { WebComponentHTMLElement } from "@workleap/r2wc/core";
 
+export declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {

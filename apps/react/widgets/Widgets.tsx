@@ -1,5 +1,5 @@
+import { createWebComponent } from "@workleap/r2wc/react-helpers";
 import type { MovieDetailsProps, MoviePopupProps, TicketProps } from "./widgets-props.js";
-import { createWebComponent } from "./widgets-utils.ts";
 
 export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
 export const Ticket = createWebComponent<TicketProps>("wl-ticket");

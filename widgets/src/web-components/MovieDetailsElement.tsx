@@ -1,5 +1,5 @@
-import type { Map } from "../r2wc/utils.ts";
-import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
+
+import { WebComponentHTMLElement, type Map } from "@workleap/r2wc/core";
 import {
     MovieDetails,
     type MovieDetailsProps

@@ -1,4 +1,4 @@
-import { WebComponentHTMLElement } from "../r2wc/WebComponentHTMLElement.tsx";
+import { WebComponentHTMLElement } from "@workleap/r2wc/core";
 import { SelectedMovie } from "../react/SelectedMovie.tsx";
 
 

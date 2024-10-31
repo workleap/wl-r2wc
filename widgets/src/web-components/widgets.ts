@@ -1,4 +1,4 @@
-import { WidgetsManager } from "../r2wc/WidgetsManager.tsx";
+import { WidgetsManager } from "@workleap/r2wc/core";
 import { AppContextProvider, type AppSettings } from "../react/AppContextProvider.tsx";
 import { MovieDetailsElement } from "./MovieDetailsElement.tsx";
 import { MovieFinderElement } from "./MovieFinderElement.tsx";
@@ -20,7 +20,8 @@ declare global {
 
 const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement, MovieFinderElement, SelectedMovieElement, TicketElement],
-    contextProvider: AppContextProvider
+    contextProvider: AppContextProvider,
+    syncRendering: true
 });
 
 window.MovieWidgets = MovieWidgets;

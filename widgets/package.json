@@ -14,7 +14,8 @@
         "@hopper-ui/tokens": "4.4.0",
         "@workleap/orbiter-ui": "5.5.0",
         "react": "18.3.1",
-        "react-dom": "18.3.1"
+        "react-dom": "18.3.1",
+        "@workleap/r2wc": "file:/home/mahmoudmoravej/workleap/wl-framework-agnostic-widgets-poc/packages/r2wc/workleap-r2wc-1.0.0.tgz"
     },
     "devDependencies": {
         "@types/react": "18.3.11",

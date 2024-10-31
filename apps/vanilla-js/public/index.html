@@ -5,9 +5,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Vanilla JS App</title>
-        <link rel="modulepreload" href="/cdn/movie-widgets/index.js"/>
-        <script type="module" src="/cdn/movie-widgets/index.js"></script>
-        <script type="module" src="index.js"></script>
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
+        <script type="module" src="/cdn/movie-widgets/index.js" async="false"></script>
+        <link rel="modulepreload" href="/cdn/workleap-header/index.js" />
+        <script type="module" src="/cdn/workleap-header/index.js" async="false"></script>
+        <script type="module" src="index.js" blocking="render" async="false"></script>
+
         <style>
             body {
                 background-color: whitesmoke;
@@ -20,6 +23,8 @@
         </style>
     </head>
     <body>
+        <wl-header></wl-header>
+        <wl-header></wl-header>
         <div style="display: flex;">
             <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
                 <h3 style="text-align: center;"> Widget Area</h3>

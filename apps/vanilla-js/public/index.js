@@ -1,6 +1,10 @@
 import { MovieWidgets } from "/cdn/movie-widgets/index.js";
+import { WorkleapHeaderManager } from "/cdn/workleap-header/index.js";
+
 
 MovieWidgets.initialize({ theme: "light" });
+WorkleapHeaderManager.initialize();
+
 
 (function init() {
     handleMovieDetailsClick();

@@ -1,0 +1,7 @@
+{
+  "extends": "@workleap/typescript-configs/web-application.json",
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    // "typeRoots": ["./path/to/global.d.ts"]
+  }
+}

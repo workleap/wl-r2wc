@@ -1,4 +1,5 @@
 import type { ReactPortal } from "react";
+import React from "react";
 import { createPortal } from "react-dom";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
@@ -40,7 +41,6 @@ export class WebComponentHTMLElementBase extends HTMLElement {
 export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType extends string = never> extends WebComponentHTMLElementBase {
     #props = new Observable<Props>();
 
-
     protected get reactComponent(): React.ComponentType<Props> {
         throw new Error("You must implement this method in a subclass.");
     }
@@ -75,7 +75,6 @@ export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType exte
         }
     }
 
-
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
         if (oldValue !== newValue) {
             const map = this.map?.attributes?.[name as ObservedAttributesType];
@@ -90,4 +89,3 @@ export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType exte
         }
     }
 }
-

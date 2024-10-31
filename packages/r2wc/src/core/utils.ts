@@ -1,5 +1,4 @@
 
-
 type MapItem<Props> = {
     to: keyof Props;
     convert?: (value: string | null) => Props[keyof Props];
@@ -8,7 +7,6 @@ type MapItem<Props> = {
 type ConditionnalKeys<T, ExpectedValue> = {
     [K in keyof T]: T[K] extends ExpectedValue ? K : never;
 }[keyof T];
-
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FunctionKeys<T> = ConditionnalKeys<T, Function>;

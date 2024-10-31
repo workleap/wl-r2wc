@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import React from "react";
 import { type Observable, useObservable } from "./Observable.ts";
 
 export interface PropsProvider <Props> {

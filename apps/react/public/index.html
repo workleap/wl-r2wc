@@ -5,11 +5,17 @@
         <link href="favicon.png" rel="icon">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>React app</title>
-        <link rel="modulepreload" href="/cdn/movie-widgets/index.js"/>
-        <script type="module" src="/cdn/movie-widgets/index.js"></script>
-        <script type="module">
-            import { MovieWidgets } from "/cdn/movie-widgets/index.js";
 
+        <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
+        <script type="module" src="/cdn/movie-widgets/index.js" async="false"></script>
+        <link rel="modulepreload" href="/cdn/workleap-header/index.js" />
+        <script type="module" src="/cdn/workleap-header/index.js" async="false"></script>
+
+        <script type="module" blocking="render" async="false">
+            import { MovieWidgets } from "/cdn/movie-widgets/index.js";
+            import { WorkleapHeaderManager } from "/cdn/workleap-header/index.js";
+
+            WorkleapHeaderManager.initialize();
             MovieWidgets.initialize({
                 theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
             });

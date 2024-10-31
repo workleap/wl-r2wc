@@ -11,6 +11,9 @@ importers:
       '@workleap/orbiter-ui':
         specifier: ^5.5.0
         version: 5.5.0(@hopper-ui/components@1.3.20(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria@3.35.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@workleap/r2wc':
+        specifier: file:/home/mahmoudmoravej/workleap/wl-framework-agnostic-widgets-poc/packages/r2wc/workleap-r2wc-1.0.0.tgz
+        version: file:../../packages/r2wc/workleap-r2wc-1.0.0.tgz
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -20,6 +23,9 @@ importers:
       react-router-dom:
         specifier: ^6.26.2
         version: 6.26.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      workleap-nav:
+        specifier: file:/home/mahmoudmoravej/workleap/workleap-navigation-components/workleap-nav-2.0.0.tgz
+        version: file:../../../workleap-navigation-components/workleap-nav-2.0.0.tgz(@hopper-ui/components@1.3.20(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria@3.35.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
     devDependencies:
       '@swc/core':
         specifier: 1.7.26
@@ -774,6 +780,14 @@ packages:
       react-aria-components: ^1.2
       react-dom: ^18
 
+  '@hopper-ui/icons@2.8.4':
+    resolution: {integrity: sha512-6iOMyVkt85ayAqIkTReGBOWFRqP2GxAVb3P/ph/DvYVO5PwI0w+uczeaKSkyjUST9qWYqBEL3c7vN6OmSuAIVw==}
+    peerDependencies:
+      '@hopper-ui/styled-system': ^2.4
+      react: ^18
+      react-aria-components: ^1.4
+      react-dom: ^18
+
   '@hopper-ui/styled-system@2.4.0':
     resolution: {integrity: sha512-OLUQAf0fRhMUvglUubAXrWLgNDfeB2voi9MCdfaUhhuU5Jq9iOWy3Mde07t2xarcK+/O8O10/HIAl45DGzbjtw==}
     peerDependencies:
@@ -782,6 +796,9 @@ packages:
 
   '@hopper-ui/tokens@4.4.0':
     resolution: {integrity: sha512-cM4wxM+u2bWwbbg5Z2Y2MA6c998pcrwr+mpbFPbwoMD2LLfKkCtQtbxUNjQmLSYDMXvhALU5ToI87V6sTgbkyg==}
+
+  '@hopper-ui/tokens@4.4.1':
+    resolution: {integrity: sha512-b4enyXJ7ThAvxCBDfM5tdf7xOEJldejukhrXfu/ib3v22mgmDge+v9tnbTJiMWWsjfzAhH/kiIODxLk2f5o7HA==}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -1982,6 +1999,16 @@ packages:
     peerDependencies:
       react: '*'
       react-dom: '*'
+
+  '@workleap/orbiter-ui@5.5.2':
+    resolution: {integrity: sha512-dhtEPF874Crm8PG+VCTMVrz39veUgl67OizrRuujL6QIaHWerV+f5JS7cWsgYUORAlQ9/MnlrIt3/0+H3FQRrA==}
+    peerDependencies:
+      react: '*'
+      react-dom: '*'
+
+  '@workleap/r2wc@file:../../packages/r2wc/workleap-r2wc-1.0.0.tgz':
+    resolution: {integrity: sha512-nFKZIWwGq4e6nslphshKXMyIVp7TlwZHcPA7CTxOPVgm4eTGec0+GvJ0c1Qy/B7/PzDPap1CF5l+VPwQb9Bqsg==, tarball: file:../../packages/r2wc/workleap-r2wc-1.0.0.tgz}
+    version: 1.0.0
 
   '@workleap/swc-configs@2.2.3':
     resolution: {integrity: sha512-zrDsorHKxZY4/DlahkWucNm7kH9xAWxsq0WAWAKcCeFiYUX2TqZT+FNKn3Rl2a//MJgEQJlcYD0VaUIZP3J17A==}
@@ -4884,6 +4911,10 @@ packages:
     resolution: {integrity: sha512-1tMA907+V4QmxV7dbRvb4/8MaRALK6q9Abid3ndMYnbyo8piisCmeONVqVSXqQA3KaP4SLt5b7ud6E2sqP8TFw==}
     engines: {node: '>=0.4.0'}
 
+  workleap-nav@file:../../../workleap-navigation-components/workleap-nav-2.0.0.tgz:
+    resolution: {integrity: sha512-eY8k2w7vDYnx5hZzTFtG5I14YH8iT5m2euB00QUyrMga79TsrGjCiYdSWRJ2+dtERVLvHzkFN1ZPXYxPf/XmCw==, tarball: file:../../../workleap-navigation-components/workleap-nav-2.0.0.tgz}
+    version: 2.0.0
+
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
@@ -5856,6 +5887,15 @@ snapshots:
       react-aria-components: 1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
 
+  '@hopper-ui/icons@2.8.4(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@hopper-ui/styled-system': 2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/utils': 3.25.3(react@18.3.1)
+      clsx: 2.1.1
+      react: 18.3.1
+      react-aria-components: 1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
+
   '@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/ssr': 3.9.6(react@18.3.1)
@@ -5864,6 +5904,8 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@hopper-ui/tokens@4.4.0': {}
+
+  '@hopper-ui/tokens@4.4.1': {}
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -7624,6 +7666,23 @@ snapshots:
       - '@hopper-ui/components'
       - '@hopper-ui/styled-system'
       - react-aria-components
+
+  '@workleap/orbiter-ui@5.5.2(@hopper-ui/components@1.3.20(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria@3.35.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@orbit-ui/transition-components': 5.5.0(@hopper-ui/components@1.3.20(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria@3.35.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@orbit-ui/transition-css': 2.4.0
+      '@orbit-ui/transition-icons': 2.0.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - '@hopper-ui/components'
+      - '@hopper-ui/styled-system'
+      - react-aria-components
+
+  '@workleap/r2wc@file:../../packages/r2wc/workleap-r2wc-1.0.0.tgz':
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@workleap/swc-configs@2.2.3(@swc/core@1.7.26(@swc/helpers@0.5.13))(@swc/helpers@0.5.13)(browserslist@4.23.3)':
     dependencies:
@@ -11221,6 +11280,18 @@ snapshots:
   word-wrap@1.2.5: {}
 
   wordwrap@0.0.3: {}
+
+  workleap-nav@file:../../../workleap-navigation-components/workleap-nav-2.0.0.tgz(@hopper-ui/components@1.3.20(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria@3.35.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+    dependencies:
+      '@hopper-ui/icons': 2.8.4(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@hopper-ui/tokens': 4.4.1
+      '@workleap/orbiter-ui': 5.5.2(@hopper-ui/components@1.3.20(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria@3.35.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@hopper-ui/styled-system@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-aria-components@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - '@hopper-ui/components'
+      - '@hopper-ui/styled-system'
+      - react-aria-components
 
   wrap-ansi@7.0.0:
     dependencies:

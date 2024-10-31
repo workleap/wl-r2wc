@@ -1,4 +1,5 @@
 import { createElement, type HTMLAttributes, useEffect, useRef } from "react";
+import type { WebComponentHTMLElement } from "../core/WebComponentHTMLElement.tsx";
 
 export function createWebComponent<Props = unknown, CustomAttributes = unknown>(tagName: keyof JSX.IntrinsicElements) {
     return function WebComponent(props: { data?: Props } & HTMLAttributes<HTMLElement> & CustomAttributes) {
@@ -14,4 +15,3 @@ export function createWebComponent<Props = unknown, CustomAttributes = unknown>(
         return createElement(tagName, { ref, ...rest });
     };
 }
-
