@@ -13,6 +13,9 @@ function virtualCdn(config) {
     config.devServer = {
         ...config.devServer,
         static:[{
+            publicPath: "/",
+            directory: join(__dirname, "public")
+        }, {
             publicPath: "/cdn/movie-widgets",
             directory: join(__dirname, "../../widgets/dist")
         }, {

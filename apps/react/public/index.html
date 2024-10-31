@@ -10,16 +10,8 @@
         <script type="module" src="/cdn/movie-widgets/index.js" async="false"></script>
         <link rel="modulepreload" href="/cdn/workleap-header/index.js" />
         <script type="module" src="/cdn/workleap-header/index.js" async="false"></script>
+        <script type="module" src="/index.js" blocking="render" async="false"></script>
 
-        <script type="module" blocking="render" async="false">
-            import { MovieWidgets } from "/cdn/movie-widgets/index.js";
-            import { WorkleapHeaderManager } from "/cdn/workleap-header/index.js";
-
-            WorkleapHeaderManager.initialize();
-            MovieWidgets.initialize({
-                theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
-            });
-        </script>
     </head>
     <body>
         <div id="root"></div>

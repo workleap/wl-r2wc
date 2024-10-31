@@ -15,20 +15,17 @@ export function Layout() {
             <Div>
                 <WorkleapHeader data={{}} >
                 </WorkleapHeader>
-                <header style={{ borderBottom: "1px solid black", padding: "5px" }}>
-                    <h1>React App</h1>
-
-                    <Link to="/">Buy Tickets</Link> &nbsp;
-                    <Link to="/store">Online Shop</Link>
+                <header style={{ borderBottom: "1px solid black", padding: "5px", display: "flex", justifyContent: "space-between" }}>
+                    <div>
+                        <h1>React App</h1>
+                        <Link to="/">Buy Tickets</Link> &nbsp;
+                        <Link to="/store">Online Shop</Link>
+                    </div>
                     <Flex
                         direction="column"
                         style={{
-                            float: "right",
-                            display: "fixed",
-                            top: "10px",
-                            position: "absolute",
-                            right: "10px",
-                            width: "200px"
+                            justifyContent: "center",
+                            padding: "5px"
                         }}
                     >
 
