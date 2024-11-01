@@ -13,8 +13,7 @@
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-router-dom": "^6.26.2",
-        "@workleap/r2wc": "file:/home/mahmoudmoravej/workleap/wl-framework-agnostic-widgets-poc/packages/r2wc/workleap-r2wc-1.0.0.tgz",
-        "workleap-nav": "file:/home/mahmoudmoravej/workleap/workleap-navigation-components/workleap-nav-2.0.0.tgz"
+        "@workleap/r2wc": "workspace:*"
     },
     "devDependencies": {
         "@swc/core": "1.7.26",

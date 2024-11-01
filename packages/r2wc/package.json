@@ -7,15 +7,15 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "exports": {
-        "./core": {
-            "import": "./dist/core/index.js",
-            "types": "./dist/core/index.d.ts",
-            "default": "./dist/core/index.js"
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
         },
-        "./react-helpers":{
-            "import": "./dist/react-helpers/index.js",
-            "types": "./dist/react-helpers/index.d.ts",
-            "default": "./dist/react-helpers/index.js"
+        "./helpers/react":{
+            "import": "./dist/helpers/react/index.js",
+            "types": "./dist/helpers/react/index.d.ts",
+            "default": "./dist/helpers/react/index.js"
         }
     },
     "files": [

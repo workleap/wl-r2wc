@@ -1,4 +1,4 @@
-import type { WidgetsManager } from "@workleap/r2wc/core";
+import type { WidgetsManager } from "@workleap/r2wc";
 
 interface AppSettings {
     theme: "light" | "dark" | "system";

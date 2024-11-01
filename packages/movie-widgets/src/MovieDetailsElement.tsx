@@ -1,9 +1,9 @@
 
-import { WebComponentHTMLElement, type Map } from "@workleap/r2wc/core";
+import { WebComponentHTMLElement, type Map } from "@workleap/r2wc";
 import {
     MovieDetails,
     type MovieDetailsProps
-} from "../react/MovieDetails.tsx";
+} from "./MovieDetails.tsx";
 
 type ObservedAttributesType = (typeof MovieDetailsElement.observedAttributes)[number];
 export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsProps, ObservedAttributesType> {

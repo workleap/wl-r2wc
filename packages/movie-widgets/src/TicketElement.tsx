@@ -1,5 +1,5 @@
-import { WebComponentHTMLElement, type Map } from "@workleap/r2wc/core";
-import { Ticket, type TicketProps } from "../react/Ticket.tsx";
+import { WebComponentHTMLElement, type Map } from "@workleap/r2wc";
+import { Ticket, type TicketProps } from "./Ticket.tsx";
 
 type ObservedAttributesType = (typeof TicketElement.observedAttributes)[number];
 

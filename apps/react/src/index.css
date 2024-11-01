@@ -1,7 +1,6 @@
 /* index.css */
 
 @import "@workleap/orbiter-ui/index.css";
-@import "workleap-nav/cdn/index.css";
 
 body {
     background-color: whitesmoke; /* Default background color */

@@ -6,10 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Vanilla JS App</title>
         <link rel="modulepreload" href="/cdn/movie-widgets/index.js" />
-        <script type="module" src="/cdn/movie-widgets/index.js" async="false"></script>
-        <link rel="modulepreload" href="/cdn/workleap-header/index.js" />
-        <script type="module" src="/cdn/workleap-header/index.js" async="false"></script>
-        <script type="module" src="index.js" blocking="render" async="false"></script>
+        <script type="module" src="/cdn/movie-widgets/index.js"></script>
+        <script type="module" src="index.js" blocking="render"></script>
 
         <style>
             body {
@@ -24,11 +22,15 @@
     </head>
     <body>
         <wl-header></wl-header>
-        <wl-header></wl-header>
+        <header style="border-bottom: 1px solid black; padding: 5px; display: flex; justify-content: space-between;">
+            <div>
+                <h1>VanillaJs App</h1>
+            </div>
+        </header>
         <div style="display: flex;">
             <div style="flex:1; margin: 50px; border: 5px solid gray; padding: 5px">
                 <h3 style="text-align: center;"> Widget Area</h3>
-                <wl-selected-movie style="font-weight: bold; margin:3px;"></wl-selected-movie>
+                <wl-selected-movie style="font-weight: bold; margin:3px; "></wl-selected-movie>
                 <wl-movie-details id="movide-details" show-ranking="true" />
                 <wl-movie-details show-ranking="false" mode="inline" />
             </div>
