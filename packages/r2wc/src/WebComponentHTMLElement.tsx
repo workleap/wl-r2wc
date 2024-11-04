@@ -3,7 +3,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { Observable } from "./Observable.ts";
 import { PropsProvider } from "./PropsProvider.tsx";
-import { type Map, getMapConvert, getMapName } from "./utils.ts";
+import { type AttributeEventMap, getMapConvert, getMapName } from "./utils.ts";
 import { notifyWidgetMountState } from "./WidgetsManager.tsx";
 
 export class WebComponentHTMLElementBase extends HTMLElement {
@@ -71,7 +71,7 @@ export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType exte
         this.#props.value = value;
     }
 
-    get map(): Map<Props, ObservedAttributesType> | undefined {
+    get map(): AttributeEventMap<Props, ObservedAttributesType> | undefined {
         return undefined;
     }
 

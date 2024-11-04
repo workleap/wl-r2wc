@@ -65,10 +65,10 @@ interface IWidgetsManager<T> {
 }
 
 interface ConstructionOptions<T> {
-    ignoreLoadingCss?: boolean;
-    syncRendering?: boolean;
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
+    ignoreLoadingCss?: boolean;
+    syncRendering?: boolean;
 }
 
 export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<AppSettings> {

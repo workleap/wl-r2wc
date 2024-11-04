@@ -1,4 +1,4 @@
-import { WebComponentHTMLElement, type Map } from "@workleap/r2wc";
+import { WebComponentHTMLElement, type AttributeEventMap } from "@workleap/r2wc";
 import { Ticket, type TicketProps } from "./Ticket.tsx";
 
 type ObservedAttributesType = (typeof TicketElement.observedAttributes)[number];
@@ -11,7 +11,7 @@ export class TicketElement extends WebComponentHTMLElement<TicketProps, Observed
         return Ticket;
     }
 
-    get map(): Map<TicketProps, ObservedAttributesType> {
+    get map(): AttributeEventMap<TicketProps, ObservedAttributesType> {
         return {
             attributes:{
                 "key": "key",

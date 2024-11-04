@@ -11,7 +11,7 @@ type ConditionnalKeys<T, ExpectedValue> = {
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FunctionKeys<T> = ConditionnalKeys<T, Function>;
 
-export interface Map<Props, ObservedAttributesType extends string> {
+export interface AttributeEventMap<Props, ObservedAttributesType extends string> {
     attributes?: Record<ObservedAttributesType, MapItem<Props>>;
     events?: Record<string, MapItem<Props>>;
 }

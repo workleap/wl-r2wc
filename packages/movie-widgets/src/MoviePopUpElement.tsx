@@ -1,4 +1,4 @@
-import { WebComponentHTMLElement, type Map } from "@workleap/r2wc";
+import { WebComponentHTMLElement, type AttributeEventMap } from "@workleap/r2wc";
 import { MoviePopup, type MoviePopupProps } from "./MoviePopup.tsx";
 
 type ObservedAttributesType = (typeof MoviePopUpElement.observedAttributes)[number];
@@ -11,7 +11,7 @@ export class MoviePopUpElement extends WebComponentHTMLElement<MoviePopupProps, 
         return MoviePopup;
     }
 
-    get map(): Map<MoviePopupProps, ObservedAttributesType> {
+    get map(): AttributeEventMap<MoviePopupProps, ObservedAttributesType> {
         return {
             attributes: {
                 "text": "text"
