@@ -65,7 +65,7 @@ interface IWidgetsManager<T> {
 }
 
 interface ConstructionOptions<T> {
-    loadCss?: boolean;
+    ignoreLoadingCss?: boolean;
     syncRendering?: boolean;
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
@@ -77,12 +77,12 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     #syncRendering: boolean;
 
     constructor (
-        { elements, contextProvider, loadCss = true, syncRendering = false }: ConstructionOptions<AppSettings>) {
+        { elements, contextProvider, ignoreLoadingCss = true, syncRendering = false }: ConstructionOptions<AppSettings>) {
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
         WidgetsManager.#instanciated = true;
 
         this.#syncRendering = syncRendering;
-        if (loadCss) {this.#loadCssFile();}
+        if (!ignoreLoadingCss) {this.#loadCssFile();}
 
         register(elements);
         render = () => {
@@ -97,7 +97,7 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     #loadCssFile() {
         const { url } = import.meta;
         if (url == null) {
-            throw new Error("In order to load relative CSS file automatically (loadCss: true), the WidgetsManager should be loaded as a module not regular <script/>. Otherwise load it manually.");
+            throw new Error("In order to load relative CSS file automatically, the WidgetsManager should be loaded as a module not regular <script/> tag. Otherwise, turn it off by setting ignoreLoadingCss: false.");
         } else if (this.#countOccurrences(url, ".js") > 1) {
             throw new Error("The WidgetsManager should be loaded from a file with only one '.js' occurrence in its path to load the CSS file automatically.");
         }

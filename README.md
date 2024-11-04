@@ -10,7 +10,7 @@ To do that, we use [Web Components](https://developer.mozilla.org/en-US/docs/Web
 For example a simple HTML app can use the following `MovieDetails` React component inside their pages as regular HTML tags:
 
 ```tsx
-function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
+function MovieDetails({ mode, showRanking }: MovieDetailsProps) {
     return <Content>...</Content>;
 }
 ```
@@ -18,8 +18,7 @@ function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
 ```html
 <head>
     <link rel="modulepreload" href="https://cdn.platform.workleap-dev.com/movie-widgets/index.js" />
-
-    <script type="module">
+    <script type="module" blocking="render">
         import { MovieWidgets } from "https://cdn.platform.workleap-dev.com/movie-widgets/index.js";
 
         MovieWidgets.initialize();
@@ -36,43 +35,42 @@ function MovieDetails({ pageSize, theme }: MovieDetailsProps) {
 
 ## Code structure
 
-The main functionality is inside the `widgets` folder.
-The `apps` folder contains a few examples to test the functionality in different frameworks.
+- The `packages/r2wc` package contains the core functionality that will be used by different widgets. 
+- The `packages/movie-widgets` package is a sample template to show how to build  framework-agnostic widgets.  
+- The `apps` folder contains a few examples to test `packages/movie-widgets` across different frameworks.
 
 ## How to use this repo?
 
-This repo is a template repo which also has some examples to see how this strategy works in action. After cloning the repo:
+This repo is a package + template repo which also has some examples to see how this strategy works in action. After cloning the repo:
 
-- Run `pnpm install` inside `/widgets`, `/app/vanilla-js`, and `app/react`,
-- Run `pnpm build` inside `/widgets` to build the output files.
-- To run the apps, inside their folders:
-  - Run `pnpm start` for Vanilla-Js app.
-  - run `pnpm dev` for React app.
+- Run `pnpm install && pnpm build` inside the root,
+- To run the sample apps run `pnpm dev` inside the [Vanilla-Js app](/apps/vanilla-js/) or   the [React app](/apps/react/) folders.
 
 > [!IMPORTANT]
-> Whenever you make a change inside the `widgets` you need only to run `pnpm build` and then refresh your running apps.
+> Whenever you make a change inside the `packages/movie-widgets` you only need to run `pnpm build` and then refresh your running apps. It is becuase of having [dist](/packages/movie-widgets/dist/) folder as `cdn` for each app: [VanillaJs](/apps/vanilla-js/server.js) and [React](/apps/react/webpack.dev.js).
 
 You can follow the next steps to see how you can change and see the result.
 
 ## How to create a framework-agnostic widget?
+It is recommended having a separate package for this purpose. It helps managing different builds easily. For the rest, `packages/movie-widgets` showcases this.  
 
 ### Main logic in React
 
-Just build your regular React components and put them in the `react` folder.
+Just build your regular React components and put them in the `src` folder.
 
-You are free to create any kind of React component, just there are some rules for **exposed** components:
+You are free to create any kind of React component, just there are some rules for  components that are being **exposed** as Web Components:
 
 - They should **NOT** have `children`. e.g.:
 
   ```tsx
-  function NotAllowedComponent({ children }: { children: ReactNode }) {
+  function NotAllowedWebComponent({ children }: { children: ReactNode }) {
       return <div>{children}</div>;
   }
   ```
 
 - `JSX` props are **NOT** not allowed as they cannot be translated easily to the similar HTML properties. e.g.:
   ```tsx
-  function NotAllowedComponent({ header }: { header: ReactNode }) {
+  function NotAllowedWebComponent({ header }: { header: ReactNode }) {
       return <div>{header}</div>;
   }
   ```
@@ -83,7 +81,7 @@ You are free to create any kind of React component, just there are some rules fo
 Here is a valid component which we can later make a web component based on it. Note that `<Layout/>`, `<Header/>`, `<Content/>` are inner components.
 
 ```tsx
-// src/react/MovieDetails.tsx
+// src/MovieDetails.tsx
 export interface MovieDetailsProps {
     showRanking: boolean;
     onBuy: (movie : MovieData, count: number) => void;
@@ -111,7 +109,7 @@ Widgets inside the same project could share context as a regular React app. This
 
 
 ```tsx
-// src/react/AppContextProvider.tsx
+// src/AppContextProvider.tsx
 export function AppContextProvider({ children }: {
     children?: React.ReactNode | undefined;
 }) {
@@ -138,12 +136,12 @@ export function AppContextProvider({ children }: {
 There are scenarios where you want to pass down some app settings that are being used by all widgets. For example:
 
 - Passing app current theme or language
-- Passing api URL, app name, app logo, etc.
+- Passing backend API URL, app name, app logo, etc.
 
 If you have only one widget, it is ok to pass them through it as widget props, but if you have multiple widgets, it is not perfect to do the same for all widgets. To do that, add these settings to `AppSettings` and modify previously created `AppContextProvider` to handle them.
 
 ```tsx
-// src/react/AppContextProvider.tsx
+// src/AppContextProvider.tsx
 export interface AppSettings {
     theme: "light" | "dark" | "system";
     language: string;
@@ -175,28 +173,29 @@ You need to merge the two above examples if you support both optional "Sharing c
 
 In this section we create [custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements) (part of Web Components) to expose our React components as framework agnostic widgets. We don't need to create custom elements for inner components (e.g. `Body` , `Item`, `Header`)
 
-To make life easier, we moved the generic codes to the `r2wc` folder (React to Web Component). This folder contains:
+To make life easier, we moved the generic codes to the `@workleap/r2wc` package (React to Web Component).
 
-- `WebComponentHTMLElement.tsx`: The base class for defining and creating custom elements.
-- `WidgetsManager.tsx`: The main scripts to create and render custom elements in the browser.
-- `PropsProvider.tsx`: It brings a mechanism to keep custom element properties sync with React component properties.
 
 #### Define custom elements
 
-To create a custom element, inherit from the `WebComponentHTMLElement<Props, ObservedAttributesType>` class where:
+To create a custom element, 
+- inherit from the `WebComponentHTMLElement<Props, ObservedAttributesType>` class (inside `@workleap/r2wc` package), where:
 - (optional) `Props` is the React component `Props` type. 
 - (optional) `ObservedAttributesType` is the union type for new observed HTML attributes. This helps to keep type safety for them. You will see the usage in the following example. 
 
-It is required to define four properties in the inherited class:
-- `tagName`: (required) To set the HTML attribute name.
-- `observedAttributes`: (optional) to set the newly added HTML attributes if there is any. 
-- `reactComponent`: to set the related React component,
+Define these properties in the inherited class:
+- `tagName` (**required**): To set the HTML attribute name.
+- `reactComponent` (**required**): to set the related React component,
+- `observedAttributes`: to set the newly added HTML attributes if there is any. 
 - `map`: to define a map for HTML attributes to React props, and HTML events to React callback props.
+- `initialStyle`: to define initial style for the Web Component before having it rendered. it is really helpful to prevent [layout shifting](https://web.dev/articles/cls) while waiting the web component to get rendered. 
 
 It is also required to define a `ObservedAttributesType`  union type based on the `observedAttributes` values.
 
 ```tsx
-// src/web-components/MovieDetailsElement.tsx
+// src/MovieDetailsElement.tsx
+import { WebComponentHTMLElement, type Map } from "@workleap/r2wc"
+
 type ObservedAttributesType = (typeof MovieDetailsElement.observedAttributes)[number];
 
 export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsProps, ObservedAttributesType> {
@@ -218,6 +217,13 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
             }
         };
     }
+
+    get initialStyle(): Partial<CSSStyleDeclaration> {
+        return {
+            display: "block",
+            height: "48px"
+        };
+    }    
 }
 ```
 
@@ -249,28 +255,24 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
 > [!TIP]
 > The base class has the `data` property ([not attribute](https://open-wc.org/guides/knowledge/attributes-and-properties/)) for the underlying React component. In other words, you can use the `data` property in Javascript to get and set all React props regardless of declaring attributes or events. 
 
-Put the created file inside the `src/web-components` folder.
+Put the created file inside the `src` folder.
 
 
 #### Define WidgetsManager
 
-The host app needs an API to register and initialize the widgets. `WidgetsManager` class does this for you. To do that, create the [widgets.ts](/widgets/src/web-components/widgets.ts) file and create the `WidgetsManager` class to: 
+The host app needs an API to register and initialize the widgets. `WidgetsManager` class does this for you. To do that, create the [widgets.ts](/packages/movie-widgets/src/widgets.ts) file and create a new instance of the `WidgetsManager` class. Its construcor accepts this parameters:
 
-- Register defined widget. Without having them registered, you cannot use them in the host app.
-- [optional] Pass `AppContextProvider`.
+- `elements` (**required**): An array of widgets to register. Without having them registered, you cannot use them in the host app.
+- `contextProvider`: to pass shared context provider, e.g. `AppContextProvider`.
+- `ignoreLoadingCss`: if you want the host to load the related CSS file, set this to true. Otherwise the manager will load the css file [automatically](/packages/r2wc/src/WidgetsManager.tsx).
+- `syncRendering`: (**not recommended**) If you want the web component rendering happens syncronously. It may be useful for critical widgets that need to be present as soon as the page gets loaded. It is not recommended as it uses [flushSync](https://react.dev/reference/react-dom/flushSync) behind the hood and it may affect the overal page load time.  
 
 Then set the result to a const and export it from the module. 
 
-If you like to have access to it accross the whole document, you can assign it to a window variable.
+If you like to have access to it across the whole document, you can assign it to a window variable.
 
 ```tsx
-// src/web-components/widgets.ts
-declare global {
-    interface Window {
-        MovieWidgets?: WidgetsManager<AppSettings>;
-    }
-}
-
+// src/widgets.ts
 const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
     contextProvider: AppContextProvider
@@ -281,9 +283,22 @@ window.MovieWidgets = MovieWidgets;
 export { MovieWidgets };
 ```
 
+> [!IMPORTANT]
+> You need to create a `types.d.ts` [file](/packages/movie-widgets/src/types.d.ts) and add the following declaration to be able to define `window.MovieWidgets` at window level:
+> ```ts
+> import type { IWidgetsManager } from "@workleap/r2wc";
+> import type { AppSettings } from "./AppContextProvider.tsx";
+> 
+> export declare global {
+>     interface Window {
+>         MovieWidgets?: IWidgetsManager<AppSettings>;
+>     }
+> }
+> ```
+
 If you don't have `contextProvider`, simply ignore it:
 ```tsx
-// src/web-components/widgets.ts
+// src/widgets.ts
 window.MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement]
 });
@@ -291,28 +306,117 @@ window.MovieWidgets = new WidgetsManager({
 export { MovieWidgets };
 ```
 
-`WidgetsManager` loades the related `CSS` file automatically at the time of load. If you want to load the CSS file manually, you can pass the `loadCss: false` to the constructor.
+`WidgetsManager` loades the related `CSS` file automatically at the time of load. If you want to load the CSS file manually, you can pass the `ignoreLoadingCss: true` to the constructor.
 
 `WidgetsManager` class exposes the following API which is being used inside the host apps.
 - `initialize(config: AppSettings)` : To initiate the widgets and pass the initial state of `AppSettings`.
 - `update(config: Partial<AppSettings>)`: To change the state of `AppSettings`. You only need to pass the changed settings.
 - `appSettings: AppSettings`: To get the current app settings.
 
-#### Build the output
+#### [Optional] Define React helpers
+If you want to ease the process of using your defined web components inside React hosts, you
+have to create the following files and [later](#optional-react-helpers-output) set up the package to export them properly.
 
-Everything is ready! Just make sure you have setup the `tsup.build.ts` correctly:
+First, declare types for defined Web Components inside the [/src/helpers/react/types.d.ts](/packages/movie-widgets/src/helpers/react/types.d.ts) file:
 
-- Include both `minify: true` and `treeshake: true`
-- Include the required css file and `widget.ts` inside the `src/index.ts` file.
+```ts
+import type { WebComponentHTMLElement } from "@workleap/r2wc";
 
-After running the `pnpm build` inside the `widgets` folder, you will get `index.ts` and `index.css` files inside the `dist` folder. You need them in consumer apps to load and render widgets.
+export declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace JSX {
+        interface IntrinsicElements {
+            "wl-movie-details": WebComponentHTMLElement;
+            "wl-movie-finder": WebComponentHTMLElement;
+        }
+    }
+}
+```
+
+Second, define wrapper components inside [src/helpers/react/index.ts](/packages/movie-widgets/src/helpers/react/index.ts) to ease the usage. Make sure you export both `types.d.ts` file as mentioned below:
+
+```ts
+import { createWebComponent } from "@workleap/r2wc/helpers/react";
+import type { MovieDetailsProps } from "../../MovieDetails.tsx";
+
+export type * from "../../types.d.ts";
+export type * from "./types.d.ts";
+
+export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
+export const MovieFinder = createWebComponent("wl-movie-finder");
+```
+
+> [!TIP]
+> With above definitions, the host app can easily use the component's props similar to how they defined, but just through the `data` property:
+> ```ts
+> function Page() {
+>   return (
+>     <MovideDetails data={{mode: "inline", showRanking: true}} />
+>   );
+> }
+> ```
+> Without these helpers, your hosts have to do more to be able to use Web Components.
+
+
+## Build the output
+Everything is ready! We setup two different builds. One for CDN output, and the other a helper package for React hosts.
+
+### CDN output
+
+ Just make sure you have setup the [tsup.build.cdn.ts file](/packages/movie-widgets/tsup.build.cdn.ts) correctly:
+
+```ts
+export default defineBuildConfig({
+    entry: ["src/index.ts"],
+    outDir: "dist/cdn",
+    noExternal: [/.*/],
+    dts: false,
+    minify: true,
+    treeshake: true
+});
+```
+
+After running the `pnpm build` inside the package, you will get `index.ts` and `index.css` files inside the `dist/cdn` folder. You need them in host apps to load and render widgets.
 
 > [!IMPORTANT]
-> This output is not for packaging. It is expected to be downloaded by the consumers apps from a CDN.
+> This output is **NOT** for packaging. It is expected to be downloaded by the host apps from a CDN.
+
+
+### [Optional] React helpers output
+If you have defined [React helpers](#optional-define-react-helpers), you have to build the special output of your package as weel. 
+
+ Firsct create the [tsup.build.react.ts file](/packages/movie-widgets/tsup.build.react.ts). Rememer to enable `dts: true`: 
+```ts
+export default defineBuildConfig({
+    entry: ["src/helpers/react/index.ts"],
+    outDir: "dist/react",
+    dts: true,
+    clean: true,
+    sourcemap: true
+});
+```
+
+Second, add the following to the [package.json](/packages/movie-widgets/package.json):
+```json
+    "name": "@workleap/movie-widgets",
+    "version": "1.0.0",
+    "main": "dist/react/index.js",
+    "types": "dist/react/index.d.ts",
+    "exports": {
+        "./react": {
+            "import": "./dist/react/index.js",
+            "types": "./dist/react/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+```
+The above ensures you can import `@workleap/movie-widgets/helpers/react` inside the React hosts.
 
 ## Deployment
 
-This widgets project generates two files that need to be made available to our widgets consumers: `index.js` and `index.css`.
+The generated files inside the `/dist/cdn` folder(i.e `index.js` and `index.css`) need to be made available to our widgets consumers.
 
 > [!CAUTION]
 > #### The total combined size of these two files (after minification and Gzip compression) **SHOULD NOT** exceed 100KB.
@@ -361,9 +465,9 @@ For example, breaking changes might be deployed to:
 In such cases, consumers will need to manually update the URLs in their applications to point to the new version (/2/index.js and /2/index.css). Since breaking changes are involved, this manual update is necessary to ensure compatibility with the new version.
 
 ## Usage
-**How to consume framework-agnostic widget?**
+**How to consume framework agnostic widget?**
 
-The framework-agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widget in your project, use the following snippet:
+The framework agnostic widget can be consumed directly in any HTML page by referencing the deployed CDN files. To include the widgets in your project, use the following snippet:
 
 ```html
 <link rel="modulepreload" href="https://cdn.workleap.com/movie-widgets/index.js" />
@@ -380,7 +484,7 @@ Once this is added to the HTML page, the script can now inject the new Web Compo
 
 ### Vanilla Js 
 
-An example usage of the widget in an React page:
+An example usage of the widget in an HTML page:
 
 ```html
 <html lang="en">
@@ -407,113 +511,20 @@ An example usage of the widget in an React page:
 
 ### React + Typescript
 
-In order to use your generated Web Components inside a React+Typescript app, we need to: 
-- Provide type definitions for the widget props.
-- Build a wrapper component for each web component to easily interact with them.
-- Add initial script to the main page
-
-> [!CAUTION]
-> Although it is possible, we **STRONGLY** recommend not using custom HTML attributes and events. Instead, only use the provided `data` and the following utility functions. With this, you will have a unified pattern across your codebase.
-
-
-### Declare types
-
-Create type definitions inside [web-components.d.ts](/apps/react/widgets/web-components.d.ts) like this:
-
-```typescript
-// apps/react/widgets/web-components.d.ts
-
-declare global {
-
-    declare class WebComponentHTMLElement<Props= unknown> extends HTMLElement {
-        get data(): Props | undefined;
-        set data(value: Props);
-    }    
-    
-    namespace JSX {
-        interface IntrinsicElements {
-            "wl-movie-finder": WebComponentHTMLElement;
-            "wl-movie-details": WebComponentHTMLElement;
-        }
-    }
-}
-```
-
-For the API available through the `window.MovieWidgets` object, you should create a type definition [widgets-manager.d.ts](/apps/react/widgets/widgets-manager.d.ts) like this:
-
-```typescript
-// apps/react/widgets/widgets-manager.d.ts
-interface AppSettings {
-    theme: "light" | "dark" | "system";
-}
-
-interface IWidgetsManager<T> {
-    initialize: (settings?: T) => void;
-    update: (settings: Partial<T>) => void;
-    appSettings?: T | null;
-}
-
-export declare global {
-    interface Window {
-        MovieWidgets?: IWidgetsManager<AppSettings>;
-    }
-}
-```
-
-### Wrapper components
-Although you can use basic HTML web components, but it is encouraged to use the following helper functions to have full and straightforward access to the underlying React component props, mostly like how it is defined.
-
-To do that, first you need put the components props declartions inside the [widgets-props.d.ts](/apps/react/widgets/widgets-props.d.ts)
-
-```ts
-// apps/react/widgets/widgets-props.d.t
-export declare interface MovieData {
-    key: string;
-    title: string;
-}
-
-export declare interface MovieDetailsProps {
-    showRanking: boolean;
-    onBuy?: (movie : MovieData, count: number) => void;
-    mode: "modal" | "inline";
-}
-```
-
-Then, create the `widgets-utils.ts` file and copy and pase the utility function from the provided [widgets-utils.ts](/apps/react/widgets/widgets-utils.ts) file. 
-```tsx
-// apps/react/widgets/widgets-utils.ts
-import { createElement, type HTMLAttributes, useEffect, useRef } from "react";
-
-export function createWebComponent<Props = unknown, CustomAttributes = unknown>(tagName: keyof JSX.IntrinsicElements) {
-    //left empty by intention. Copy the whole file from the source code
-}
-
-```
-
-Finally, create the [Widgets.tsx](/apps/react/widgets/Widgets.tsx) file and create the React version of web components which get their props through the `data` property. 
-
-```tsx
-// apps/react/widgets/Widgets.tsx
-import { createWebComponent } from "./widgets-utils.ts";
-import type { MovieDetailsProps, MoviePopupProps, TicketProps } from "./widgets-props.js";
-
-export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
-export const MovieFinder = createWebComponent("wl-movie-finder");
-
-```
-
-Now you can easily use them as regular React components like this:
+if you have defined [React helpers](#optional-define-react-helpers), you can easily import `@workleap/movie-widgets` package and then use the generated Web Components wrappers:
 
 ```jsx
+import { MovieDetails, MovieFinder } from "@workleap/movie-widgets/react";
+
 <MovieDetails data={{ mode: "modal", showRanking: true, onBuy: buyTickets }} />
 <MovieDetails data={{ showRanking: false, mode: "inline" }} />
 <MovieFinder style={{ fontWeight: "bold" }} />
 ```
 
 > [!NOTE]
-> You can use regular HTML attributes, like `style` with these components.
+> You can use regular HTML attributes, like `style`, with these components.
 
-### Initial script
+#### Initial script
 This part is pretty similar to VanilaJS example. As we load this package from CDN, **NOT** as a package, we have to load it separately in `index.html` file:
 
 ```html
@@ -541,8 +552,6 @@ Even if the current POC is working, there are some improvements that we will loo
   - [x] Having styles [loaded inside shadow elements](https://github.com/gsoft-inc/wl-framework-agnostic-widgets-template/pull/10)
   - [ ] Pushing all elements to render inside Shadow root. Currently Orbiter renders Modal and Menu at document level which causes them to get their styles from the main document, not the shadow root styles.
 - Further optimizations for bundle size with improved tree-shaking
-- Using preload scripts and styles to mitigate page flickering for mission critical widgets like the Navbar
-- Extract the r2wc folder into a library package
 - Strategy to load some components dynamically to decrease the whole package size
 - [Use SSR + Declarative Shadow Dom](https://web.dev/articles/declarative-shadow-dom) to boost performance and remove flickering at all
 
