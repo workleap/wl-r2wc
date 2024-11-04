@@ -1,5 +1,5 @@
 
-import { WebComponentHTMLElement, type Map } from "@workleap/r2wc";
+import { WebComponentHTMLElement, type AttributeEventMap } from "@workleap/r2wc";
 import {
     MovieDetails,
     type MovieDetailsProps
@@ -14,7 +14,7 @@ export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsPro
         return MovieDetails;
     }
 
-    get map(): Map<MovieDetailsProps, ObservedAttributesType> {
+    get map(): AttributeEventMap<MovieDetailsProps, ObservedAttributesType> {
         return {
             attributes: {
                 "show-ranking": { to: "showRanking", convert: value => value === "true" },
