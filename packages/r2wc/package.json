@@ -28,7 +28,7 @@
         "changeset": "changeset add && changeset version",
         "changeset:add": "changeset add",
         "lint": "pnpm run \"/^lint:.*/\"",
-        "lint:js": "eslint .",
+        "lint:eslint": "eslint .",
         "lint:types": "tsc --noEmit"
     },
     "dependencies": {

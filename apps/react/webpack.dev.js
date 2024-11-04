@@ -17,7 +17,7 @@ function virtualCdn(config) {
             directory: join(__dirname, "public")
         }, {
             publicPath: "/cdn/movie-widgets",
-            directory: join(__dirname, "../../widgets/dist")
+            directory: join(__dirname, "../../packages/movie-widgets/dist/cdn")
         }]
     };
 

@@ -1,8 +1,9 @@
 import { Button, Div, Flex } from "@workleap/orbiter-ui";
 import { Link, Outlet } from "react-router-dom";
-import { MovieFinder, SelectedMovie } from "../widgets/Widgets.tsx";
-import { AppContextProvider, useAppContext } from "./AppContext.tsx";
 
+import { MovieFinder, SelectedMovie } from "@workleap/movie-widgets/react";
+
+import { AppContextProvider, useAppContext } from "./AppContext.tsx";
 
 export function Layout() {
     const { setTheme } = useAppContext();

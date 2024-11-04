@@ -1,0 +1,11 @@
+{
+  "name": "wl-framework-agnostic-widgets",
+  "private": true,
+  "author": "Workleap",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r \"/^lint:.*/\"",
+    "lint:eslint": "pnpm -r \"/^lint:eslint/\""
+  }
+}

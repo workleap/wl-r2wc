@@ -21,7 +21,6 @@ export function Ticket({ title, count, onRemove }: TicketProps) {
                 <Heading>
                     <Flex>
                         {title}
-
                     </Flex>
                 </Heading>
                 <Content>

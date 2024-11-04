@@ -3,6 +3,7 @@ import type { MovieDetailsProps } from "../../MovieDetails.tsx";
 import type { MoviePopupProps } from "../../MoviePopup.tsx";
 import type { TicketProps } from "../../Ticket.tsx";
 
+export type * from "../../types.d.ts";
 export type * from "./types.d.ts";
 
 

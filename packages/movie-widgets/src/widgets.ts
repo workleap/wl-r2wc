@@ -8,8 +8,7 @@ import { TicketElement } from "./TicketElement.tsx";
 
 const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement, MovieFinderElement, SelectedMovieElement, TicketElement],
-    contextProvider: AppContextProvider,
-    syncRendering: true
+    contextProvider: AppContextProvider
 });
 
 window.MovieWidgets = MovieWidgets;

@@ -1,12 +1,6 @@
 import type { WebComponentHTMLElement } from "@workleap/r2wc";
-import type { MovieWidgets } from "../../widgets.ts";
 
-declare global {
-
-    interface Window {
-        MovieWidgets?: typeof MovieWidgets;
-    }
-
+export declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
@@ -18,5 +12,3 @@ declare global {
         }
     }
 }
-
-export { };
