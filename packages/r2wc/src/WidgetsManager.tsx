@@ -77,7 +77,7 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     #syncRendering: boolean;
 
     constructor (
-        { elements, contextProvider, ignoreLoadingCss = true, syncRendering = false }: ConstructionOptions<AppSettings>) {
+        { elements, contextProvider, ignoreLoadingCss = false, syncRendering = false }: ConstructionOptions<AppSettings>) {
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
         WidgetsManager.#instanciated = true;
 

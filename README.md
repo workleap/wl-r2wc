@@ -385,7 +385,7 @@ After running the `pnpm build` inside the package, you will get `index.ts` and `
 ### [Optional] React helpers output
 If you have defined [React helpers](#optional-define-react-helpers), you have to build the special output of your package as weel. 
 
- Firsct create the [tsup.build.react.ts file](/packages/movie-widgets/tsup.build.react.ts). Rememer to enable `dts: true`: 
+ First, create the [tsup.build.react.ts file](/packages/movie-widgets/tsup.build.react.ts). Rememer to enable `dts: true`: 
 ```ts
 export default defineBuildConfig({
     entry: ["src/helpers/react/index.ts"],
@@ -416,7 +416,7 @@ The above ensures you can import `@workleap/movie-widgets/helpers/react` inside 
 
 ## Deployment
 
-The generated files inside the `/dist/cdn` folder(i.e `index.js` and `index.css`) need to be made available to our widgets consumers.
+The generated files inside the `/dist/cdn` folder (i.e `index.js` and `index.css`) need to be made available to our widgets consumers.
 
 > [!CAUTION]
 > #### The total combined size of these two files (after minification and Gzip compression) **SHOULD NOT** exceed 100KB.
