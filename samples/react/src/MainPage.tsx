@@ -1,6 +1,6 @@
-import { MovieDetails, MoviePopup, SelectedMovie, Ticket } from "@workleap/movie-widgets/react";
 import { Flex } from "@workleap/orbiter-ui";
 import { useState } from "react";
+import { MovieDetails, MoviePopup, SelectedMovie, Ticket } from "../../widgets/movie-widgets/dist/react/index.js";
 
 export function MainPage() {
     const [boughtTickets, setBoughtTickets] = useState<{ key: string; count:number; title: string }[]>([]);

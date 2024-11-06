@@ -1,6 +1,6 @@
 import { SparklesIcon } from "@hopper-ui/icons";
 import { Button, Text, ThemeProvider } from "@workleap/orbiter-ui";
-import { useAppContext } from "./AppContextProvider.tsx";
+import { useAppContext } from "./AppContextProvider.js";
 
 
 export interface MoviePopupProps {

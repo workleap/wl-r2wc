@@ -1,6 +1,6 @@
 import { Button, Card, Checkbox, Content, Field, Flex, Form, Heading, Label, TextInput, ThemeProvider } from "@workleap/orbiter-ui";
 import { useState } from "react";
-import { useAppContext } from "./AppContextProvider.tsx";
+import { useAppContext } from "./AppContextProvider.js";
 
 export interface TicketProps {
     key: string;

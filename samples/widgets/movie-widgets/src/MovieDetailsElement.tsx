@@ -3,7 +3,7 @@ import { WebComponentHTMLElement, type AttributeEventMap } from "@workleap/r2wc"
 import {
     MovieDetails,
     type MovieDetailsProps
-} from "./MovieDetails.tsx";
+} from "./MovieDetails.js";
 
 type ObservedAttributesType = (typeof MovieDetailsElement.observedAttributes)[number];
 export class MovieDetailsElement extends WebComponentHTMLElement<MovieDetailsProps, ObservedAttributesType> {

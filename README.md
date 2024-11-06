@@ -44,10 +44,10 @@ function MovieDetails({ mode, showRanking }: MovieDetailsProps) {
 This repo is a package + template repo which also has some examples to see how this strategy works in action. After cloning the repo:
 
 - Run `pnpm install && pnpm build` inside the root,
-- To run the sample apps run `pnpm dev` inside the [Vanilla-Js app](/apps/vanilla-js/) or the [React app](/apps/react/) folders.
+- To run the sample apps run `pnpm dev` inside the [Vanilla-Js app](/samples/vanilla-js/) or the [React app](/samples/react/) folders.
 
 > [!IMPORTANT]
-> Whenever you make a change inside the `packages/movie-widgets` you only need to run `pnpm build` and then refresh your running apps. It is becuase of having [dist](/packages/movie-widgets/dist/) folder as `cdn` for each app: [VanillaJs](/apps/vanilla-js/server.js) and [React](/apps/react/webpack.dev.js).
+> Whenever you make a change inside the `packages/movie-widgets` you only need to run `pnpm build` and then refresh your running apps. It is becuase of having [dist](/packages/movie-widgets/dist/) folder as `cdn` for each app: [VanillaJs](/samples/vanilla-js/server.js) and [React](/samples/react/webpack.dev.js).
 
 You can follow the next steps to see how you can change and see the result.
 
@@ -355,7 +355,7 @@ export const MovieFinder = createWebComponent("wl-movie-finder");
 >   );
 > }
 > ```
-> Without these helpers, your hosts have to do more to be able to use Web Components.
+> Without these helpers, consumers have to do more to be able to use Web Components.
 
 
 ## Build the output

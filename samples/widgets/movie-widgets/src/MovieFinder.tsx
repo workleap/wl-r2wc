@@ -7,7 +7,7 @@ import {
     TextInput
 } from "@workleap/orbiter-ui";
 import { useState } from "react";
-import { type MovieData, useAppContext } from "./AppContextProvider.tsx";
+import { type MovieData, useAppContext } from "./AppContextProvider.js";
 
 
 const movies : MovieData[] = [

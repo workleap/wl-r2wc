@@ -1,5 +1,5 @@
 import { WebComponentHTMLElement, type AttributeEventMap } from "@workleap/r2wc";
-import { MoviePopup, type MoviePopupProps } from "./MoviePopup.tsx";
+import { MoviePopup, type MoviePopupProps } from "./MoviePopup.js";
 
 type ObservedAttributesType = (typeof MoviePopUpElement.observedAttributes)[number];
 

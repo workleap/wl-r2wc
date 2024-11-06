@@ -1,6 +1,6 @@
-import { MovieDetails, SelectedMovie } from "@workleap/movie-widgets/react";
 import { Checkbox } from "@workleap/orbiter-ui";
 import { useState } from "react";
+import { MovieDetails, SelectedMovie } from "../../widgets/movie-widgets/dist/react/index.js";
 
 export function StorePage() {
     const [showRanking, setShowRanking] = useState(false);

@@ -1,11 +1,10 @@
 import { createWebComponent } from "@workleap/r2wc/helpers/react";
-import type { MovieDetailsProps } from "../../MovieDetails.tsx";
-import type { MoviePopupProps } from "../../MoviePopup.tsx";
-import type { TicketProps } from "../../Ticket.tsx";
+import type { MovieDetailsProps } from "../../MovieDetails.js";
+import type { MoviePopupProps } from "../../MoviePopup.js";
+import type { TicketProps } from "../../Ticket.js";
 
-export type * from "../../types.d.ts";
-export type * from "./types.d.ts";
-
+export type * from "../../types.js";
+export type * from "./types.js";
 
 export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
 export const Ticket = createWebComponent<TicketProps>("wl-ticket");

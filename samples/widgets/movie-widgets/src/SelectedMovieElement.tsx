@@ -1,5 +1,5 @@
 import { WebComponentHTMLElement } from "@workleap/r2wc";
-import { SelectedMovie } from "./SelectedMovie.tsx";
+import { SelectedMovie } from "./SelectedMovie.js";
 
 
 export class SelectedMovieElement extends WebComponentHTMLElement {
