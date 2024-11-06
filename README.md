@@ -398,7 +398,7 @@ export default defineBuildConfig({
 
 Second, add the following to the [package.json](/packages/movie-widgets/package.json):
 ```json
-    "name": "@workleap/movie-widgets",
+    "name": "@samples/movie-widgets",
     "version": "1.0.0",
     "main": "dist/react/index.js",
     "types": "dist/react/index.d.ts",
@@ -412,7 +412,7 @@ Second, add the following to the [package.json](/packages/movie-widgets/package.
         "dist"
     ],
 ```
-The above ensures you can import `@workleap/movie-widgets/helpers/react` inside the React hosts.
+The above ensures you can import `@samples/movie-widgets/helpers/react` inside the React hosts.
 
 ## Deployment
 
@@ -511,10 +511,10 @@ An example usage of the widget in an HTML page:
 
 ### React + Typescript
 
-if you have defined [React helpers](#optional-define-react-helpers), you can easily import `@workleap/movie-widgets` package and then use the generated Web Components wrappers:
+if you have defined [React helpers](#optional-define-react-helpers), you can easily import `@samples/movie-widgets` package and then use the generated Web Components wrappers:
 
 ```jsx
-import { MovieDetails, MovieFinder } from "@workleap/movie-widgets/react";
+import { MovieDetails, MovieFinder } from "@samples/movie-widgets/react";
 
 <MovieDetails data={{ mode: "modal", showRanking: true, onBuy: buyTickets }} />
 <MovieDetails data={{ showRanking: false, mode: "inline" }} />

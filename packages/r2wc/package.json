@@ -34,12 +34,11 @@
         "react-dom": "18.3.1"
     },
     "devDependencies": {
-        "@changesets/cli": "2.27.9",
-        "@swc/core": "1.7.40",
+        "@swc/core": "1.7.42",
         "@swc/helpers": "0.5.13",
         "@types/react": "18.3.12",
         "@types/react-dom": "18.3.1",
-        "@workleap/eslint-plugin": "3.2.2",
+        "@workleap/eslint-plugin": "3.2.3",
         "@workleap/swc-configs": "2.2.3",
         "@workleap/tsup-configs": "3.0.6",
         "@workleap/typescript-configs": "3.0.2",

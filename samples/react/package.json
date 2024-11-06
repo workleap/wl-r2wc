@@ -1,5 +1,5 @@
 {
-    "name": "react",
+    "name": "@samples/react",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -10,7 +10,7 @@
         "lint:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@workleap/movie-widgets": "workspace:*",
+        "@samples/movie-widgets": "workspace:*",
         "@workleap/orbiter-ui": "^5.5.0",
         "react": "18.3.1",
         "react-dom": "18.3.1",
