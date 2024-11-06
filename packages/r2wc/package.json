@@ -1,0 +1,50 @@
+{
+    "name": "@workleap/r2wc",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Workleap",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./helpers/react":{
+            "import": "./dist/helpers/react/index.js",
+            "types": "./dist/helpers/react/index.d.ts",
+            "default": "./dist/helpers/react/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup --config ./tsup.build.ts",
+        "changeset": "changeset add && changeset version",
+        "changeset:add": "changeset add",
+        "lint": "pnpm run \"/^lint:.*/\"",
+        "lint:eslint": "eslint .",
+        "lint:types": "tsc --noEmit"
+    },
+    "dependencies": {
+        "react": "18.3.1",
+        "react-dom": "18.3.1"
+    },
+    "devDependencies": {
+        "@swc/core": "1.7.42",
+        "@swc/helpers": "0.5.13",
+        "@types/react": "18.3.12",
+        "@types/react-dom": "18.3.1",
+        "@workleap/eslint-plugin": "3.2.3",
+        "@workleap/swc-configs": "2.2.3",
+        "@workleap/tsup-configs": "3.0.6",
+        "@workleap/typescript-configs": "3.0.2",
+        "tsconfig-paths-webpack-plugin": "4.1.0",
+        "tsup": "8.3.5",
+        "typescript": "5.6.3"
+    },
+    "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
+}

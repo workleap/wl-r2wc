@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@workleap/r2wc": "1.0.0",
+    "@samples/react": "0.0.0",
+    "@samples/vanilla-js": "1.0.0",
+    "@samples/movie-widgets": "1.1.0"
+  },
+  "changesets": []
+}
