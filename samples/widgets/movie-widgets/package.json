@@ -1,5 +1,6 @@
 {
     "name": "@samples/movie-widgets",
+    "version": "0.0.0",
     "author": "Workleap",
     "type": "module",
     "private": true,
