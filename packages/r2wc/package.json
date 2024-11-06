@@ -1,6 +1,6 @@
 {
     "name": "@workleap/r2wc",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "private": true,
     "author": "Workleap",
     "license": "Apache-2.0",
@@ -13,7 +13,7 @@
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
-        "./helpers/react":{
+        "./helpers/react": {
             "import": "./dist/helpers/react/index.js",
             "types": "./dist/helpers/react/index.d.ts",
             "default": "./dist/helpers/react/index.js"

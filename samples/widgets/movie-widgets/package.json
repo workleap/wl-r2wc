@@ -25,13 +25,13 @@
         "lint:types": "tsc --noEmit"
     },
     "dependencies": {
-    "@hopper-ui/icons": "^2.8.4",
-    "@hopper-ui/tokens": "4.4.0",
-    "@workleap/orbiter-ui": "5.5.0",
-    "@workleap/r2wc": "workspace:*",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
+        "@hopper-ui/icons": "^2.8.4",
+        "@hopper-ui/tokens": "4.4.0",
+        "@workleap/orbiter-ui": "5.5.0",
+        "@workleap/r2wc": "workspace:*",
+        "react": "18.3.1",
+        "react-dom": "18.3.1"
+    },
     "devDependencies": {
         "@types/react": "18.3.11",
         "@types/react-dom": "18.3.1",
