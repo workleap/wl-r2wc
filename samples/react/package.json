@@ -1,7 +1,7 @@
 {
     "name": "@samples/react",
     "private": true,
-    "version": "0.0.0",
+    "license": "Apache-2.0",
     "type": "module",
     "scripts": {
         "dev": "webpack serve --config webpack.dev.js",
