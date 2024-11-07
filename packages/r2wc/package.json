@@ -2,6 +2,10 @@
     "name": "@workleap/r2wc",
     "version": "1.0.0",
     "author": "Workleap",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gsoft-inc/wl-r2wc.git"
+    },
     "license": "Apache-2.0",
     "type": "module",
     "main": "dist/index.js",
