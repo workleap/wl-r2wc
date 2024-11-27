@@ -309,9 +309,10 @@ export { MovieWidgets };
 `WidgetsManager` loades the related `CSS` file automatically at the time of load. If you want to load the CSS file manually, you can pass the `ignoreLoadingCss: true` to the constructor.
 
 `WidgetsManager` class exposes the following API which is being used inside the host apps.
-- `initialize(config: AppSettings)` : To initiate the widgets and pass the initial state of `AppSettings`.
+- `initialize(config: AppSettings)`: To initiate the widgets and pass the initial state of `AppSettings`.
 - `update(config: Partial<AppSettings>)`: To change the state of `AppSettings`. You only need to pass the changed settings.
 - `appSettings: AppSettings`: To get the current app settings.
+- `unmount()`: To unmount the rendered elements. You can call `initialize` after to get a fresh rendering. It is mostly helpful in test environments (like Storybook) where you need to re-initialize the widgets without reloading the whole page. Note that this function doesn't remove the widgest tags from the page. It only removes the rendered content.
 
 #### [Optional] Define React helpers
 If you want to ease the process of using your defined web components inside React hosts, you
