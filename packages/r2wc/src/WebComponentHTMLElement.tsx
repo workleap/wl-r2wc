@@ -39,7 +39,7 @@ export class WebComponentHTMLElementBase extends HTMLElement {
 
     connectedCallback() {
         this.applyInitialStyles();
-        this.#portal = createPortal(this.renderReactComponent(), this);
+        this.renewPortal();
 
         notifyWidgetMountState(this, "mounted");
     }
@@ -48,6 +48,10 @@ export class WebComponentHTMLElementBase extends HTMLElement {
         this.#portal = null;
 
         notifyWidgetMountState(this, "unmounted");
+    }
+
+    renewPortal() {
+        this.#portal = createPortal(this.renderReactComponent(), this);
     }
 }
 

@@ -11,7 +11,7 @@ const activeWidgets: { key: number; element: WebComponentHTMLElementBase }[] = [
 let initialized = false;
 
 const rootContainer = document.createElement("div");
-const root = createRoot(rootContainer);
+let root = createRoot(rootContainer);
 let delayRendererHandle:number | null = null;
 let render: (()=>void) = () => {throw new Error("WidgetsManager is not initialized yet");};
 let uniqueWidgetKey:number = 1;
@@ -62,6 +62,7 @@ interface IWidgetsManager<T> {
     initialize: (settings?: T) => void;
     update: (settings: Partial<T>) => void;
     appSettings?: T | null;
+    unmount: () => void;
 }
 
 interface ConstructionOptions<T> {
@@ -121,7 +122,7 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
 
     #renderWidgets(contextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })> | undefined) {
         const portals = activeWidgets.map(item =>
-            //this unique key is needed to avoid losing the state of the component when some adjacent elements are removed.
+            //this unique key is needed to avoid loosing the state of the component when some adjacent elements are removed.
             <Fragment key={item.key}>
                 {item.element.renderedPortal}
             </Fragment>);
@@ -133,6 +134,14 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
                 root.render(content);
             });
         } else {root.render(content);}
+    }
+
+    unmount() {
+        root.unmount();
+        root = createRoot(rootContainer);
+        activeWidgets.forEach(widget => widget.element.renewPortal());
+        this.#contextProps = new Observable();
+        initialized = false;
     }
 
     initialize(settings?: AppSettings) {
