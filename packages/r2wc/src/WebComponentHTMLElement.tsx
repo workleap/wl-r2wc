@@ -56,7 +56,35 @@ export class WebComponentHTMLElementBase extends HTMLElement {
 }
 
 export class WebComponentHTMLElement<Props= unknown, ObservedAttributesType extends string = never> extends WebComponentHTMLElementBase {
-    #props = new Observable<Props>();
+    #props : Observable<Props>;
+
+    constructor() {
+        super();
+
+        let alreadySetData: Props | undefined = undefined;
+
+        try {
+            //if the data is set before the element is defined in the DOM, the getter function will not override it!
+            //so, we read the data to initialize the props with it and then remove it.
+            //Removing it causes the getter to work as expected afterwards.
+            //There are different reasons that causes the element to be defined in the DOM after the data is set.
+            // 1. The script is loaded after the data is set due to network issues.
+            // 2. The script is loaded after the data is set due to the script being loaded lately for any reason.
+
+            alreadySetData = this.data;
+            delete this.data;
+        } catch {
+            //the error happens in regular cases when this.data is not set.
+            //in this situation, the #props has not been initialized yet and the getter function is being called which causes the error.
+            //so, we catch the error and ignore it.
+        }
+
+        if (alreadySetData) {
+            console.warn("The data has been set before the element is defined in the DOM. This means a potenial of delay rendering. Please make sure to load the widget script before setting the data.");
+        }
+
+        this.#props = new Observable<Props>(alreadySetData);
+    }
 
     protected get reactComponent(): React.ComponentType<Props> {
         throw new Error("You must implement this method in a subclass.");
