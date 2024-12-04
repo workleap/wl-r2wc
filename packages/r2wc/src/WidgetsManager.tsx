@@ -58,7 +58,7 @@ export function notifyWidgetMountState(element: WebComponentHTMLElementBase, eve
     }
 }
 
-interface IWidgetsManager<T> {
+export interface IWidgetsManager<T> {
     initialize: (settings?: T) => void;
     update: (settings: Partial<T>) => void;
     appSettings?: T | null;
@@ -68,18 +68,24 @@ interface IWidgetsManager<T> {
 interface ConstructionOptions<T> {
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
+    contextProviderProps?: Partial<T>;
     ignoreLoadingCss?: boolean;
     syncRendering?: boolean;
 }
 
 export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<AppSettings> {
-    #contextProps: Observable<AppSettings> = new Observable();
+    #contextProps: Observable<AppSettings> = new Observable<AppSettings>();
+    #initialContextProps: Partial<AppSettings> | undefined;
     static #instanciated = false;
     #syncRendering: boolean;
 
     constructor (
-        { elements, contextProvider, ignoreLoadingCss = false, syncRendering = false }: ConstructionOptions<AppSettings>) {
+        config: ConstructionOptions<AppSettings>) {
+        const { elements, contextProvider, contextProviderProps, ignoreLoadingCss = false, syncRendering = false } = config;
+
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
+
+        this.#initialContextProps = contextProviderProps;
         WidgetsManager.#instanciated = true;
 
         this.#syncRendering = syncRendering;
@@ -89,6 +95,12 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         render = () => {
             this.#renderWidgets(contextProvider);
         };
+    }
+
+    extends<ExtendedProps extends object>(data: ExtendedProps): IWidgetsManager<AppSettings> & ExtendedProps {
+        Object.assign(this, data);
+
+        return this as unknown as IWidgetsManager<AppSettings> & ExtendedProps;
     }
 
     #countOccurrences(mainString: string, subString: string) {
@@ -145,7 +157,7 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
     }
 
     initialize(settings?: AppSettings) {
-        this.#contextProps.value = settings ?? {} as AppSettings;
+        this.#contextProps.value = { ...this.#initialContextProps, ...(settings ?? {} as AppSettings) };
         initialized = true;
         render();
     }

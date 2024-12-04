@@ -22,7 +22,7 @@ export interface MovieDetailsProps {
 }
 
 export function MovieDetails({ showRanking, onBuy, mode = "modal" }: MovieDetailsProps) {
-    const { theme, selectedMovie, eventEmitter } = useAppContext();
+    const { theme, selectedMovie, openModalHandler } = useAppContext();
 
     const [ ticketsCount, setTicketsCount ] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,12 +40,12 @@ export function MovieDetails({ showRanking, onBuy, mode = "modal" }: MovieDetail
             setIsModalOpen(true);
         };
 
-        eventEmitter.on("movieSelected", handleOpenModal);
+        openModalHandler.on(handleOpenModal);
 
         return () => {
-            eventEmitter.off("movieSelected", handleOpenModal);
+            openModalHandler.off(handleOpenModal);
         };
-    }, [eventEmitter]);
+    }, [openModalHandler]);
 
     const content = <Content>
         <Paragraph>

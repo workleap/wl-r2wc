@@ -29,7 +29,7 @@ const movies : MovieData[] = [
 ];
 
 export function MovieFinder() {
-    const { isMovieFinderOpen, setIsMovieFinderOpen, setSelectedMovie, eventEmitter } = useAppContext();
+    const { isMovieFinderOpen, setIsMovieFinderOpen, setSelectedMovie, openModalHandler } = useAppContext();
     const [search, setSearch] = useState("");
 
 
@@ -42,7 +42,7 @@ export function MovieFinder() {
                 return;
             }
             setSelectedMovie(movies.find(movie => movie.key === key) ?? null);
-            eventEmitter.emit("movieSelected", key);
+            openModalHandler.emit(key);
         }
         setIsMovieFinderOpen(false);
     };

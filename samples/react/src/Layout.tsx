@@ -24,18 +24,27 @@ export function Layout() {
                             padding: "5px"
                         }}
                     >
-
-                        <Button
-                            size="sm"
-                            variant="primary"
-                            onClick={() => {
-                                const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-                                document.documentElement.setAttribute("data-theme", newTheme);
-                                setTheme(newTheme);
-                                window.MovieWidgets?.update({ theme: newTheme });
-                            }}
-                        >Change Theme</Button>
+                        <Flex direction="row" gap="inline-sm">
+                            <Button
+                                size="sm"
+                                variant="primary"
+                                onClick={() => {
+                                    const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                                    document.documentElement.setAttribute("data-theme", newTheme);
+                                    setTheme(newTheme);
+                                    window.MovieWidgets?.update({ theme: newTheme });
+                                }}
+                            >Change Theme</Button>
+                            <Button
+                                size="sm"
+                                variant="primary"
+                                onClick={() => {
+                                    window.MovieWidgets?.clearSelectedMovie();
+                                }}
+                            >Clear Selected Movie</Button>
+                        </Flex>
                         <SelectedMovie />
+
                     </Flex>
                 </header>
                 <main>

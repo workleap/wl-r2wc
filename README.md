@@ -264,6 +264,7 @@ The host app needs an API to register and initialize the widgets. `WidgetsManage
 
 - `elements` (**required**): An array of widgets to register. Without having them registered, you cannot use them in the host app.
 - `contextProvider`: to pass shared context provider, e.g. `AppContextProvider`.
+- `contextProviderProps`: to pass initial context provider props. It is helpful when you want to initiate some props through build time, and not leaving it to `initialize` function. For example, when you want to inject event emitter and expose the function through the `extend` method. One popular example could be any type of refresh data methods.
 - `ignoreLoadingCss`: if you want the host to load the related CSS file, set this to true. Otherwise the manager will load the css file [automatically](/packages/r2wc/src/WidgetsManager.tsx).
 - `syncRendering`: (**not recommended**) If you want the web component rendering happens syncronously. It may be useful for critical widgets that need to be present as soon as the page gets loaded. It is not recommended as it uses [flushSync](https://react.dev/reference/react-dom/flushSync) behind the hood and it may affect the overal page load time.  
 
@@ -299,9 +300,11 @@ export { MovieWidgets };
 If you don't have `contextProvider`, simply ignore it:
 ```tsx
 // src/widgets.ts
-window.MovieWidgets = new WidgetsManager({
+const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement]
 });
+
+window.MovieWidgets = MovieWidgets;
 
 export { MovieWidgets };
 ```
@@ -313,6 +316,36 @@ export { MovieWidgets };
 - `update(config: Partial<AppSettings>)`: To change the state of `AppSettings`. You only need to pass the changed settings.
 - `appSettings: AppSettings`: To get the current app settings.
 - `unmount()`: To unmount the rendered elements. You can call `initialize` after to get a fresh rendering. It is mostly helpful in test environments (like Storybook) where you need to re-initialize the widgets without reloading the whole page. Note that this function doesn't remove the widgest tags from the page. It only removes the rendered content.
+
+#### Extending WidgetsManager
+To add custom functionalities to `WidgetsManager` you can simply use the `extends` function. All the passed data will be injected to the instanciated `WidgetsManager` and will be exposed through provided variable. In the following example, `window.MovieWidgets.refreshData()` is a valid and type-safe method. 
+```ts
+export declare global {
+    interface Extensions {
+        refreshData: ()=> void;
+    }    
+    interface Window {
+        MovieWidgets?: IWidgetsManager<AppSettings> & Extensions;
+    }
+ }
+
+const refrehHandler = new InvokeMethodHandler();
+
+const MovieWidgets = new WidgetsManager({
+    elements: [MovieDetailsElement, MoviePopUpElement],
+    contextProvider: AppContextProvider,
+    contextProviderProps: {
+        refreshHandler: refrehHandler
+    }
+}).extends({
+    refreshData : refrehHandler.emit.bind(refrehHandler)
+});
+
+window.MovieWidgets = MovieWidgets;
+
+export { MovieWidgets };
+```
+
 
 #### [Optional] Define React helpers
 If you want to ease the process of using your defined web components inside React hosts, you
@@ -526,7 +559,7 @@ import { MovieDetails, MovieFinder } from "@samples/movie-widgets/react";
 > You can use regular HTML attributes, like `style`, with these components.
 
 #### Initial script
-This part is pretty similar to VanilaJS example. As we load this package from CDN, **NOT** as a package, we have to load it separately in `index.html` file:
+This part is pretty similar to VanillaJS example. As we load this package from CDN, **NOT** as a package, we have to load it separately in `index.html` file:
 
 ```html
 <html lang="en">

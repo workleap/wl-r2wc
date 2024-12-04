@@ -33,6 +33,11 @@ function addEventListenerOnChangeThemeButton() {
 
         window.MovieWidgets?.update({ theme: newTheme });
     });
+
+    const clearButton = document.getElementById("clearSelection");
+    clearButton.addEventListener("click", function () {
+        window.MovieWidgets?.clearSelectedMovie();
+    });
 }
 
 
