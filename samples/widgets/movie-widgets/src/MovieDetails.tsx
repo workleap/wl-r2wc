@@ -13,7 +13,7 @@ import {
     ThemeProvider
 } from "@workleap/orbiter-ui";
 import { useEffect, useState } from "react";
-import { type MovieData, useAppContext } from "./AppContextProvider.js";
+import { type MovieData, useAppContext } from "./WidgetsContextProvider.tsx";
 
 export interface MovieDetailsProps {
     showRanking: boolean;

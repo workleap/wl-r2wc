@@ -7,7 +7,7 @@ export interface MovieData {
     title: string;
 }
 
-interface AppContextProps {
+interface WidgetsContextProps {
     theme: "light" | "dark" | "system";
     isMovieFinderOpen: boolean;
     setIsMovieFinderOpen: (value: boolean) => void;
@@ -16,14 +16,14 @@ interface AppContextProps {
     openModalHandler: InvokeMethodHandler<[string?]>;
 }
 
-const AppContext = createContext<AppContextProps | null>(null);
+const AppContext = createContext<WidgetsContextProps | null>(null);
 
-export interface AppSettings {
+export interface WidgetsSettings {
     theme: "light" | "dark" | "system";
     clearSelectedMovieHandler: InvokeMethodHandler;
 }
 
-export function AppContextProvider({ children, clearSelectedMovieHandler, ...props }: PropsWithChildren<AppSettings>) {
+export function WidgetsContextProvider({ children, clearSelectedMovieHandler, ...props }: PropsWithChildren<WidgetsSettings>) {
     const [theme, setTheme] = useState(props.theme);
     const [isMovieFinderOpen, setIsMovieFinderOpen] = useState<boolean>(false);
     const [selectedMovie, setSelectedMovie] = useState<MovieData | null>(null);
@@ -57,7 +57,7 @@ export function AppContextProvider({ children, clearSelectedMovieHandler, ...pro
 export function useAppContext() {
     const context = useContext(AppContext);
     if (context === null) {
-        throw new Error("useAppContext must be used within a AppContextProvider");
+        throw new Error("useAppContext must be used within a WidgetsContextProvider");
     }
 
     return context;

@@ -109,8 +109,8 @@ Widgets inside the same project could share context as a regular React app. This
 
 
 ```tsx
-// src/AppContextProvider.tsx
-export function AppContextProvider({ children }: {
+// src/WidgetsContextProvider.tsx
+export function WidgetsContextProvider({ children }: {
     children?: React.ReactNode | undefined;
 }) {
     const [isResultOpen, setIsResultOpen] = useState(false);  
@@ -131,23 +131,23 @@ export function AppContextProvider({ children }: {
 > [!WARNING]
  The above element is NOT being associated with any DOM element, and the `{children}` (i.e widgets) are being rendered in different DOM nodes (Thanks to React [createPortal](https://react.dev/reference/react-dom/createPortal)). So, if any of above providers generate DOM element, they are not being present in DOM hierarchy.   
 
-#### [Optional] App settings
+#### [Optional] Widgets settings
 
-There are scenarios where you want to pass down some app settings that are being used by all widgets. For example:
+There are scenarios where you want to pass down some high level settings that are being used by all widgets. For example:
 
 - Passing app current theme or language
 - Passing backend API URL, app name, app logo, etc.
 
-If you have only one widget, it is ok to pass them through it as widget props, but if you have multiple widgets, it is not perfect to do the same for all widgets. To do that, add these settings to `AppSettings` and modify previously created `AppContextProvider` to handle them.
+If you have only one widget, it is ok to pass them through it as widget props, but if you have multiple widgets, it is not perfect to do the same for all widgets. To do that, add these settings to `WidgetsSettings` and modify previously created `WidgetsContextProvider` to handle them.
 
 ```tsx
-// src/AppContextProvider.tsx
-export interface AppSettings {
+// src/WidgetsContextProvider.tsx
+export interface WidgetsSettings {
     theme: "light" | "dark" | "system";
     language: string;
 }
 
-export function AppContextProvider({ children, ...props }: PropsWithChildren<AppSettings>) {
+export function WidgetsContextProvider({ children, ...props }: PropsWithChildren<WidgetsSettings>) {
     const [theme, setTheme] = useState(props.theme);
 
     useEffect(() => {
@@ -163,10 +163,10 @@ export function AppContextProvider({ children, ...props }: PropsWithChildren<App
     );
 }
 ```
-Pay attention to the `useEffect` in the above code. We need it if we wrap a setting with `useSate`. In this case, the passed value to `useState` is only for initiation and it is not getting updated on later calls. As the host app can change the app settings through the `update` method, we need to use `useEffect` to make sure the state gets the changes. 
+Pay attention to the `useEffect` in the above code. We need it if we wrap a setting with `useSate`. In this case, the passed value to `useState` is only for initiation and it is not getting updated on later calls. As the host app can change the widgets settings through the `update` method, we need to use `useEffect` to make sure the state gets the changes. 
 
 > [!NOTE]
-You need to merge the two above examples if you support both optional "Sharing context" and passing down "App Settings" use cases.
+You need to merge the two above examples if you support both optional "Sharing context" and passing down "Widgets Settings" use cases.
 
 
 ### Create Web Components
@@ -263,7 +263,7 @@ Put the created file inside the `src` folder.
 The host app needs an API to register and initialize the widgets. `WidgetsManager` class does this for you. To do that, create the [widgets.ts](/packages/movie-widgets/src/widgets.ts) file and create a new instance of the `WidgetsManager` class. Its construcor accepts this parameters:
 
 - `elements` (**required**): An array of widgets to register. Without having them registered, you cannot use them in the host app.
-- `contextProvider`: to pass shared context provider, e.g. `AppContextProvider`.
+- `contextProvider`: to pass shared context provider, e.g. `WidgetsContextProvider`.
 - `contextProviderProps`: to pass initial context provider props. It is helpful when you want to initiate some props through build time, and not leaving it to `initialize` function. For example, when you want to inject event emitter and expose the function through the `extend` method. One popular example could be any type of refresh data methods.
 - `ignoreLoadingCss`: if you want the host to load the related CSS file, set this to true. Otherwise the manager will load the css file [automatically](/packages/r2wc/src/WidgetsManager.tsx).
 - `syncRendering`: (**not recommended**) If you want the web component rendering happens syncronously. It may be useful for critical widgets that need to be present as soon as the page gets loaded. It is not recommended as it uses [flushSync](https://react.dev/reference/react-dom/flushSync) behind the hood and it may affect the overal page load time.  
@@ -276,7 +276,7 @@ If you like to have access to it across the whole document, you can assign it to
 // src/widgets.ts
 const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
-    contextProvider: AppContextProvider
+    contextProvider: WidgetsContextProvider
 });
 
 window.MovieWidgets = MovieWidgets;
@@ -288,11 +288,11 @@ export { MovieWidgets };
 > You need to create a `types.d.ts` [file](/packages/movie-widgets/src/types.d.ts) and add the following declaration to be able to define `window.MovieWidgets` at window level:
 > ```ts
 > import type { IWidgetsManager } from "@workleap/r2wc";
-> import type { AppSettings } from "./AppContextProvider.tsx";
+> import type { WidgetsSettings } from "./WidgetsContextProvider.tsx";
 > 
 > export declare global {
 >     interface Window {
->         MovieWidgets?: IWidgetsManager<AppSettings>;
+>         MovieWidgets?: IWidgetsManager<WidgetsSettings>;
 >     }
 > }
 > ```
@@ -312,20 +312,20 @@ export { MovieWidgets };
 `WidgetsManager` loades the related `CSS` file automatically at the time of load. If you want to load the CSS file manually, you can pass the `ignoreLoadingCss: true` to the constructor.
 
 `WidgetsManager` class exposes the following API which is being used inside the host apps.
-- `initialize(config: AppSettings)`: To initiate the widgets and pass the initial state of `AppSettings`.
-- `update(config: Partial<AppSettings>)`: To change the state of `AppSettings`. You only need to pass the changed settings.
-- `appSettings: AppSettings`: To get the current app settings.
+- `initialize(settings: WidgetsSettings)`: To initiate the widgets and pass the initial state of `WidgetsSettings`.
+- `update(settings: Partial<WidgetsSettings>)`: To change the state of `WidgetsSettings`. You only need to pass the changed settings.
+- `settings: WidgetsSettings`: To get the current widgets settings.
 - `unmount()`: To unmount the rendered elements. You can call `initialize` after to get a fresh rendering. It is mostly helpful in test environments (like Storybook) where you need to re-initialize the widgets without reloading the whole page. Note that this function doesn't remove the widgest tags from the page. It only removes the rendered content.
 
 #### Extending WidgetsManager
-To add custom functionalities to `WidgetsManager` you can simply use the `extends` function. All the passed data will be injected to the instanciated `WidgetsManager` and will be exposed through provided variable. In the following example, `window.MovieWidgets.refreshData()` is a valid and type-safe method. 
+To add custom functionalities to `WidgetsManager` you can simply use the `extends<T>(data: T)` function. All the passed data will be injected to the instanciated `WidgetsManager` and will be exposed through provided variable. In the following example, `window.MovieWidgets.refreshData()` is a valid and type-safe method. 
 ```ts
 export declare global {
     interface Extensions {
         refreshData: ()=> void;
     }    
     interface Window {
-        MovieWidgets?: IWidgetsManager<AppSettings> & Extensions;
+        MovieWidgets?: IWidgetsManager<WidgetsSettings> & Extensions;
     }
  }
 
@@ -333,7 +333,7 @@ const refrehHandler = new InvokeMethodHandler();
 
 const MovieWidgets = new WidgetsManager({
     elements: [MovieDetailsElement, MoviePopUpElement],
-    contextProvider: AppContextProvider,
+    contextProvider: WidgetsContextProvider,
     contextProviderProps: {
         refreshHandler: refrehHandler
     }
@@ -583,9 +583,7 @@ This part is pretty similar to VanillaJS example. As we load this package from C
 Even if the current POC is working, there are some improvements that we will look at in the future:
 
 - Possibility of implementing the widget using the Shadow DOM to avoid conflicts with the host app styles.
-  - [x] Having styles [loaded inside shadow elements](https://github.com/gsoft-inc/wl-framework-agnostic-widgets-template/pull/10)
   - [ ] Pushing all elements to render inside Shadow root. Currently Orbiter renders Modal and Menu at document level which causes them to get their styles from the main document, not the shadow root styles.
-- Further optimizations for bundle size with improved tree-shaking
 - Strategy to load some components dynamically to decrease the whole package size
 - [Use SSR + Declarative Shadow Dom](https://web.dev/articles/declarative-shadow-dom) to boost performance and remove flickering at all
 

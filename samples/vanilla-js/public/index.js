@@ -26,7 +26,7 @@ function addEventListenerOnChangeThemeButton() {
     const button = document.getElementById("changeTheme");
 
     button.addEventListener("click", function () {
-        const oldTheme = window.MovieWidgets?.appSettings?.theme;
+        const oldTheme = window.MovieWidgets?.settings?.theme;
         const newTheme = oldTheme === "dark" ? "light" : "dark" ;
 
         document.documentElement.setAttribute("data-theme", newTheme);

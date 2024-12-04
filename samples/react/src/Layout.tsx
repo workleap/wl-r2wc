@@ -3,13 +3,13 @@ import { Link, Outlet } from "react-router-dom";
 
 import { MovieFinder, SelectedMovie } from "@samples/movie-widgets/react";
 
-import { AppContextProvider, useAppContext } from "./AppContext.tsx";
+import { WidgetsContextProvider, useAppContext } from "./AppContext.tsx";
 
 export function Layout() {
     const { setTheme } = useAppContext();
 
     return (
-        <AppContextProvider>
+        <WidgetsContextProvider>
             <Div>
                 <header style={{ borderBottom: "1px solid black", padding: "5px", display: "flex", justifyContent: "space-between" }}>
                     <div>
@@ -52,6 +52,6 @@ export function Layout() {
                 </main>
             </Div>
             <MovieFinder />
-        </AppContextProvider>
+        </WidgetsContextProvider>
     );
 }
