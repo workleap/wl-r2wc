@@ -1,8 +1,14 @@
 import type { IWidgetsManager } from "@workleap/r2wc";
-import type { AppSettings } from "./AppContextProvider.js";
+import type { WidgetsSettings } from "./WidgetsContextProvider.tsx";
+
+interface Extensions {
+    clearSelectedMovie: ()=> void;
+}
+
 
 export declare global {
     interface Window {
-        MovieWidgets?: IWidgetsManager<AppSettings>;
+        MovieWidgets?: IWidgetsManager<WidgetsSettings> & Extensions;
     }
 }
+

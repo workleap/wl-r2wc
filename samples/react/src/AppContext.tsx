@@ -1,18 +1,18 @@
 import { ThemeProvider } from "@workleap/orbiter-ui";
 import { createContext, useContext, useState, type PropsWithChildren } from "react";
 
-interface AppContextProps {
+interface WidgetsContextProps {
     theme: "light" | "dark" | "system";
     setTheme: (value: "light" | "dark" | "system") => void;}
 
 
-const AppContext = createContext<AppContextProps>({
+const AppContext = createContext<WidgetsContextProps>({
     theme: "light",
     setTheme: () => {}
 });
 
 
-export function AppContextProvider({ children }: PropsWithChildren) {
+export function WidgetsContextProvider({ children }: PropsWithChildren) {
     const [theme, setTheme] = useState< "light" | "dark" | "system">("light");
 
 

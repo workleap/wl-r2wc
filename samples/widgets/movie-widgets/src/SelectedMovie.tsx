@@ -1,6 +1,6 @@
 import { VideoCameraIcon } from "@hopper-ui/icons";
 import { Div, ThemeProvider } from "@workleap/orbiter-ui";
-import { useAppContext } from "./AppContextProvider.js";
+import { useAppContext } from "./WidgetsContextProvider.tsx";
 
 export function SelectedMovie() {
     const { selectedMovie, theme } = useAppContext();

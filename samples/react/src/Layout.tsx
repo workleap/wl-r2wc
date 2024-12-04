@@ -3,13 +3,13 @@ import { Link, Outlet } from "react-router-dom";
 
 import { MovieFinder, SelectedMovie } from "@samples/movie-widgets/react";
 
-import { AppContextProvider, useAppContext } from "./AppContext.tsx";
+import { WidgetsContextProvider, useAppContext } from "./AppContext.tsx";
 
 export function Layout() {
     const { setTheme } = useAppContext();
 
     return (
-        <AppContextProvider>
+        <WidgetsContextProvider>
             <Div>
                 <header style={{ borderBottom: "1px solid black", padding: "5px", display: "flex", justifyContent: "space-between" }}>
                     <div>
@@ -24,18 +24,27 @@ export function Layout() {
                             padding: "5px"
                         }}
                     >
-
-                        <Button
-                            size="sm"
-                            variant="primary"
-                            onClick={() => {
-                                const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-                                document.documentElement.setAttribute("data-theme", newTheme);
-                                setTheme(newTheme);
-                                window.MovieWidgets?.update({ theme: newTheme });
-                            }}
-                        >Change Theme</Button>
+                        <Flex direction="row" gap="inline-sm">
+                            <Button
+                                size="sm"
+                                variant="primary"
+                                onClick={() => {
+                                    const newTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                                    document.documentElement.setAttribute("data-theme", newTheme);
+                                    setTheme(newTheme);
+                                    window.MovieWidgets?.update({ theme: newTheme });
+                                }}
+                            >Change Theme</Button>
+                            <Button
+                                size="sm"
+                                variant="primary"
+                                onClick={() => {
+                                    window.MovieWidgets?.clearSelectedMovie();
+                                }}
+                            >Clear Selected Movie</Button>
+                        </Flex>
                         <SelectedMovie />
+
                     </Flex>
                 </header>
                 <main>
@@ -43,6 +52,6 @@ export function Layout() {
                 </main>
             </Div>
             <MovieFinder />
-        </AppContextProvider>
+        </WidgetsContextProvider>
     );
 }

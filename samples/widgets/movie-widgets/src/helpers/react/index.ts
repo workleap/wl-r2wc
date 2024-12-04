@@ -4,7 +4,6 @@ import type { MoviePopupProps } from "../../MoviePopup.js";
 import type { TicketProps } from "../../Ticket.js";
 
 export type * from "../../types.js";
-export type * from "./types.js";
 
 export const MovieDetails = createWebComponent<MovieDetailsProps>("wl-movie-details");
 export const Ticket = createWebComponent<TicketProps>("wl-ticket");

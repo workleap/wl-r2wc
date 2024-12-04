@@ -58,28 +58,34 @@ export function notifyWidgetMountState(element: WebComponentHTMLElementBase, eve
     }
 }
 
-interface IWidgetsManager<T> {
+export interface IWidgetsManager<T> {
     initialize: (settings?: T) => void;
     update: (settings: Partial<T>) => void;
-    appSettings?: T | null;
+    settings?: T | null;
     unmount: () => void;
 }
 
 interface ConstructionOptions<T> {
     elements: WebComponentHTMLElementType[];
     contextProvider?: ComponentType<T | (T & { children?: React.ReactNode })>;
+    contextProviderProps?: Partial<T>;
     ignoreLoadingCss?: boolean;
     syncRendering?: boolean;
 }
 
-export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<AppSettings> {
-    #contextProps: Observable<AppSettings> = new Observable();
+export class WidgetsManager<WidgetsSettings = unknown> implements IWidgetsManager<WidgetsSettings> {
+    #contextProps: Observable<WidgetsSettings> = new Observable<WidgetsSettings>();
+    #initialContextProps: Partial<WidgetsSettings> | undefined;
     static #instanciated = false;
     #syncRendering: boolean;
 
     constructor (
-        { elements, contextProvider, ignoreLoadingCss = false, syncRendering = false }: ConstructionOptions<AppSettings>) {
+        settings: ConstructionOptions<WidgetsSettings>) {
+        const { elements, contextProvider, contextProviderProps, ignoreLoadingCss = false, syncRendering = false } = settings;
+
         if (WidgetsManager.#instanciated) {throw new Error("You cannot create multiple instances of WidgetsManager");}
+
+        this.#initialContextProps = contextProviderProps;
         WidgetsManager.#instanciated = true;
 
         this.#syncRendering = syncRendering;
@@ -89,6 +95,12 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         render = () => {
             this.#renderWidgets(contextProvider);
         };
+    }
+
+    extends<ExtendedProps extends object>(data: ExtendedProps): IWidgetsManager<WidgetsSettings> & ExtendedProps {
+        Object.assign(this, data);
+
+        return this as unknown as IWidgetsManager<WidgetsSettings> & ExtendedProps;
     }
 
     #countOccurrences(mainString: string, subString: string) {
@@ -114,13 +126,13 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         document.head.appendChild(link);
     }
 
-    #renderContextWithProps(ContextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
+    #renderContextWithProps(ContextProvider: ComponentType<WidgetsSettings | (WidgetsSettings & { children?: React.ReactNode })>, children: React.ReactNode | undefined) {
         return <PropsProvider Component={ContextProvider} observable={this.#contextProps}>
             {children}
         </PropsProvider>;
     }
 
-    #renderWidgets(contextProvider: ComponentType<AppSettings | (AppSettings & { children?: React.ReactNode })> | undefined) {
+    #renderWidgets(contextProvider: ComponentType<WidgetsSettings | (WidgetsSettings & { children?: React.ReactNode })> | undefined) {
         const portals = activeWidgets.map(item =>
             //this unique key is needed to avoid loosing the state of the component when some adjacent elements are removed.
             <Fragment key={item.key}>
@@ -144,19 +156,19 @@ export class WidgetsManager<AppSettings = unknown> implements IWidgetsManager<Ap
         initialized = false;
     }
 
-    initialize(settings?: AppSettings) {
-        this.#contextProps.value = settings ?? {} as AppSettings;
+    initialize(settings?: WidgetsSettings) {
+        this.#contextProps.value = { ...this.#initialContextProps, ...(settings ?? {} as WidgetsSettings) };
         initialized = true;
         render();
     }
 
-    update(settings: Partial<AppSettings>) {
+    update(settings: Partial<WidgetsSettings>) {
         this.#contextProps.value = {
-            ...this.#contextProps.value ?? {} as AppSettings,
+            ...this.#contextProps.value ?? {} as WidgetsSettings,
             ...settings
         };
     }
-    get appSettings() {
+    get settings() {
         return this.#contextProps.value;
     }
 }
