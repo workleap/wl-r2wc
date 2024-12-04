@@ -1,5 +1,12 @@
 # @workleap/r2wc
 
+## 1.2.0
+
+### Minor Changes
+
+- [#18](https://github.com/gsoft-inc/wl-r2wc/pull/18) [`c0df5ec`](https://github.com/gsoft-inc/wl-r2wc/commit/c0df5ec85e796f305de8835114fbf4af12373773) Thanks [@mahmoudmoravej](https://github.com/mahmoudmoravej)! - - Add `contextProviderProps` and `extends` method to `WidgetsManager` to make it more flexible and being able to expose functions outside of the Widgets.
+  - Rename the `appSettings` to `settings` in `IWidgetsManager` interface.
+
 ## 1.1.1
 
 ### Patch Changes
