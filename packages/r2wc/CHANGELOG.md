@@ -1,5 +1,11 @@
 # @workleap/r2wc
 
+## 1.2.1
+
+### Patch Changes
+
+- [#20](https://github.com/gsoft-inc/wl-r2wc/pull/20) [`64baf52`](https://github.com/gsoft-inc/wl-r2wc/commit/64baf528204dcbe2454dba9c3669391b6be76cfd) Thanks [@mahmoudmoravej](https://github.com/mahmoudmoravej)! - Fix the wrong render() call when a widget is removed removed, unmount() is called, and then a new widget gets mounted all on a same thread.
+
 ## 1.2.0
 
 ### Minor Changes
