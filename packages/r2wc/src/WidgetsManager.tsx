@@ -52,7 +52,16 @@ export function notifyWidgetMountState(element: WebComponentHTMLElementBase, eve
     // and enqueue a render to be done at next step.
     if (initialized && !delayRenderRequested()) {
         delayRendererHandle = window.setTimeout(() => {
-            render();
+            // In rare cases, the initialized flag may be changed to false before the render is called. It is the case:
+            // 1. A widget is removed from the page while the widgets manager is initialized. So, the render is enqueued.
+            // 2. But, during the same thread an "unmount" is requested to the widgets manager. This makes the initialized flag false.
+            // 3. Then, a new widget is getting added to the page while the widgets manager is not initialized yet.
+            // 4. everything on the thread is done and now the enqueued render is called as scheduled.
+            // 5. if we don't check the initialized flag here, the render will be called and unknown error may occur.
+
+            // Real example: the above example occurs on Storybooks when navigating between stories and when you call unmount() between stories.
+
+            if (initialized) {render();}
             delayRendererHandle = null;
         });
     }
@@ -133,6 +142,8 @@ export class WidgetsManager<WidgetsSettings = unknown> implements IWidgetsManage
     }
 
     #renderWidgets(contextProvider: ComponentType<WidgetsSettings | (WidgetsSettings & { children?: React.ReactNode })> | undefined) {
+        if (!initialized) {throw new Error("WidgetsManager is not initialized yet");}
+
         const portals = activeWidgets.map(item =>
             //this unique key is needed to avoid loosing the state of the component when some adjacent elements are removed.
             <Fragment key={item.key}>
