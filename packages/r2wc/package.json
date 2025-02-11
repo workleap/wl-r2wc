@@ -34,7 +34,8 @@
         "lint:types": "tsc --noEmit"
     },
     "peerDependencies": {
-        "react": "^18 || ^19"
+        "react": "^18 || ^19",
+        "react-dom": "^18 || ^19"
     },
     "devDependencies": {
         "@swc/core": "1.9.3",
