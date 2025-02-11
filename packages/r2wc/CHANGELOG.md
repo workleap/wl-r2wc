@@ -1,5 +1,11 @@
 # @workleap/r2wc
 
+## 1.2.2
+
+### Patch Changes
+
+- [#22](https://github.com/gsoft-inc/wl-r2wc/pull/22) [`effbeb0`](https://github.com/gsoft-inc/wl-r2wc/commit/effbeb07cb02a2817854bf0ef0df18e8b94de066) Thanks [@patricklafrance](https://github.com/patricklafrance)! - Move react deps to peer dependencies.
+
 ## 1.2.1
 
 ### Patch Changes
