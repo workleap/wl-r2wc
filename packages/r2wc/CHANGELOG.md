@@ -1,5 +1,11 @@
 # @workleap/r2wc
 
+## 1.2.3
+
+### Patch Changes
+
+- [#24](https://github.com/gsoft-inc/wl-r2wc/pull/24) [`1cea5a7`](https://github.com/gsoft-inc/wl-r2wc/commit/1cea5a7132919be0d159dc2de676d78b247eaf6e) Thanks [@patricklafrance](https://github.com/patricklafrance)! - Fix peer dependencies released with 1.2.2.
+
 ## 1.2.2
 
 ### Patch Changes
